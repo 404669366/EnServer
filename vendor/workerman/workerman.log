@@ -1,0 +1,294 @@
+2019-01-23 02:27:25 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:27:25 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:29:23 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:29:23 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:31:48 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:31:48 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:33:07 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:33:07 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:40:18 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:40:18 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:46:15 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:46:15 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:50:40 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:50:40 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:55:13 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:55:13 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:55:15 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:55:15 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:55:17 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-01-23 02:55:17 pid:1 SendBufferToWorker fail. The connections between Gateway and BusinessWorker are not ready. See http://wiki.workerman.net/Error3
+2019-05-08 14:21:48 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:48 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:48 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:49 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:49 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:49 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:50 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:50 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:50 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:51 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:51 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:51 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:52 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:52 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:52 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:53 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:53 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:53 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:54 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:54 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:54 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:55 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:55 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:55 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:56 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:56 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:56 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:57 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:57 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:57 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:58 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:58 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:58 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:59 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:59 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:21:59 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:00 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:00 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:00 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:01 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:01 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:01 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:02 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:02 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:02 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:03 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:03 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:03 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:04 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:04 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:04 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:05 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:05 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:05 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:06 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:06 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:06 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:07 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:07 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:07 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:08 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:08 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:08 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:09 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:09 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:09 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:10 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:10 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:10 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:11 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:11 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:11 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:12 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:12 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:12 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:13 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:13 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:13 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:14 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:14 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:14 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:20 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:20 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:20 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:21 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:21 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:21 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:22 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:22 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:22 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:24 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:24 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:24 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:25 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:25 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:25 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:26 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:26 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:26 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:27 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:27 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:27 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:28 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:28 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:28 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:29 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:29 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:29 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:30 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:30 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:30 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:31 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:31 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:31 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:32 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:32 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:32 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:33 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:33 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:33 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:34 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:34 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:34 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:35 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:35 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:35 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:36 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:36 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:36 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:37 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:37 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:37 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:38 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:38 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:38 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:39 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:39 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:39 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:40 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:40 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:22:40 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:23:59 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:23:59 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:23:59 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:00 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:00 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:00 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:01 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:01 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:01 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:02 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:02 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:02 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:03 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:03 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:03 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:04 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:04 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:04 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:05 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:05 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:05 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:06 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:06 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:06 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:07 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:07 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:07 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:08 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:08 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:08 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:09 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:09 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:09 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:10 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:10 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:10 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:11 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:11 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:24:11 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:35 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:35 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:35 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:36 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:36 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:36 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:37 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:37 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:37 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:38 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:38 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:38 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:39 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:39 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:39 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:40 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:40 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:40 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:41 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:41 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:41 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:42 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:42 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:42 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:43 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:43 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:43 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:44 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:44 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:44 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:45 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:45 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:45 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:46 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:46 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-08 14:27:46 pid:1 Gateway: Worker->name conflict. Key:127.0.0.1:Worker:0
+2019-05-17 16:01:24 pid:1 Error: Class 'vender\globalData\client' not found in D:\work\server\vendor\helper\common.php:40
+Stack trace:
+#0 D:\work\server\vendor\handle\EnPile.php(35): vendor\helper\common::sendByPile('7f0000010bb8000...', Array, false, '\xE7\x94\xB5\xE6\xA1\xA9\xE5\xB7\xB2\xE4\xB8\x8B\xE7\xBA\xBF')
+#1 D:\work\server\appEn\Events.php(40): vendor\handle\EnPile::onClose('7f0000010bb8000...')
+#2 [internal function]: Events::onClose('7f0000010bb8000...')
+#3 D:\work\server\vendor\workerman\gateway-worker\src\BusinessWorker.php(416): call_user_func('Events::onClose', '7f0000010bb8000...')
+#4 [internal function]: GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#5 D:\work\server\vendor\workerman\workerman\Connection\TcpConnection.php(650): call_user_func(Array, Object(Workerman\Connection\AsyncTcpConnection), Array)
+#6 [internal function]: Workerman\Connection\TcpConnection->baseRead(Resource id #30)
+#7 D:\work\server\vendor\workerman\workerman\Events\Select.php(295): call_user_func_array(Array, Array)
+#8 D:\work\server\vendor\workerman\workerman\Worker.php(2322): Workerman\Events\Select->loop()
+#9 D:\work\server\vendor\workerman\gateway-worker\src\BusinessWorker.php(204): Workerman\Worker->run()
+#10 D:\work\server\vendor\workerman\workerman\Worker.php(1315): GatewayWorker\BusinessWorker->run()
+#11 D:\work\server\vendor\workerman\workerman\Worker.php(1258): Workerman\Worker::forkWorkersForWindows()
+#12 D:\work\server\vendor\workerman\workerman\Worker.php(507): Workerman\Worker::forkWorkers()
+#13 D:\work\server\appEn\startWorker.php(10): Workerman\Worker::runAll()
+#14 {main}
+2019-05-17 16:01:24 pid:1 Worker process terminated
+2019-05-20 10:19:22 pid:1 Exception: readFromRemote fail in D:\work\server\vendor\globalData\client.php:216
+Stack trace:
+#0 D:\work\server\vendor\globalData\client.php(137): vendor\globalData\client->readFromRemote(Resource id #294)
+#1 D:\work\server\vendor\helper\common.php(41): vendor\globalData\client->__get('7f0000010bb8000...')
+#2 D:\work\server\vendor\handle\EnPile.php(36): vendor\helper\common::sendByPile('7f0000010bb8000...', Array, false, '\xE7\x94\xB5\xE6\xA1\xA9\xE5\xB7\xB2\xE4\xB8\x8B\xE7\xBA\xBF')
+#3 D:\work\server\appEn\Events.php(37): vendor\handle\EnPile::onClose('7f0000010bb8000...')
+#4 [internal function]: Events::onClose('7f0000010bb8000...')
+#5 D:\work\server\vendor\workerman\gateway-worker\src\BusinessWorker.php(416): call_user_func('Events::onClose', '7f0000010bb8000...')
+#6 [internal function]: GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#7 D:\work\server\vendor\workerman\workerman\Connection\TcpConnection.php(650): call_user_func(Array, Object(Workerman\Connection\AsyncTcpConnection), Array)
+#8 [internal function]: Workerman\Connection\TcpConnection->baseRead(Resource id #28)
+#9 D:\work\server\vendor\workerman\workerman\Events\Select.php(295): call_user_func_array(Array, Array)
+#10 D:\work\server\vendor\workerman\workerman\Worker.php(2322): Workerman\Events\Select->loop()
+#11 D:\work\server\vendor\workerman\gateway-worker\src\BusinessWorker.php(204): Workerman\Worker->run()
+#12 D:\work\server\vendor\workerman\workerman\Worker.php(1315): GatewayWorker\BusinessWorker->run()
+#13 D:\work\server\vendor\workerman\workerman\Worker.php(1258): Workerman\Worker::forkWorkersForWindows()
+#14 D:\work\server\vendor\workerman\workerman\Worker.php(507): Workerman\Worker::forkWorkers()
+#15 D:\work\server\appEn\startWorker.php(9): Workerman\Worker::runAll()
+#16 {main}
+2019-05-20 10:19:22 pid:1 Worker process terminated
+2019-05-20 10:29:43 pid:1 Exception: readFromRemote fail in D:\work\server\vendor\globalData\client.php:216
+Stack trace:
+#0 D:\work\server\vendor\globalData\client.php(137): vendor\globalData\client->readFromRemote(Resource id #294)
+#1 D:\work\server\vendor\helper\common.php(41): vendor\globalData\client->__get('7f0000010bb8000...')
+#2 D:\work\server\vendor\handle\EnPile.php(36): vendor\helper\common::sendByPile('7f0000010bb8000...', Array, false, '\xE7\x94\xB5\xE6\xA1\xA9\xE5\xB7\xB2\xE4\xB8\x8B\xE7\xBA\xBF')
+#3 D:\work\server\appEn\Events.php(37): vendor\handle\EnPile::onClose('7f0000010bb8000...')
+#4 [internal function]: Events::onClose('7f0000010bb8000...')
+#5 D:\work\server\vendor\workerman\gateway-worker\src\BusinessWorker.php(416): call_user_func('Events::onClose', '7f0000010bb8000...')
+#6 [internal function]: GatewayWorker\BusinessWorker->onGatewayMessage(Object(Workerman\Connection\AsyncTcpConnection), Array)
+#7 D:\work\server\vendor\workerman\workerman\Connection\TcpConnection.php(650): call_user_func(Array, Object(Workerman\Connection\AsyncTcpConnection), Array)
+#8 [internal function]: Workerman\Connection\TcpConnection->baseRead(Resource id #28)
+#9 D:\work\server\vendor\workerman\workerman\Events\Select.php(295): call_user_func_array(Array, Array)
+#10 D:\work\server\vendor\workerman\workerman\Worker.php(2322): Workerman\Events\Select->loop()
+#11 D:\work\server\vendor\workerman\gateway-worker\src\BusinessWorker.php(204): Workerman\Worker->run()
+#12 D:\work\server\vendor\workerman\workerman\Worker.php(1315): GatewayWorker\BusinessWorker->run()
+#13 D:\work\server\vendor\workerman\workerman\Worker.php(1258): Workerman\Worker::forkWorkersForWindows()
+#14 D:\work\server\vendor\workerman\workerman\Worker.php(507): Workerman\Worker::forkWorkers()
+#15 D:\work\server\appEn\startWorker.php(9): Workerman\Worker::runAll()
+#16 {main}
+2019-05-20 10:29:43 pid:1 Worker process terminated
