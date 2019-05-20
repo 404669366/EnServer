@@ -1,6 +1,7 @@
 <?php
 require_once '../vendor/autoload.php';
 require_once '../vendor/autoloader.php';
+var_dump(\vendor\helper\redis::app()->hGet('BackendBasisField',1));
 $gateway = new \GatewayWorker\Gateway("En100://0.0.0.0:20000");
 $gateway->name = 'pile';
 $gateway->startPort = 3000;
