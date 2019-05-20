@@ -1,7 +1,7 @@
 <?php
 require_once '../vendor/autoload.php';
 require_once '../vendor/autoloader.php';
-$gateway = new \GatewayWorker\Gateway("websocket://0.0.0.0:20002");
+$gateway = new \GatewayWorker\Gateway("websocket://127.0.0.1:20002");
 $gateway->name = 'user';
 $gateway->startPort = 3200;
 $gateway->registerAddress = '127.0.0.1:30000';
