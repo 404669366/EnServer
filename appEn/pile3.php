@@ -23,7 +23,7 @@ function connect()
         $data .= pack('S', 201);
         $data .= pack('I', 0);
         $con->send($data);
-        \Workerman\Lib\Timer::add(3, function () use ($count, $no, $con) {
+        \Workerman\Lib\Timer::add(12, function () use ($count, $no, $con) {
             $data = pack('A16', $no);
             $data .= pack('S', 101);
             $data .= pack('I', 6);
