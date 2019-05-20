@@ -12,9 +12,9 @@ $worker->onWorkerStart = 'connect';
 
 function connect()
 {
-    static $count = 0;
+    static $count = 1200;
 
-    if ($count++ >= 1200) return;
+    if ($count++ >= 2400) return;
 
     $con = new \Workerman\Connection\AsyncTcpConnection('tcp://127.0.0.1:20000');
     $con->onConnect = function ($con) use ($count) {
