@@ -21,6 +21,7 @@ class EnPile
      */
     public static function onMessage($client_id = 0, $message = [])
     {
+        var_dump($message['no']);
         $funcName = 'command_' . $message['command'];
         if (method_exists(new self(), $funcName)) {
             self::$funcName($client_id, $message);
