@@ -44,14 +44,14 @@ class EnAdmin
 
     private static function restart($client_id, $message)
     {
-        $global = new client('127.0.0.1:8001');
+        $global = new client();
         $global->$client_id = $message['pile'];
         return Gateway::sendToClient($message['pile'], ['command' => 203, 'body' => '']);
     }
 
     private static function setQrCode($client_id, $message)
     {
-        $global = new client('127.0.0.1:8001');
+        $global = new client();
         $global->$client_id = $message['pile'];
         $body = pack('A16', $message['no']);
         $body .= pack('C', count($message['qrCode']));
@@ -65,7 +65,7 @@ class EnAdmin
 
     private static function setInterval($client_id, $message)
     {
-        $global = new client('127.0.0.1:8001');
+        $global = new client();
         $global->$client_id = $message['pile'];
         $body = pack('S', $message['ordinary']);
         $body .= pack('S', $message['charge']);
@@ -75,14 +75,14 @@ class EnAdmin
 
     private static function querySection($client_id, $message)
     {
-        $global = new client('127.0.0.1:8001');
+        $global = new client();
         $global->$client_id = $message['pile'];
         return Gateway::sendToClient($message['pile'], ['command' => 501, 'body' => '']);
     }
 
     private static function setSection($client_id, $message)
     {
-        $global = new client('127.0.0.1:8001');
+        $global = new client();
         $global->$client_id = $message['pile'];
         $body = pack('C', count($message['section']));
         foreach ($message['section'] as $v) {

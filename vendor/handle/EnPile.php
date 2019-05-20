@@ -33,7 +33,7 @@ class EnPile
     public static function onClose($client_id)
     {
         common::sendByPile($client_id, [], false, '电桩已下线');
-        $global = new client('127.0.0.1:8001');
+        $global = new client();
         $global->__unset($client_id);
     }
 

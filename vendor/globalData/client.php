@@ -38,10 +38,11 @@ class client
     protected $_cache = array();
 
     /**
-     * Construct.
-     * @param array /string $servers
+     * client constructor.
+     * @param string $servers
+     * @throws \Exception
      */
-    public function __construct($servers)
+    public function __construct($servers = '127.0.0.1:30001')
     {
         if (empty($servers)) {
             throw new \Exception('servers empty');

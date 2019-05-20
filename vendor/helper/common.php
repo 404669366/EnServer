@@ -37,8 +37,7 @@ class common
      */
     public static function sendByPile($client_id = '', $data = [], $type = true, $msg = 'ok')
     {
-        $global = new client('127.0.0.1:8001');
-        return Gateway::sendToClient($global->$client_id, json_encode(['data' => $data, 'type' => $type, 'msg' => $msg]));
+        return Gateway::sendToClient((new client())->$client_id, json_encode(['data' => $data, 'type' => $type, 'msg' => $msg]));
     }
 
     /**
