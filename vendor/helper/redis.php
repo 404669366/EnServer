@@ -12,7 +12,7 @@ class redis extends \Redis
     private static $app;
     private static $hostname = '127.0.0.1';
     private static $port = '6379';
-    private static $password = '';
+    private static $password = 'fi9^BRLHschX%V96';
 
     /**
      * @return bool|redis
