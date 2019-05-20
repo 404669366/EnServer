@@ -16,13 +16,13 @@ class Events
     {
         if ($message) {
             switch ($_SERVER['GATEWAY_PORT']) {
-                case 9000:
+                case 20000:
                     \vendor\handle\EnPile::onMessage($client_id, $message);
                     break;
-                case 9001:
+                case 20001:
                     \vendor\handle\EnAdmin::onMessage($client_id, $message);
                     break;
-                case 9002:
+                case 20002:
                     \vendor\handle\EnUser::onMessage($client_id, $message);
                     break;
             }
@@ -33,13 +33,13 @@ class Events
     public static function onClose($client_id)
     {
         switch ($_SERVER['GATEWAY_PORT']) {
-            case 9000:
+            case 20000:
                 \vendor\handle\EnPile::onClose($client_id);
                 break;
-            case 9001:
+            case 20001:
                 \vendor\handle\EnAdmin::onClose($client_id);
                 break;
-            case 9002:
+            case 20002:
                 \vendor\handle\EnUser::onClose($client_id);
                 break;
         }

@@ -20,7 +20,6 @@ class En100
             return 0;
         }
         $head = @unpack(self::$headStructure, $buffer);
-        var_dump($head);
         if ($head) {
             self::$headInfo = $head;
             return self::$head + $head['length'];
