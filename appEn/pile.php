@@ -14,7 +14,7 @@ function connect()
 {
     static $count = 0;
 
-    if ($count++ >= 10000) return;
+    if ($count++ >= 20000) return;
 
     $con = new \Workerman\Connection\AsyncTcpConnection('tcp://127.0.0.1:20000');
     $con->onConnect = function ($con) use ($count) {
@@ -23,7 +23,7 @@ function connect()
         $data .= pack('S', 201);
         $data .= pack('I', 0);
         $con->send($data);
-        \Workerman\Lib\Timer::add(6, function () use ($count, $no, $con) {
+        \Workerman\Lib\Timer::add(10, function () use ($count, $no, $con) {
             $data = pack('A16', $no);
             $data .= pack('S', 101);
             $data .= pack('I', 6);
