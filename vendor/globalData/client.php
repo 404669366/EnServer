@@ -293,6 +293,7 @@ class client
                 $head_read = true;
             }
         }
+        @fclose($connection);
         return unserialize(substr($all_buffer, 4));
     }
 }
