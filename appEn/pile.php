@@ -14,7 +14,7 @@ function connect()
 {
     static $count = 0;
 
-    if ($count++ >= 10000) return;
+    if ($count++ >= 5000) return;
 
     $con = new \Workerman\Connection\AsyncTcpConnection('tcp://127.0.0.1:20000');
     $con->onConnect = function ($con) use ($count) {
