@@ -28,8 +28,8 @@ function connect()
             $data .= pack('S', 101);
             $data .= pack('I', 6);
             $data .= pack('I', time());
-            $data .= pack('C', $count);
-            $data .= pack('C', $count);
+            $data .= pack('C', mt_rand(1,200));
+            $data .= pack('C', mt_rand(1,200));
             $con->send($data);
         });
         connect();
