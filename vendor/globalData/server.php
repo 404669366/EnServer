@@ -56,7 +56,8 @@ class server
         switch ($cmd) {
             case 'get':
                 if (!isset($this->_dataArray[$key])) {
-                    return $connection->send('N;');
+                    $connection->send('N;');
+                    break;
                 }
                 return $connection->send(serialize($this->_dataArray[$key]));
                 break;
@@ -66,26 +67,29 @@ class server
                 break;
             case 'add':
                 if (isset($this->_dataArray[$key])) {
-                    return $connection->send('b:0;');
+                    $connection->send('b:0;');
+                    break;
                 }
                 $this->_dataArray[$key] = $data['value'];
-                return $connection->send('b:1;');
+                $connection->send('b:1;');
                 break;
             case 'increment':
                 if (!isset($this->_dataArray[$key])) {
-                    return $connection->send('b:0;');
+                    $connection->send('b:0;');
+                    break;
                 }
                 if (!is_numeric($this->_dataArray[$key])) {
                     $this->_dataArray[$key] = 0;
                 }
                 $this->_dataArray[$key] = $this->_dataArray[$key] + $data['step'];
-                return $connection->send(serialize($this->_dataArray[$key]));
+                $connection->send(serialize($this->_dataArray[$key]));
                 break;
             case 'cas':
                 $old_value = !isset($this->_dataArray[$key]) ? null : $this->_dataArray[$key];
                 if (md5(serialize($old_value)) === $data['md5']) {
                     $this->_dataArray[$key] = $data['value'];
-                    return $connection->send('b:1;');
+                    $connection->send('b:1;');
+                    break;
                 }
                 $connection->send('b:0;');
                 break;
@@ -99,15 +103,24 @@ class server
                 break;
             case 'hGet':
                 if (isset($this->_dataArray[$key][$data['hKey']])) {
-                    return $connection->send(serialize($this->_dataArray[$key][$data['hKey']]));
+                    $connection->send(serialize($this->_dataArray[$key][$data['hKey']]));
+                    break;
                 }
                 $connection->send('N;');
                 break;
             case 'hGetAll':
                 if (isset($this->_dataArray[$key])) {
-                    return $connection->send(serialize($this->_dataArray[$key]));
+                    $connection->send(serialize($this->_dataArray[$key]));
+                    break;
                 }
                 $connection->send('a:0:{}');
+                break;
+            case 'hLen':
+                if (isset($this->_dataArray[$key])) {
+                    $connection->send(serialize(count($this->_dataArray[$key])));
+                    break;
+                }
+                $connection->send('i:0;');
                 break;
             case 'hDel':
                 unset($this->_dataArray[$key][$data['hKey']]);
@@ -115,6 +128,7 @@ class server
                 break;
             default:
                 $connection->close(serialize('bad cmd ' . $cmd));
+                break;
         }
     }
 }

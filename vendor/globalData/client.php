@@ -237,6 +237,20 @@ class client
 
     /**
      * @param string $hashName
+     * @return mixed
+     */
+    public function hLen($hashName = '')
+    {
+        $connection = $this->getConnection($hashName);
+        $this->writeToRemote(array(
+            'cmd' => 'hLen',
+            'key' => $hashName,
+        ), $connection);
+        return $this->readFromRemote($connection);
+    }
+
+    /**
+     * @param string $hashName
      * @param string $hashKey
      * @return mixed
      */
