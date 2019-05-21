@@ -47,6 +47,7 @@ class EnPile
                 $message['no'],
                 [
                     'client_id' => $client_id,
+                    'no' => $message['no'],
                     'time' => $body['time'],
                     'num' => $body['num'],
                     'free' => $body['free']
