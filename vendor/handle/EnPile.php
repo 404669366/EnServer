@@ -41,15 +41,16 @@ class EnPile
     private static function command_101($client_id = 0, $message = [])
     {
         if ($body = @unpack('Itime/Cnum/Cfree', $message['body'])) {
-            redis::app()->hSet(
+            $global = new client();
+            $global->hSet(
                 'pileInfo',
                 $message['no'],
-                json_encode([
+                [
                     'client_id' => $client_id,
                     'time' => $body['time'],
                     'num' => $body['num'],
                     'free' => $body['free']
-                ])
+                ]
             );
         }
     }
@@ -95,7 +96,8 @@ class EnPile
     {
         if ($re = @unpack('C', $message['body'])) {
             if ($re[1] == 0) {
-                redis::app()->hDel('pileInfo', $message['no']);
+                $global = new client();
+                $global->hDel('pileInfo', $message['no']);
             }
             return common::sendByPile($client_id, $message['command'], true, common::reStatus($re[1]));
         }

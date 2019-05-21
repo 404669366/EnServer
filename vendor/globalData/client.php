@@ -189,6 +189,69 @@ class client
     }
 
     /**
+     * @param string $hashName
+     * @param string $hashKey
+     * @param string $value
+     */
+    public function hSet($hashName = '', $hashKey = '', $value = '')
+    {
+        $connection = $this->getConnection($hashName);
+        $this->writeToRemote(array(
+            'cmd' => 'hSet',
+            'key' => $hashName,
+            'hKey' => $hashKey,
+            'value' => $value,
+        ), $connection);
+        $this->readFromRemote($connection);
+    }
+
+    /**
+     * @param string $hashName
+     * @param string $hashKey
+     * @return mixed
+     */
+    public function hGet($hashName = '', $hashKey = '')
+    {
+        $connection = $this->getConnection($hashName);
+        $this->writeToRemote(array(
+            'cmd' => 'hGet',
+            'key' => $hashName,
+            'hKey' => $hashKey,
+        ), $connection);
+        return $this->readFromRemote($connection);
+    }
+
+    /**
+     * @param string $hashName
+     * @return mixed
+     */
+    public function hGetAll($hashName = '')
+    {
+        $connection = $this->getConnection($hashName);
+        $this->writeToRemote(array(
+            'cmd' => 'hGetAll',
+            'key' => $hashName,
+        ), $connection);
+        return $this->readFromRemote($connection);
+    }
+
+    /**
+     * @param string $hashName
+     * @param string $hashKey
+     * @return mixed
+     */
+    public function hDel($hashName = '', $hashKey = '')
+    {
+        $connection = $this->getConnection($hashName);
+        $this->writeToRemote(array(
+            'cmd' => 'hDel',
+            'key' => $hashName,
+            'hKey' => $hashKey,
+        ), $connection);
+        $this->readFromRemote($connection);
+    }
+
+    /**
      * Write data to global server.
      * @param string $buffer
      */

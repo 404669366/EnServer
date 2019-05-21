@@ -27,7 +27,7 @@ class server
      * @param int $port
      * @param int $count
      */
-    public function __construct($ip = '0.0.0.0', $port = 2207, $count = 1)
+    public function __construct($ip = '0.0.0.0', $port = 6666, $count = 1)
     {
         $worker = new Worker("frame://$ip:$port");
         $worker->count = $count;
@@ -91,6 +91,26 @@ class server
                 break;
             case 'delete':
                 unset($this->_dataArray[$key]);
+                $connection->send('b:1;');
+                break;
+            case 'hSet':
+                $this->_dataArray[$key][$data['hKey']] = $data['value'];
+                $connection->send('b:1;');
+                break;
+            case 'hGet':
+                if (isset($this->_dataArray[$key][$data['hKey']])) {
+                    return $connection->send(serialize($this->_dataArray[$key][$data['hKey']]));
+                }
+                $connection->send('N;');
+                break;
+            case 'hGetAll':
+                if (isset($this->_dataArray[$key])) {
+                    return $connection->send(serialize($this->_dataArray[$key]));
+                }
+                $connection->send('a:0:{}');
+                break;
+            case 'hDel':
+                unset($this->_dataArray[$key][$data['hKey']]);
                 $connection->send('b:1;');
                 break;
             default:
