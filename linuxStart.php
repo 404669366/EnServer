@@ -17,7 +17,7 @@ require_once './vendor/autoloader.php';
 
 define('LINUX_START', 1);
 
-foreach (glob(__DIR__ . '/start/*.php') as $file) {
+foreach (glob(__DIR__ . '/startup/*.php') as $file) {
     require_once $file;
 }
 
