@@ -6,6 +6,6 @@
  * Time: 9:09
  */
 while (true) {
-    var_dump(exec('git pull',$output));
-    sleep(3);
+    var_dump(exec('git fetch --all && git reset --hard origin/master && git pull', $output));
+    sleep(6);
 }
