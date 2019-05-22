@@ -7,7 +7,7 @@ $worker = new \GatewayWorker\BusinessWorker();
 $worker->name = 'worker';
 $worker->registerAddress = '127.0.0.1:30000';
 $worker->count = 2;
-$worker->eventHandler = '\handle\Events';
+$worker->eventHandler = '\handle\EnEvent';
 if (!defined('LINUX_START')) {
     \Workerman\Worker::runAll();
 }

@@ -1,7 +1,7 @@
 <?php
 
 namespace handle;
-class Events
+class EnEvent
 {
     public static function onWorkerStart($businessWorker)
     {
