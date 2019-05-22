@@ -22,40 +22,23 @@ class common
      * @param string $msg
      * @return bool
      */
-    public static function send($client_id = '', $data = [], $type = true, $msg = 'ok')
+    public static function sendToClient($client_id = '', $data = [], $type = true, $msg = 'ok')
     {
         return Gateway::sendToClient($client_id, json_encode(['data' => $data, 'type' => $type, 'msg' => $msg]));
     }
 
     /**
      * 发送信息到对应电桩组下后台/用户统一方法
-     * @param string $client_id
+     * @param int|string|array $group
      * @param array $data
      * @param bool $type
      * @param string $msg
      * @return bool
      */
-    public static function sendToGroup($client_id = '', $data = [], $type = true, $msg = 'ok')
+    public static function sendToGroup($group = '', $data = [], $type = true, $msg = 'ok')
     {
-        Gateway::sendToGroup($client_id, json_encode(['data' => $data, 'type' => $type, 'msg' => $msg]));
+        Gateway::sendToGroup($group, json_encode(['data' => $data, 'type' => $type, 'msg' => $msg]));
         return true;
-    }
-
-    /**
-     * 通过电桩client_id发送信息到后台/用户统一方法
-     * @param string $client_id
-     * @param array $data
-     * @param bool $type
-     * @param string $msg
-     * @return bool
-     */
-    public static function sendByPile($client_id = '', $data = [], $type = true, $msg = 'ok')
-    {
-        $global = new client();
-        if ($global->__isset($client_id)) {
-            return Gateway::sendToClient($global->$client_id, json_encode(['data' => $data, 'type' => $type, 'msg' => $msg]));
-        }
-        return false;
     }
 
     /**

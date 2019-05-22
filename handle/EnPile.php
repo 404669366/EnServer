@@ -32,8 +32,7 @@ class EnPile
      */
     public static function onClose($client_id)
     {
-        common::sendByPile($client_id, [], false, '电桩已下线');
-        common::sendToGroup($client_id, [], false, '电桩已下线');
+        common::sendToGroup($client_id, '', false, '电桩已下线');
         $global = new client();
         $global->__unset($client_id);
     }
@@ -77,10 +76,11 @@ class EnPile
             $surplusStructure = implode($surplusStructure, '/');
             if ($surplus = @unpack($surplusStructure, substr($message['body'], 63))) {
                 $body += $surplus;
-                return common::sendToGroup($client_id, $body);
+                return common::sendToGroup($client_id . $body['gun'], $body);
             }
+            return common::sendToGroup($client_id . $body['gun'], '', false, '数据解析错误');
         }
-        return common::sendToGroup($client_id, [], false, '数据解析错误');
+        return common::sendToGroup($client_id, '', false, '数据解析错误');
     }
 
     /**
@@ -117,9 +117,9 @@ class EnPile
     private static function command_204($client_id = 0, $message = [])
     {
         if ($re = @unpack('Cstatus', $message['body'])) {
-            return common::sendByPile($client_id, $message['command'], true, common::reStatus($re['status']));
+            return common::sendToGroup($client_id, $re);
         }
-        return common::sendByPile($client_id, $message['command'], true, common::reStatus());
+        return common::sendToGroup($client_id, '', false, '数据解析错误');
     }
 
     /**
@@ -135,9 +135,9 @@ class EnPile
                 $global = new client();
                 $global->hDel('pileInfo', $message['no']);
             }
-            return common::sendByPile($client_id, $message['command'], true, common::reStatus($re['status']));
+            return common::sendToGroup($client_id, $re);
         }
-        return common::sendByPile($client_id, $message['command'], true, common::reStatus());
+        return common::sendToGroup($client_id, '', false, '数据解析错误');
     }
 
     /**
@@ -149,9 +149,9 @@ class EnPile
     private static function command_402($client_id = 0, $message = [])
     {
         if ($re = @unpack('Cstatus', $message['body'])) {
-            return common::sendByPile($client_id, $message['command'], true, common::reStatus($re['status']));
+            return common::sendToGroup($client_id, $message['command'], true, common::reStatus($re['status']));
         }
-        return common::sendByPile($client_id, $message['command'], true, common::reStatus());
+        return common::sendToGroup($client_id, '', false, '数据解析错误');
     }
 
     /**
@@ -170,10 +170,10 @@ class EnPile
             $surplusStructure = implode($surplusStructure, '/');
             if ($surplus = @unpack($surplusStructure, substr($message['body'], 1))) {
                 $body += $surplus;
-                return common::sendByPile($client_id, $body);
+                return common::sendToGroup($client_id, $body);
             }
         }
-        return common::sendByPile($client_id, $message['command'], true, common::reStatus());
+        return common::sendToGroup($client_id, '', false, '数据解析错误');
     }
 
     /**
@@ -185,8 +185,8 @@ class EnPile
     private static function command_504($client_id = 0, $message = [])
     {
         if ($re = @unpack('Cstatus', $message['body'])) {
-            return common::sendByPile($client_id, $message['command'], true, common::reStatus($re['status']));
+            return common::sendToGroup($client_id, $re);
         }
-        return common::sendByPile($client_id, $message['command'], true, common::reStatus());
+        return common::sendToGroup($client_id, '', false, '数据解析错误');
     }
 }
