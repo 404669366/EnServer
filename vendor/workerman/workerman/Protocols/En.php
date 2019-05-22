@@ -8,7 +8,7 @@
 
 namespace Workerman\Protocols;
 
-class En100
+class En
 {
     private static $head = 22;
     private static $headStructure = 'A16no/Scommand/Ilength';// 16 + 2 + 4

@@ -7,5 +7,4 @@
  */
 require_once '../vendor/globalData/client.php';
 $global = new \vendor\globalData\client();
-var_dump($global->hLen('pileInfo'));
-var_dump($global->hGet('pileInfo','pile_20000'));
+var_dump($global->hGetAll('pileInfo'));

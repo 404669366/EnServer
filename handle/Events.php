@@ -1,4 +1,6 @@
 <?php
+
+namespace handle;
 class Events
 {
     public static function onWorkerStart($businessWorker)
@@ -17,13 +19,10 @@ class Events
         if ($message) {
             switch ($_SERVER['GATEWAY_PORT']) {
                 case 20000:
-                    \vendor\handle\EnPile::onMessage($client_id, $message);
+                    EnPile::onMessage($client_id, $message);
                     break;
                 case 20001:
-                    \vendor\handle\EnAdmin::onMessage($client_id, $message);
-                    break;
-                case 20002:
-                    \vendor\handle\EnUser::onMessage($client_id, $message);
+                    EnUse::onMessage($client_id, $message);
                     break;
             }
         }
@@ -34,13 +33,10 @@ class Events
     {
         switch ($_SERVER['GATEWAY_PORT']) {
             case 20000:
-                \vendor\handle\EnPile::onClose($client_id);
+                EnPile::onClose($client_id);
                 break;
             case 20001:
-                \vendor\handle\EnAdmin::onClose($client_id);
-                break;
-            case 20002:
-                \vendor\handle\EnUser::onClose($client_id);
+                EnUse::onClose($client_id);
                 break;
         }
     }

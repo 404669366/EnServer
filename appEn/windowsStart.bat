@@ -1,1 +1,0 @@
-php startGlobalData.php startRegister.php startWorker.php startGatewayPile.php startGatewayUser.php startGatewayAdmin.php

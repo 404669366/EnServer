@@ -28,6 +28,20 @@ class common
     }
 
     /**
+     * 发送信息到对应电桩组下后台/用户统一方法
+     * @param string $client_id
+     * @param array $data
+     * @param bool $type
+     * @param string $msg
+     * @return bool
+     */
+    public static function sendToGroup($client_id = '', $data = [], $type = true, $msg = 'ok')
+    {
+        Gateway::sendToGroup($client_id, json_encode(['data' => $data, 'type' => $type, 'msg' => $msg]));
+        return true;
+    }
+
+    /**
      * 通过电桩client_id发送信息到后台/用户统一方法
      * @param string $client_id
      * @param array $data

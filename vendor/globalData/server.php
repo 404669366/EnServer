@@ -23,15 +23,15 @@ class server
 
     /**
      * server constructor.
-     * @param string $ip
-     * @param int $port
+     * @param string $socket
      * @param int $count
+     * @param string $name
      */
-    public function __construct($ip = '0.0.0.0', $port = 6666, $count = 1)
+    public function __construct($socket = '0.0.0.0:6666', $count = 1, $name = 'global')
     {
-        $worker = new Worker("frame://$ip:$port");
+        $worker = new Worker("frame://$socket");
         $worker->count = $count;
-        $worker->name = 'globalDataServer';
+        $worker->name = $name;
         $worker->onMessage = array($this, 'onMessage');
         $worker->reloadable = false;
         $this->_worker = $worker;

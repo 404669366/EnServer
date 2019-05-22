@@ -1,7 +1,7 @@
 <?php
 require_once '../vendor/autoload.php';
 require_once '../vendor/autoloader.php';
-$gateway = new \GatewayWorker\Gateway("En100://0.0.0.0:20000");
+$gateway = new \GatewayWorker\Gateway("En://0.0.0.0:20000");
 $gateway->name = 'pile';
 $gateway->startPort = 3000;
 $gateway->registerAddress = '127.0.0.1:30000';
