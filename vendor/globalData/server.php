@@ -24,14 +24,14 @@ class server
     /**
      * server constructor.
      * @param string $socket
-     * @param int $count
      * @param string $name
+     * @param int $count
      */
-    public function __construct($socket = '0.0.0.0:6666', $count = 1, $name = 'global')
+    public function __construct($socket = '0.0.0.0:6666', $name = 'global', $count = 1)
     {
         $worker = new Worker("frame://$socket");
-        $worker->count = $count;
         $worker->name = $name;
+        $worker->count = $count;
         $worker->onMessage = array($this, 'onMessage');
         $worker->reloadable = false;
         $this->_worker = $worker;
@@ -101,12 +101,34 @@ class server
                 $this->_dataArray[$key][$data['hKey']] = $data['value'];
                 $connection->send('b:1;');
                 break;
+            case 'hSetField':
+                if (isset($this->_dataArray[$key][$data['hKey']][$data['field']])) {
+                    $this->_dataArray[$key][$data['hKey']][$data['field']] = $data['value'];
+                    $connection->send('b:1;');
+                    break;
+                }
+                $connection->send('b:0;');
+                break;
             case 'hGet':
                 if (isset($this->_dataArray[$key][$data['hKey']])) {
                     $connection->send(serialize($this->_dataArray[$key][$data['hKey']]));
                     break;
                 }
                 $connection->send('N;');
+                break;
+            case 'hGetField':
+                if (isset($this->_dataArray[$key][$data['hKey']][$data['field']])) {
+                    $connection->send($this->_dataArray[$key][$data['hKey']][$data['field']]);
+                    break;
+                }
+                $connection->send('N;');
+                break;
+            case 'hPageGet':
+                if (isset($this->_dataArray[$key])) {
+                    $result = array_slice($this->_dataArray[$key], $data['start'], $data['length'], true);
+                    return $connection->send(serialize($result));
+                }
+                $connection->send('a:0:{}');
                 break;
             case 'hGetAll':
                 if (isset($this->_dataArray[$key])) {

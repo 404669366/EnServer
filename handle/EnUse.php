@@ -29,10 +29,10 @@ class EnUse
                     Gateway::joinGroup($client_id, $message['pile']);
                     return self::$funcName($client_id, $message);
                 }
-                return common::sendToClient($client_id, [], false, '电桩已掉线,请稍后再试');
+                return common::sendToClient($client_id, $message['do'], '', '电桩已掉线,请稍后再试');
             }
         }
-        return common::sendToClient($client_id, [], false, '命令错误');
+        return false;
     }
 
     /**
@@ -96,10 +96,9 @@ class EnUse
      * @param $client_id
      * @param $message
      */
-    private static function setQrCode($client_id, $message)
+    private static function setNoAndQrCode($client_id, $message)
     {
         $body = pack('A16', $message['no']);
-        $body .= pack('C', count($message['qrCode']));
         foreach ($message['qrCode'] as $v) {
             $length = strlen($v);
             $body .= pack('S', $length);

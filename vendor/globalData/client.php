@@ -51,7 +51,8 @@ class client
     }
 
     /**
-     * Connect to global server.
+     * @param $key
+     * @return mixed
      * @throws \Exception
      */
     protected function getConnection($key)
@@ -83,10 +84,9 @@ class client
 
 
     /**
-     * Magic methods __set.
-     * @param string $key
-     * @param mixed $value
-     * @throws \Exception
+     * @param $key
+     * @param $value
+     * @return mixed
      */
     public function __set($key, $value)
     {
@@ -96,12 +96,12 @@ class client
             'key' => $key,
             'value' => $value,
         ), $connection);
-        $this->readFromRemote($connection);
+        return $this->readFromRemote($connection);
     }
 
     /**
-     * Magic methods __isset.
-     * @param string $key
+     * @param $key
+     * @return bool
      */
     public function __isset($key)
     {
@@ -109,9 +109,8 @@ class client
     }
 
     /**
-     * Magic methods __unset.
-     * @param string $key
-     * @throws \Exception
+     * @param $key
+     * @return mixed
      */
     public function __unset($key)
     {
@@ -120,13 +119,12 @@ class client
             'cmd' => 'delete',
             'key' => $key
         ), $connection);
-        $this->readFromRemote($connection);
+        return $this->readFromRemote($connection);
     }
 
     /**
-     * Magic methods __get.
-     * @param string $key
-     * @throws \Exception
+     * @param $key
+     * @return mixed
      */
     public function __get($key)
     {
@@ -139,10 +137,10 @@ class client
     }
 
     /**
-     * Cas.
-     * @param string $key
-     * @param mixed $value
-     * @throws \Exception
+     * @param $key
+     * @param $old_value
+     * @param $new_value
+     * @return mixed
      */
     public function cas($key, $old_value, $new_value)
     {
@@ -157,9 +155,9 @@ class client
     }
 
     /**
-     * Add.
-     * @param string $key
-     * @throws \Exception
+     * @param $key
+     * @param $value
+     * @return mixed
      */
     public function add($key, $value)
     {
@@ -173,9 +171,9 @@ class client
     }
 
     /**
-     * Increment.
-     * @param string $key
-     * @throws \Exception
+     * @param $key
+     * @param int $step
+     * @return mixed
      */
     public function increment($key, $step = 1)
     {
@@ -192,6 +190,7 @@ class client
      * @param string $hashName
      * @param string $hashKey
      * @param string $value
+     * @return mixed
      */
     public function hSet($hashName = '', $hashKey = '', $value = '')
     {
@@ -202,7 +201,27 @@ class client
             'hKey' => $hashKey,
             'value' => $value,
         ), $connection);
-        $this->readFromRemote($connection);
+        return $this->readFromRemote($connection);
+    }
+
+    /**
+     * @param string $hashName
+     * @param string $hashKey
+     * @param string $field
+     * @param string $value
+     * @return mixed
+     */
+    public function hSetField($hashName = '', $hashKey = '', $field = '', $value = '')
+    {
+        $connection = $this->getConnection($hashName);
+        $this->writeToRemote(array(
+            'cmd' => 'hSetField',
+            'key' => $hashName,
+            'hKey' => $hashKey,
+            'field' => $field,
+            'value' => $value,
+        ), $connection);
+        return $this->readFromRemote($connection);
     }
 
     /**
@@ -217,6 +236,42 @@ class client
             'cmd' => 'hGet',
             'key' => $hashName,
             'hKey' => $hashKey,
+        ), $connection);
+        return $this->readFromRemote($connection);
+    }
+
+    /**
+     * @param string $hashName
+     * @param string $hashKey
+     * @param string $field
+     * @return mixed
+     */
+    public function hGetField($hashName = '', $hashKey = '', $field = '')
+    {
+        $connection = $this->getConnection($hashName);
+        $this->writeToRemote(array(
+            'cmd' => 'hGetField',
+            'key' => $hashName,
+            'hKey' => $hashKey,
+            'field' => $field,
+        ), $connection);
+        return $this->readFromRemote($connection);
+    }
+
+    /**
+     * @param string $hashName
+     * @param int $start
+     * @param int $length
+     * @return mixed
+     */
+    public function hPageGet($hashName = '', $start = 0, $length = 10)
+    {
+        $connection = $this->getConnection($hashName);
+        $this->writeToRemote(array(
+            'cmd' => 'hPageGet',
+            'key' => $hashName,
+            'start' => $start,
+            'length' => $length,
         ), $connection);
         return $this->readFromRemote($connection);
     }
@@ -262,12 +317,13 @@ class client
             'key' => $hashName,
             'hKey' => $hashKey,
         ), $connection);
-        $this->readFromRemote($connection);
+        return $this->readFromRemote($connection);
     }
 
     /**
-     * Write data to global server.
-     * @param string $buffer
+     * @param $data
+     * @param $connection
+     * @throws \Exception
      */
     protected function writeToRemote($data, $connection)
     {
@@ -280,8 +336,9 @@ class client
     }
 
     /**
-     * Read data from global server.
-     * @throws Exception
+     * @param $connection
+     * @return mixed
+     * @throws \Exception
      */
     protected function readFromRemote($connection)
     {

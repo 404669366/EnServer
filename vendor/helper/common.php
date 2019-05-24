@@ -17,27 +17,27 @@ class common
     /**
      * 发送信息到后台/用户统一方法
      * @param string $client_id
+     * @param string $do
      * @param array $data
-     * @param bool $type
      * @param string $msg
      * @return bool
      */
-    public static function sendToClient($client_id = '', $data = [], $type = true, $msg = 'ok')
+    public static function sendToClient($client_id = '', $do = '', $data = [], $msg = 'ok')
     {
-        return Gateway::sendToClient($client_id, json_encode(['data' => $data, 'type' => $type, 'msg' => $msg]));
+        return Gateway::sendToClient($client_id, json_encode(['data' => $data, 'do' => $do, 'msg' => $msg]));
     }
 
     /**
      * 发送信息到对应电桩组下后台/用户统一方法
-     * @param int|string|array $group
+     * @param string $group
+     * @param string $do
      * @param array $data
-     * @param bool $type
      * @param string $msg
      * @return bool
      */
-    public static function sendToGroup($group = '', $data = [], $type = true, $msg = 'ok')
+    public static function sendToGroup($group = '', $do = '', $data = [], $msg = 'ok')
     {
-        Gateway::sendToGroup($group, json_encode(['data' => $data, 'type' => $type, 'msg' => $msg]));
+        Gateway::sendToGroup($group, json_encode(['data' => $data, 'do' => $do, 'msg' => $msg]));
         return true;
     }
 
@@ -57,38 +57,5 @@ class common
             }
         }
         return $result;
-    }
-
-    /**
-     * 统一命令返回状态
-     * @param int $status
-     * @return mixed
-     */
-    public static function reStatus($status = 3)
-    {
-        $statuses = [
-            0 => '设置成功',
-            1 => '电桩繁忙',
-            2 => '数据错误',
-            3 => '系统错误',
-        ];
-        return $statuses[$status];
-    }
-
-    /**
-     * 充电状态
-     * @param int $status
-     * @return mixed
-     */
-    public static function chargeStatus($status = 2)
-    {
-        $statuses = [
-            0 => '正在启动',
-            1 => '启动失败',
-            2 => '正在充电',
-            3 => '充电结束',
-            4 => '异常结束',
-        ];
-        return $statuses[$status];
     }
 }
