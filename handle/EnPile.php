@@ -11,7 +11,6 @@ namespace handle;
 use GatewayWorker\Lib\Gateway;
 use vendor\globalData\client;
 use vendor\helper\common;
-use vendor\helper\redis;
 
 class EnPile
 {
@@ -93,9 +92,7 @@ class EnPile
     {
         if ($body = @unpack('Itime/Ctype', substr($message['body'], 0, 5))) {
             $error = common::analysisErrorCode($body['type'], substr($message['body'], 5));
-            $errorInfo = json_decode(redis::app()->hGet('pileError', $message['no']), true) ?: [0 => [], 1 => [], 2 => []];
-            $errorInfo[$body['type']] = $error + $errorInfo[$body['type']];
-            redis::app()->hSet('pileErrors', $message['no'], json_encode($errorInfo));
+            (new client())->hSetField('pileErrors', $message['no'], $body['type'], $error, true);
         }
     }
 
@@ -135,6 +132,7 @@ class EnPile
             if ($re['status'] == 0) {
                 $global = new client();
                 $global->hDel('pileInfo', $message['no']);
+                $global->hDel('pileErrors', $message['no']);
             }
             return common::sendToGroup($client_id, 'setNoAndQrCode', $re);
         }

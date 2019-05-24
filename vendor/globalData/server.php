@@ -98,16 +98,20 @@ class server
                 $connection->send('b:1;');
                 break;
             case 'hSet':
-                $this->_dataArray[$key][$data['hKey']] = $data['value'];
+                if ($data['increment'] && isset($this->_dataArray[$key][$data['hKey']])) {
+                    $this->_dataArray[$key][$data['hKey']] = $data['value'] + $this->_dataArray[$key][$data['hKey']];
+                } else {
+                    $this->_dataArray[$key][$data['hKey']] = $data['value'];
+                }
                 $connection->send('b:1;');
                 break;
             case 'hSetField':
-                if (isset($this->_dataArray[$key][$data['hKey']][$data['field']])) {
+                if ($data['increment'] && isset($this->_dataArray[$key][$data['hKey']][$data['field']])) {
+                    $this->_dataArray[$key][$data['hKey']][$data['field']] = $data['value'] + $this->_dataArray[$key][$data['hKey']][$data['field']];
+                } else {
                     $this->_dataArray[$key][$data['hKey']][$data['field']] = $data['value'];
-                    $connection->send('b:1;');
-                    break;
                 }
-                $connection->send('b:0;');
+                $connection->send('b:1;');
                 break;
             case 'hGet':
                 if (isset($this->_dataArray[$key][$data['hKey']])) {

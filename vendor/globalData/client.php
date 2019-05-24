@@ -190,9 +190,10 @@ class client
      * @param string $hashName
      * @param string $hashKey
      * @param string $value
+     * @param bool $increment
      * @return mixed
      */
-    public function hSet($hashName = '', $hashKey = '', $value = '')
+    public function hSet($hashName = '', $hashKey = '', $value = '', $increment = false)
     {
         $connection = $this->getConnection($hashName);
         $this->writeToRemote(array(
@@ -200,6 +201,7 @@ class client
             'key' => $hashName,
             'hKey' => $hashKey,
             'value' => $value,
+            'increment' => $increment,
         ), $connection);
         return $this->readFromRemote($connection);
     }
@@ -209,9 +211,10 @@ class client
      * @param string $hashKey
      * @param string $field
      * @param string $value
+     * @param bool $increment
      * @return mixed
      */
-    public function hSetField($hashName = '', $hashKey = '', $field = '', $value = '')
+    public function hSetField($hashName = '', $hashKey = '', $field = '', $value = '', $increment = false)
     {
         $connection = $this->getConnection($hashName);
         $this->writeToRemote(array(
@@ -220,6 +223,7 @@ class client
             'hKey' => $hashKey,
             'field' => $field,
             'value' => $value,
+            'increment' => $increment,
         ), $connection);
         return $this->readFromRemote($connection);
     }
