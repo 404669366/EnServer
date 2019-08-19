@@ -43,7 +43,6 @@ class Web
      */
     private static function beginCharge($client_id, $message)
     {
-        
         if (Gateway::isUidOnline($message['pile'])) {
             $userMoney = (new client())->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
             if ($userMoney > 1) {
