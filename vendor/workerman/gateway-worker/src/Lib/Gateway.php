@@ -942,7 +942,7 @@ class Gateway
      * 向所有 uid 发送
      *
      * @param int|string|array $uid
-     * @param string           $message
+     * @param string|array           $message
      *
      * @return void
      */

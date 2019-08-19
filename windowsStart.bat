@@ -1,2 +1,1 @@
-cd startup
-php GlobalData.php Register.php Worker.php GatewayPile.php GatewayUse.php
+php startup/GlobalData.php startup/Register.php startup/TldPile.php startup/Web.php startup/Worker.php

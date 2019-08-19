@@ -369,6 +369,13 @@ class client
             }
         }
         @fclose($connection);
-        return unserialize(substr($all_buffer, 4));
+        return self::mb_unserialize(substr($all_buffer, 4));
+    }
+
+    protected static function mb_unserialize($str)
+    {
+        return unserialize(preg_replace_callback('#s:(\d+):"(.*?)";#s', function ($match) {
+            return 's:' . strlen($match[2]) . ':"' . $match[2] . '";';
+        }, $str));
     }
 }

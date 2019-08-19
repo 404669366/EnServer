@@ -122,7 +122,7 @@ class server
                 break;
             case 'hGetField':
                 if (isset($this->_dataArray[$key][$data['hKey']][$data['field']])) {
-                    $connection->send($this->_dataArray[$key][$data['hKey']][$data['field']]);
+                    $connection->send(serialize($this->_dataArray[$key][$data['hKey']][$data['field']]));
                     break;
                 }
                 $connection->send('N;');
