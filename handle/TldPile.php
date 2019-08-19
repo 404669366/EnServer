@@ -97,10 +97,8 @@ class TldPile
         if (in_array($_SESSION['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
             $userMoney = self::globalClient()->hGetField('UserInfo', $uid, 'money') ?: 0;
             $rule = self::getRule($data['no']);
-            $order = self::globalClient()->hGet('ChargeOrder', $orderNo) ?: ['electricQuantity' => 0, 'basisMoney' => 0, 'serviceMoney' => 0, 'created_at' => time()];
-            $order['no'] = $orderNo;
+            $order = self::globalClient()->hGet('ChargeOrder', $orderNo) ?: ['no' => $orderNo, 'pileNo' => $data['no'], 'gun' => $data['gun'], 'uid' => $uid, 'electricQuantity' => 0, 'basisMoney' => 0, 'serviceMoney' => 0, 'created_at' => time()];
             $order['status'] = 1;
-            $order['uid'] = $uid;
             $order['soc'] = $data['soc'];
             $order['duration'] = $data['duration'];
             $order['electricQuantity'] += $data['electricQuantity'];
