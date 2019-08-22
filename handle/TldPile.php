@@ -101,6 +101,7 @@ class TldPile
             $order['status'] = 1;
             $order['soc'] = $data['soc'];
             $order['duration'] = $data['duration'];
+            $data['electricQuantity'] = $data['electricQuantity'] / 100;
             $order['electricQuantity'] += $data['electricQuantity'];
             $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
             $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
@@ -115,13 +116,15 @@ class TldPile
                 json_encode([
                     'code' => $code,
                     'data' => [
-                        'no' => $orderNo,
+                        'no' => $data['no'],
+                        'orderNo' => $orderNo,
                         'soc' => $data['soc'],
                         'duration' => $data['duration'],
-                        'power' => $data['power'],
+                        'power' => $data['power'] / 10,
                         'electricQuantity' => $order['electricQuantity'],
                         'basisMoney' => $order['basisMoney'],
                         'serviceMoney' => $order['serviceMoney'],
+                        'rule' => $rule
                     ]
                 ])
             );
@@ -133,6 +136,7 @@ class TldPile
             $order['soc'] = $data['soc'];
             $order['duration'] = $data['duration'];
             $rule = self::getRule($data['no']);
+            $data['electricQuantity'] = $data['electricQuantity'] / 100;
             $order['electricQuantity'] += $data['electricQuantity'];
             $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
             $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
@@ -142,13 +146,15 @@ class TldPile
                 json_encode([
                     'code' => 206,
                     'data' => [
-                        'no' => $orderNo,
+                        'no' => $data['no'],
+                        'orderNo' => $orderNo,
                         'soc' => $data['soc'],
                         'duration' => $data['duration'],
-                        'power' => $data['power'],
+                        'power' => $data['power'] / 10,
                         'electricQuantity' => $order['electricQuantity'],
                         'basisMoney' => $order['basisMoney'],
                         'serviceMoney' => $order['serviceMoney'],
+                        'rule' => $rule
                     ]
                 ])
             );
@@ -205,6 +211,7 @@ class TldPile
         $order['soc'] = $data['endSoc'];
         $order['duration'] = $data['duration'];
         $rule = self::getRule($data['no']);
+        $data['electricQuantity'] = $data['electricQuantity'] / 100;
         $order['electricQuantity'] += $data['electricQuantity'];
         $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
         $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
@@ -215,12 +222,14 @@ class TldPile
                 'code' => 208,
                 'data' => [
                     'no' => $data['no'],
+                    'orderNo' => $order['no'],
                     'soc' => $data['endSoc'],
                     'duration' => $data['duration'],
                     'power' => 0,
                     'electricQuantity' => $order['electricQuantity'],
                     'basisMoney' => $order['basisMoney'],
                     'serviceMoney' => $order['serviceMoney'],
+                    'rule' => $rule
                 ]
             ])
         );
@@ -245,7 +254,7 @@ class TldPile
                 return $v;
             }
         }
-        return [0, 86400, 0.8, 0.6];
+        return [0, 86399, 0.8, 0.6];
     }
 
     /**
