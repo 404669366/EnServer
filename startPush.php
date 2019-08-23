@@ -36,4 +36,4 @@ $sender_io->on('workerStart', function () {
 
 });
 
-Worker::runAll();
+\Workerman\Worker::runAll();
