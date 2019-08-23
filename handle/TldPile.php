@@ -9,7 +9,7 @@
 namespace handle;
 
 use GatewayWorker\Lib\Gateway;
-use vendor\globalData\client;
+use GlobalData\Client;
 
 class TldPile
 {
@@ -18,7 +18,7 @@ class TldPile
     private static function globalClient()
     {
         if (!self::$global) {
-            self::$global = new client();
+            self::$global = new Client();
         }
         return self::$global;
     }

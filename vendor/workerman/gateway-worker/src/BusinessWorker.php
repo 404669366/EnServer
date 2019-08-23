@@ -11,7 +11,6 @@
  * @link      http://www.workerman.net/
  * @license   http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace GatewayWorker;
 
 use Workerman\Connection\TcpConnection;
@@ -31,12 +30,6 @@ use GatewayWorker\Lib\Context;
  */
 class BusinessWorker extends Worker
 {
-    /**
-     * 名称
-     * @var string
-     */
-    public $name = 'Worker';
-
     /**
      * 保存与 gateway 的连接 connection 对象
      *
@@ -71,7 +64,7 @@ class BusinessWorker extends Worker
      * @var callable
      */
     public $processTimeoutHandler = '\\Workerman\\Worker::log';
-
+    
     /**
      * 秘钥
      *
@@ -99,13 +92,13 @@ class BusinessWorker extends Worker
      * @var callback
      */
     protected $_onWorkerReload = null;
-
+    
     /**
      * 保存用户设置的 workerStop 回调
      *
      * @var callback
      */
-    protected $_onWorkerStop = null;
+    protected $_onWorkerStop= null;
 
     /**
      * 到注册中心的连接
@@ -181,12 +174,12 @@ class BusinessWorker extends Worker
      * 构造函数
      *
      * @param string $socket_name
-     * @param array $context_option
+     * @param array  $context_option
      */
     public function __construct($socket_name = '', $context_option = array())
     {
         parent::__construct($socket_name, $context_option);
-        $backrace = debug_backtrace();
+        $backrace                = debug_backtrace();
         $this->_autoloadRootPath = dirname($backrace[0]['file']);
     }
 
@@ -195,12 +188,12 @@ class BusinessWorker extends Worker
      */
     public function run()
     {
-        $this->_onWorkerStart = $this->onWorkerStart;
+        $this->_onWorkerStart  = $this->onWorkerStart;
         $this->_onWorkerReload = $this->onWorkerReload;
         $this->_onWorkerStop = $this->onWorkerStop;
-        $this->onWorkerStop = array($this, 'onWorkerStop');
-        $this->onWorkerStart = array($this, 'onWorkerStart');
-        $this->onWorkerReload = array($this, 'onWorkerReload');
+        $this->onWorkerStop   = array($this, 'onWorkerStop');
+        $this->onWorkerStart   = array($this, 'onWorkerStart');
+        $this->onWorkerReload  = array($this, 'onWorkerReload');
         parent::run();
     }
 
@@ -225,7 +218,7 @@ class BusinessWorker extends Worker
         if ($this->_onWorkerStart) {
             call_user_func($this->_onWorkerStart, $this);
         }
-
+        
         if (is_callable($this->eventHandler . '::onWorkerStart')) {
             call_user_func($this->eventHandler . '::onWorkerStart', $this);
         }
@@ -274,7 +267,7 @@ class BusinessWorker extends Worker
             call_user_func($this->_onWorkerReload, $this);
         }
     }
-
+    
     /**
      * 当进程关闭时一些清理工作
      *
@@ -292,7 +285,7 @@ class BusinessWorker extends Worker
 
     /**
      * 连接服务注册中心
-     *
+     * 
      * @return void
      */
     public function connectToRegister()
@@ -310,7 +303,7 @@ class BusinessWorker extends Worker
                 }
             };
             $register_connection->onClose = function ($register_connection) {
-                if (!empty($register_connection->ping_timer)) {
+                if(!empty($register_connection->ping_timer)) {
                     Timer::del($register_connection->ping_timer);
                 }
                 $register_connection->reconnect(1);
@@ -340,7 +333,7 @@ class BusinessWorker extends Worker
                     echo "Received bad data from Register. Addresses empty\n";
                     return;
                 }
-                $addresses = $data['addresses'];
+                $addresses               = $data['addresses'];
                 $this->_gatewayAddresses = array();
                 foreach ($addresses as $addr) {
                     $this->_gatewayAddresses[$addr] = $addr;
@@ -356,7 +349,7 @@ class BusinessWorker extends Worker
      * 当 gateway 转发来数据时
      *
      * @param TcpConnection $connection
-     * @param mixed $data
+     * @param mixed         $data
      */
     public function onGatewayMessage($connection, $data)
     {
@@ -365,19 +358,19 @@ class BusinessWorker extends Worker
             return;
         }
         // 上下文数据
-        Context::$client_ip = $data['client_ip'];
-        Context::$client_port = $data['client_port'];
-        Context::$local_ip = $data['local_ip'];
-        Context::$local_port = $data['local_port'];
+        Context::$client_ip     = $data['client_ip'];
+        Context::$client_port   = $data['client_port'];
+        Context::$local_ip      = $data['local_ip'];
+        Context::$local_port    = $data['local_port'];
         Context::$connection_id = $data['connection_id'];
-        Context::$client_id = Context::addressToClientId($data['local_ip'], $data['local_port'],
+        Context::$client_id     = Context::addressToClientId($data['local_ip'], $data['local_port'],
             $data['connection_id']);
         // $_SERVER 变量
         $_SERVER = array(
-            'REMOTE_ADDR' => long2ip($data['client_ip']),
-            'REMOTE_PORT' => $data['client_port'],
-            'GATEWAY_ADDR' => long2ip($data['local_ip']),
-            'GATEWAY_PORT' => $data['gateway_port'],
+            'REMOTE_ADDR'       => long2ip($data['client_ip']),
+            'REMOTE_PORT'       => $data['client_port'],
+            'GATEWAY_ADDR'      => long2ip($data['local_ip']),
+            'GATEWAY_PORT'      => $data['gateway_port'],
             'GATEWAY_CLIENT_ID' => Context::$client_id,
         );
         // 检查session版本，如果是过期的session数据则拉取最新的数据
@@ -425,7 +418,7 @@ class BusinessWorker extends Worker
         if ($this->processTimeout) {
             pcntl_alarm(0);
         }
-
+        
         // session 必须是数组
         if ($_SESSION !== null && !is_array($_SESSION)) {
             throw new \Exception('$_SESSION must be an array. But $_SESSION=' . var_export($_SESSION, true) . ' is not array.');
@@ -465,20 +458,20 @@ class BusinessWorker extends Worker
     public function tryToConnectGateway($addr)
     {
         if (!isset($this->gatewayConnections[$addr]) && !isset($this->_connectingGatewayAddresses[$addr]) && isset($this->_gatewayAddresses[$addr])) {
-            $gateway_connection = new AsyncTcpConnection("GatewayProtocol://$addr");
-            $gateway_connection->remoteAddress = $addr;
-            $gateway_connection->onConnect = array($this, 'onConnectGateway');
-            $gateway_connection->onMessage = array($this, 'onGatewayMessage');
-            $gateway_connection->onClose = array($this, 'onGatewayClose');
-            $gateway_connection->onError = array($this, 'onGatewayError');
+            $gateway_connection                    = new AsyncTcpConnection("GatewayProtocol://$addr");
+            $gateway_connection->remoteAddress     = $addr;
+            $gateway_connection->onConnect         = array($this, 'onConnectGateway');
+            $gateway_connection->onMessage         = array($this, 'onGatewayMessage');
+            $gateway_connection->onClose           = array($this, 'onGatewayClose');
+            $gateway_connection->onError           = array($this, 'onGatewayError');
             $gateway_connection->maxSendBufferSize = $this->sendToGatewayBufferSize;
             if (TcpConnection::$defaultMaxSendBufferSize == $gateway_connection->maxSendBufferSize) {
                 $gateway_connection->maxSendBufferSize = 50 * 1024 * 1024;
             }
-            $gateway_data = GatewayProtocol::$empty;
-            $gateway_data['cmd'] = GatewayProtocol::CMD_WORKER_CONNECT;
+            $gateway_data         = GatewayProtocol::$empty;
+            $gateway_data['cmd']  = GatewayProtocol::CMD_WORKER_CONNECT;
             $gateway_data['body'] = json_encode(array(
-                'worker_key' => "{$this->name}:{$this->id}",
+                'worker_key' =>"{$this->name}:{$this->id}", 
                 'secret_key' => $this->secretKey,
             ));
             $gateway_connection->send($gateway_data);
@@ -523,8 +516,8 @@ class BusinessWorker extends Worker
      * 当与 gateway 的连接出现错误时触发
      *
      * @param TcpConnection $connection
-     * @param int $error_no
-     * @param string $error_msg
+     * @param int           $error_no
+     * @param string        $error_msg
      */
     public function onGatewayError($connection, $error_no, $error_msg)
     {
@@ -553,7 +546,7 @@ class BusinessWorker extends Worker
             // 超时时钟
             case SIGALRM:
                 // 超时异常
-                $e = new \Exception("process_timeout", 506);
+                $e         = new \Exception("process_timeout", 506);
                 $trace_str = $e->getTraceAsString();
                 // 去掉第一行timeoutHandler的调用栈
                 $trace_str = $e->getMessage() . ":\n" . substr($trace_str, strpos($trace_str, "\n") + 1) . "\n";

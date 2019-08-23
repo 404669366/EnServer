@@ -1,11 +1,11 @@
 <?php
 
-namespace vendor\globalData;
+namespace GlobalData;
 /**
  *  Global data client.
  * @version 1.0.3
  */
-class client
+class Client
 {
     /**
      * Timeout.
@@ -42,7 +42,7 @@ class client
      * @param string $servers
      * @throws \Exception
      */
-    public function __construct($servers = '127.0.0.1:30001')
+    public function __construct($servers = '127.0.0.1:30000')
     {
         if (empty($servers)) {
             throw new \Exception('servers empty');

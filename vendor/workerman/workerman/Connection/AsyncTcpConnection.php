@@ -189,7 +189,7 @@ class AsyncTcpConnection extends TcpConnection
                 STREAM_CLIENT_ASYNC_CONNECT);
         }
         // If failed attempt to emit onError callback.
-        if (!$this->_socket) {
+        if (!$this->_socket || !is_resource($this->_socket)) {
             $this->emitError(WORKERMAN_CONNECT_FAIL, $errstr);
             if ($this->_status === self::STATUS_CLOSING) {
                 $this->destroy();
@@ -288,13 +288,16 @@ class AsyncTcpConnection extends TcpConnection
      */
     public function checkConnection()
     {
-        if ($this->_status != self::STATUS_CONNECTING) {
-            return;
-        }
-
         // Remove EV_EXPECT for windows.
         if(DIRECTORY_SEPARATOR === '\\') {
             Worker::$globalEvent->del($this->_socket, EventInterface::EV_EXCEPT);
+        }
+
+        // Remove write listener.
+        Worker::$globalEvent->del($this->_socket, EventInterface::EV_WRITE);
+
+        if ($this->_status != self::STATUS_CONNECTING) {
+            return;
         }
 
         // Check socket state.
@@ -312,12 +315,12 @@ class AsyncTcpConnection extends TcpConnection
                 socket_set_option($raw_socket, SOL_TCP, TCP_NODELAY, 1);
             }
 
-            // Remove write listener.
-            Worker::$globalEvent->del($this->_socket, EventInterface::EV_WRITE);
-
             // SSL handshake.
             if ($this->transport === 'ssl') {
                 $this->_sslHandshakeCompleted = $this->doSslHandshake($this->_socket);
+                if ($this->_sslHandshakeCompleted === false) {
+                    return;
+                }
             } else {
                 // There are some data waiting to send.
                 if ($this->_sendBuffer) {

@@ -1,13 +1,13 @@
 <?php
 
-namespace vendor\globalData;
+namespace GlobalData;
 
 use Workerman\Worker;
 
 /**
  * Global data server.
  */
-class server
+class Server
 {
     /**
      * Worker instance.

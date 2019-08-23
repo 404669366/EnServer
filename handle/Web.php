@@ -9,7 +9,7 @@
 namespace handle;
 
 use GatewayWorker\Lib\Gateway;
-use vendor\globalData\client;
+use GlobalData\Client;
 
 class Web
 {
@@ -44,7 +44,7 @@ class Web
     private static function beginCharge($client_id, $message)
     {
         if (Gateway::isUidOnline($message['pile'])) {
-            $userMoney = (new client())->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
+            $userMoney = (new Client())->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
             if ($userMoney > 1) {
                 $session = self::getSessionByUid($message['pile']);
                 if ($session['carStatus'] != 0) {
@@ -86,7 +86,7 @@ class Web
     private static function seeCharge($client_id, $message)
     {
         Gateway::joinGroup($client_id, $message['orderNo']);
-        if ($order = (new client())->hGet('ChargeOrder', $message['orderNo'])) {
+        if ($order = (new Client())->hGet('ChargeOrder', $message['orderNo'])) {
             $order['rule'] = TldPile::getRule($order['pile']);
             if ($order['status'] == 1) {
                 Gateway::sendToClient($client_id, json_encode(['code' => 205, 'data' => $order]));

@@ -33,7 +33,7 @@ class Worker
      *
      * @var string
      */
-    const VERSION = '3.5.15';
+    const VERSION = '3.5.20';
 
     /**
      * Status starting.
@@ -336,7 +336,7 @@ class Worker
     protected static $_workers = array();
 
     /**
-     * All worker porcesses pid.
+     * All worker processes pid.
      * The format is like this [worker_id=>[pid=>pid, pid=>pid, ..], ..]
      *
      * @var array
@@ -498,11 +498,13 @@ class Worker
     {
         static::checkSapiEnv();
         static::init();
+        static::lock();
         static::parseCommand();
         static::daemonize();
         static::initWorkers();
         static::installSignal();
         static::saveMasterPid();
+        static::unlock();
         static::displayUI();
         static::forkWorkers();
         static::resetStd();
@@ -576,6 +578,31 @@ class Worker
     }
 
     /**
+     * Lock.
+     *
+     * @return void
+     */
+    protected static function lock()
+    {
+        $fd = fopen(static::$_startFile, 'r');
+        if (!$fd || !flock($fd, LOCK_EX)) {
+            static::log("Workerman[".static::$_startFile."] already running");
+            exit;
+        }
+    }
+
+    /**
+     * Unlock.
+     *
+     * @return void
+     */
+    protected static function unlock()
+    {
+        $fd = fopen(static::$_startFile, 'r');
+        $fd && flock($fd, LOCK_UN);
+    }
+
+    /**
      * Init All worker instances.
      *
      * @return void
@@ -606,7 +633,7 @@ class Worker
             // Status name.
             $worker->status = '<g> [OK] </g>';
 
-            // Get clolumn mapping for UI
+            // Get column mapping for UI
             foreach(static::getUiColumns() as $column_name => $prop){
                 !isset($worker->{$prop}) && $worker->{$prop}= 'NNNN';
                 $prop_length = strlen($worker->{$prop});
@@ -639,6 +666,14 @@ class Worker
     public static function getEventLoop()
     {
         return static::$globalEvent;
+    }
+    
+    /**
+     * Get main socket resource
+     * @return resource
+     */
+    public function getMainSocket(){
+        return $this->_mainSocket;
     }
 
     /**
@@ -719,7 +754,7 @@ class Worker
 
         //Show last line
         $line_last = str_pad('', static::getSingleLineTotalLength(), '-') . PHP_EOL;
-        $content && static::safeEcho($line_last);
+        !empty($content) && static::safeEcho($line_last);
 
         if (static::$daemonize) {
             static::safeEcho("Input \"php $argv[0] stop\" to stop. Start success.\n\n");
@@ -1178,6 +1213,7 @@ class Worker
         if (static::$_OS !== OS_TYPE_LINUX) {
             return;
         }
+
         static::$_masterPid = posix_getpid();
         if (false === file_put_contents(static::$pidFile, static::$_masterPid)) {
             throw new Exception('can not save pid to ' . static::$pidFile);
@@ -1298,7 +1334,7 @@ class Worker
             if(count(static::$_workers) > 1)
             {
                 static::safeEcho("@@@ Error: multi workers init in one php file are not support @@@\r\n");
-                static::safeEcho("@@@ Please visit http://wiki.workerman.net/Multi_woker_for_win @@@\r\n");
+                static::safeEcho("@@@ See http://doc.workerman.net/faq/multi-woker-for-windows.html @@@\r\n");
             }
             elseif(count(static::$_workers) <= 0)
             {
@@ -2248,8 +2284,7 @@ class Worker
             if ($this->transport !== 'udp') {
                 static::$globalEvent->add($this->_mainSocket, EventInterface::EV_READ, array($this, 'acceptConnection'));
             } else {
-                static::$globalEvent->add($this->_mainSocket, EventInterface::EV_READ,
-                    array($this, 'acceptUdpConnection'));
+                static::$globalEvent->add($this->_mainSocket, EventInterface::EV_READ, array($this, 'acceptUdpConnection'));
             }
             $this->_pauseAccept = false;
         }
@@ -2419,13 +2454,29 @@ class Worker
                 if ($this->protocol !== null) {
                     /** @var \Workerman\Protocols\ProtocolInterface $parser */
                     $parser      = $this->protocol;
-                    $recv_buffer = $parser::decode($recv_buffer, $connection);
-                    // Discard bad packets.
-                    if ($recv_buffer === false)
-                        return true;
+                    if(method_exists($parser,'input')){
+                        while($recv_buffer !== ''){
+                            $len = $parser::input($recv_buffer, $connection);
+                            if($len == 0)
+                                return true;
+                            $package = substr($recv_buffer,0,$len);
+                            $recv_buffer = substr($recv_buffer,$len);
+                            $data = $parser::decode($package,$connection);
+                            if ($data === false)
+                                continue;
+                            call_user_func($this->onMessage, $connection, $data);
+                        }
+                    }else{
+                        $data = $parser::decode($recv_buffer, $connection);
+                        // Discard bad packets.
+                        if ($data === false)
+                            return true;
+                        call_user_func($this->onMessage, $connection, $data);
+                    }
+                }else{
+                    call_user_func($this->onMessage, $connection, $recv_buffer);
                 }
                 ConnectionInterface::$statistics['total_request']++;
-                call_user_func($this->onMessage, $connection, $recv_buffer);
             } catch (\Exception $e) {
                 static::log($e);
                 exit(250);

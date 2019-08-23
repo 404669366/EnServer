@@ -52,7 +52,7 @@ class Gateway
      * 与Gateway是否是长链接
      * @var bool
      */
-    public static $persistentConnection = true;
+    public static $persistentConnection = false;
     
     /**
      * 向所有客户端连接(或者 client_id_array 指定的客户端连接)广播消息
@@ -135,7 +135,7 @@ class Gateway
     }
 
     /**
-     * 向某个client_id对应的连接发消息
+     *  向某个client_id对应的连接发消息
      * @param $client_id
      * @param $message
      * @return bool
@@ -942,7 +942,7 @@ class Gateway
      * 向所有 uid 发送
      *
      * @param int|string|array $uid
-     * @param string|array           $message
+     * @param string           $message
      *
      * @return void
      */
