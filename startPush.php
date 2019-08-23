@@ -1,6 +1,6 @@
 <?php
 
-include __DIR__ . './vendor/autoload.php';
+include './vendor/autoload.php';
 
 $sender_io = new PHPSocketIO\SocketIO(2120);
 
