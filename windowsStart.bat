@@ -1,1 +1,1 @@
-php global/start.php startup/Register.php startup/TldPile.php startup/Web.php startup/Worker.php
+php startGlobal.php startup/Register.php startup/TldPile.php startup/Web.php startup/Worker.php
