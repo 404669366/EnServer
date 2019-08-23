@@ -1,5 +1,8 @@
 <?php
 
+require_once '../handle/TldPile.php';
+require_once '../handle/Web.php';
+
 class Events
 {
     public static function onWorkerStart($businessWorker)
