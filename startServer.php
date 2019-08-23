@@ -13,7 +13,6 @@ if (!extension_loaded('posix')) {
 }
 
 require_once './vendor/autoload.php';
-require_once './vendor/autoloader.php';
 
 define('LINUX_START', 1);
 
