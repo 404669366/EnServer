@@ -87,6 +87,7 @@ class Web
     {
         Gateway::joinGroup($client_id, $message['orderNo']);
         $order = (new client())->hGet('ChargeOrder', $message['orderNo']);
+        $order['rule'] = TldPile::getRule($order['pile']);
         if ($order['status'] == 1) {
             Gateway::sendToClient($client_id, json_encode(['code' => 205, 'data' => $order]));
         }

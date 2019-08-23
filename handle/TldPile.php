@@ -214,7 +214,7 @@ class TldPile
      * @param int $time
      * @return array
      */
-    private static function getRule($no = '', $time = 0)
+    public static function getRule($no = '', $time = 0)
     {
         $time = $time ?: time();
         $now = $time - strtotime(date('Y-m-d'));
@@ -232,7 +232,7 @@ class TldPile
      * @param int $timeStamp
      * @return string
      */
-    private static function getTime($timeStamp = 0)
+    public static function getTime($timeStamp = 0)
     {
         $timeStamp = $timeStamp ?: time();
         $timeArr = str_split(date('YmdHis', $timeStamp + 8 * 3600) . '00', 2);
