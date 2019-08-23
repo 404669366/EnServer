@@ -940,11 +940,8 @@ class Gateway
 
     /**
      * 向所有 uid 发送
-     *
-     * @param int|string|array $uid
-     * @param string           $message
-     *
-     * @return void
+     * @param $uid
+     * @param $message
      */
     public static function sendToUid($uid, $message)
     {
