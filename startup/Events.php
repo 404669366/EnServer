@@ -1,7 +1,6 @@
 <?php
-
-require_once '../handle/TldPile.php';
-require_once '../handle/Web.php';
+require_once './handle/TldPile.php';
+require_once './handle/Web.php';
 
 class Events
 {
