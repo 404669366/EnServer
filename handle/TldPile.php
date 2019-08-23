@@ -224,7 +224,7 @@ class TldPile
                 return $v;
             }
         }
-        return [0, 86399, 0.8, 0.6];
+        return [0, 86400, 0.8, 0.6];
     }
 
     /**
