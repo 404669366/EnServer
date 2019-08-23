@@ -18,10 +18,10 @@ class Events
     public static function onMessage($client_id, $message)
     {
         switch ($_SERVER['GATEWAY_PORT']) {
-            case 20000:
+            case 20001:
                 \handle\Web::onMessage($client_id, $message);
                 break;
-            case 20001:
+            case 20002:
                 \handle\TldPile::onMessage($client_id, $message);
                 break;
 
@@ -32,10 +32,10 @@ class Events
     public static function onClose($client_id)
     {
         switch ($_SERVER['GATEWAY_PORT']) {
-            case 20000:
+            case 20001:
                 \handle\Web::onClose($client_id);
                 break;
-            case 20001:
+            case 20002:
                 \handle\TldPile::onClose($client_id);
                 break;
         }
