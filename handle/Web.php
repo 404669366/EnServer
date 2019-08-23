@@ -86,20 +86,23 @@ class Web
     private static function seeCharge($client_id, $message)
     {
         Gateway::joinGroup($client_id, $message['orderNo']);
-        $order = (new Client())->hGet('ChargeOrder', $message['orderNo']);
-        $order['rule'] = TldPile::getRule($order['pile']);
-        if ($order['status'] == 1) {
-            Gateway::sendToClient($client_id, json_encode(['code' => 205, 'data' => $order]));
-            return;
+        if ($order = (new Client())->hGet('ChargeOrder', $message['orderNo'])) {
+            $order['rule'] = TldPile::getRule($order['pile']);
+            if ($order['status'] == 1) {
+                Gateway::sendToClient($client_id, json_encode(['code' => 205, 'data' => $order]));
+                return;
+            }
+            if ($order['status'] == 2) {
+                Gateway::sendToClient($client_id, json_encode(['code' => 206, 'data' => $order]));
+                return;
+            }
+            if ($order['status'] == 3) {
+                Gateway::sendToClient($client_id, json_encode(['code' => 208, 'data' => $order]));
+                return;
+            }
         }
-        if ($order['status'] == 2) {
-            Gateway::sendToClient($client_id, json_encode(['code' => 206, 'data' => $order]));
-            return;
-        }
-        if ($order['status'] == 3) {
-            Gateway::sendToClient($client_id, json_encode(['code' => 208, 'data' => $order]));
-            return;
-        }
+        Gateway::sendToClient($client_id, json_encode(['code' => 209, 'data' => $order]));
+        return;
     }
 
     /**
