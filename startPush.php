@@ -12,7 +12,7 @@ $sender_io->on('connection', function ($socket) {
 
 $sender_io->on('workerStart', function () {
 
-    $http = new Workerman\Worker('http://0.0.0.0:2121');
+    $http = new \Workerman\Worker('http://0.0.0.0:2121');
 
     $http->onMessage = function ($connection, $data) {
         // 推送数据的url格式 token=BC-9fdad4748325434b84e113ef10ad8b2e&do=publish&group=group&content=xxxx
