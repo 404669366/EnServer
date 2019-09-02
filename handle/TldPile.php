@@ -74,6 +74,7 @@ class TldPile
             unset($_SESSION['orderNo'][$data['gun']]);
             unset($_SESSION['uid'][$data['gun']]);
             Gateway::sendToGroup($data['no'] . '_pileInfo', json_encode(['code' => 600, 'data' => $_SESSION]));
+            self::updateGuns();
         }
     }
 
@@ -149,12 +150,12 @@ class TldPile
         $_SESSION['workStatus'] = $data['workStatus'];
         Gateway::sendToClient($client_id, ['cmd' => 103, 'params' => [$data['gun']]]);
         Gateway::sendToGroup($data['no'] . '_pileInfo', json_encode(['code' => 600, 'data' => $_SESSION]));
+        self::updateGuns();
     }
 
     private static function cmd_106($client_id, $data)
     {
         if (!isset($_SESSION['no'])) {
-            $_SESSION['gunCount'] = $data['gunCount'];
             $_SESSION['uid'] = [];
             $_SESSION['orderNo'] = [];
             $_SESSION['carStatus'] = 0;
@@ -162,11 +163,13 @@ class TldPile
             $_SESSION['alarmInfo'] = '';
         }
         $_SESSION['no'] = $data['no'];
+        $_SESSION['gunCount'] = $data['gunCount'];
         Gateway::bindUid($client_id, $data['no']);
         Gateway::sendToClient($client_id, ['cmd' => 105, 'params' => [$data['random']]]);
         Gateway::sendToClient($client_id, ['cmd' => 3, 'params' => [1, 2, self::getTime()]]);
         Gateway::sendToGroup('pileList', json_encode(['code' => 500, 'data' => Gateway::getAllUidList()]));
         Gateway::sendToGroup($data['no'] . '_pileInfo', json_encode(['code' => 600, 'data' => $_SESSION]));
+        self::updateGuns();
     }
 
     private static function cmd_108($client_id, $data)
@@ -183,6 +186,7 @@ class TldPile
             unset($_SESSION['orderNo'][$data['gun']]);
             unset($_SESSION['uid'][$data['gun']]);
             Gateway::sendToGroup($data['no'] . '_pileInfo', json_encode(['code' => 600, 'data' => $_SESSION]));
+            self::updateGuns();
         }
     }
 
@@ -206,6 +210,7 @@ class TldPile
         unset($_SESSION['orderNo'][$data['gun']]);
         unset($_SESSION['uid'][$data['gun']]);
         Gateway::sendToGroup($data['no'] . '_pileInfo', json_encode(['code' => 600, 'data' => $_SESSION]));
+        self::updateGuns();
     }
 
     /**
@@ -241,5 +246,14 @@ class TldPile
             $timeStr .= pack('C', (int)$v);
         }
         return $timeStr;
+    }
+
+    /**
+     * 更新电桩枪口信息
+     */
+    public static function updateGuns()
+    {
+        $field = self::globalClient()->hGetField('PileInfo', $_SESSION['no'], 'field');
+        self::globalClient()->hSetField('FieldInfo', $field, $_SESSION['no'], json_encode(['count' => $_SESSION['gunCount'], 'used' => count($_SESSION['uid'])]));
     }
 }
