@@ -40,9 +40,11 @@ class TldPile
     public static function onClose($client_id)
     {
         Gateway::sendToGroup('pileList', json_encode(['code' => 500, 'data' => Gateway::getAllUidList()]));
-        foreach ($_SESSION['orderNo'] as $v) {
-            self::globalClient()->hSetField('ChargeOrder', $v, 'status', 3);
-            Gateway::sendToGroup($v, json_encode(['code' => 101]));
+        if (array_key_exists('orderNo', $_SESSION ?: [])) {
+            foreach ($_SESSION['orderNo'] as $v) {
+                self::globalClient()->hSetField('ChargeOrder', $v, 'status', 3);
+                Gateway::sendToGroup($v, json_encode(['code' => 101]));
+            }
         }
     }
 

@@ -16,7 +16,7 @@ class Tld
         if (strlen($buffer) < 4) {
             return 0;
         }
-        $length = unpack('vv', substr($buffer, 2, 2))['lv'];
+        $length = unpack('vv', substr($buffer, 2, 2))['v'];
         if (strlen($buffer) < $length) {
             return 0;
         }
@@ -32,7 +32,7 @@ class Tld
     {
         $cmd = unpack('vv', substr($buffer, 6, 2))['v'];
         $length = unpack('vv', substr($buffer, 2, 2))['v'];
-        if (method_exists('self', 'cmd_' . $cmd)) {
+        if (method_exists(self::class, 'cmd_' . $cmd)) {
             return call_user_func_array('self::cmd_' . $cmd, [substr($buffer, 8, $length - 9)]);
         }
         return [];
@@ -40,7 +40,7 @@ class Tld
 
     public static function encode($data)
     {
-        if (method_exists('self', 'cmd_' . $data['cmd'])) {
+        if (method_exists(self::class, 'cmd_' . $data['cmd'])) {
             return call_user_func_array('self::cmd_' . $data['cmd'], $data['params']);
         }
         return '';
