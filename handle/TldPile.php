@@ -65,9 +65,6 @@ class TldPile
 
     private static function cmd_104($client_id, $data)
     {
-        if( $data['gun']==8){
-            var_dump($data);
-        }
         $gun = self::globalClient()->hGet('GunInfo', $data['no'] . '-' . $data['gun']) ?: ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus'], 'orderNo' => '', 'user_id' => 0];
 
         if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [0, 3, 4, 6])) {
@@ -137,8 +134,6 @@ class TldPile
     {
         $_SESSION['no'] = $data['no'];
         $_SESSION['gunCount'] = $data['gunCount'];
-        self::globalClient()->hSetField('PileInfo', $data['no'], 'client_id', $client_id);
-        self::globalClient()->hSetField('PileInfo', $data['no'], 'gunCount', $data['gunCount']);
         Gateway::bindUid($client_id, $data['no']);
         Gateway::sendToClient($client_id, ['cmd' => 105, 'params' => [$data['random']]]);
         Gateway::sendToClient($client_id, ['cmd' => 3, 'params' => [1, 2, self::getTime()]]);
