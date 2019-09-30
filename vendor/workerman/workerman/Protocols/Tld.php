@@ -22,7 +22,7 @@ class Tld
         }
         $checkPlus1 = self::checkPlus(substr($buffer, 6, $length - 7));
         $checkPlus2 = unpack('Cv', substr($buffer, -1))['v'];
-        var_dump($checkPlus1);
+        var_dump([$checkPlus1, $checkPlus2]);
         if ($checkPlus1 == $checkPlus2) {
             return $length;
         }
