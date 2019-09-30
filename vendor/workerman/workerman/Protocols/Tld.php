@@ -87,7 +87,6 @@ class Tld
         $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
         $data['result'] = unpack('Cv', substr($buffer, 41, 1))['v'];
         $data['cmd'] = 4;
-        var_dump($data);
         return $data;
     }
 
