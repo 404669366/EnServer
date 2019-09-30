@@ -29,6 +29,7 @@ class TldPile
      */
     public static function onMessage($client_id = 0, $data = [])
     {
+        var_dump($data);
         if ($data && method_exists(self::class, 'cmd_' . $data['cmd'])) {
             call_user_func_array('self::cmd_' . $data['cmd'], [$client_id, $data]);
         }
@@ -72,6 +73,7 @@ class TldPile
 
     private static function cmd_104($client_id, $data)
     {
+        var_dump(104);
         $gun = self::globalClient()->hGet('GunInfo', $data['no'] . '-' . $data['gun']) ?: ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus'], 'orderNo' => '', 'user_id' => 0];
         if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [0, 3, 4, 6])) {
             Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
@@ -137,6 +139,7 @@ class TldPile
 
     private static function cmd_106($client_id, $data)
     {
+        var_dump(106);
         $_SESSION['no'] = $data['no'];
         $_SESSION['gunCount'] = $data['gunCount'];
         self::globalClient()->hSetField('PileInfo', $data['no'], 'client_id', $client_id);
