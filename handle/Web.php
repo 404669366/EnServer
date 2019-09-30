@@ -31,6 +31,7 @@ class Web
     public static function onMessage($client_id = 0, $message = '')
     {
         $message = json_decode($message, true);
+        var_dump($message);
         if (isset($message['do']) && $message['do'] && method_exists(self::class, $message['do'])) {
             return call_user_func_array('self::' . $message['do'], [$client_id, $message]);
         }
