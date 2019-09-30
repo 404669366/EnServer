@@ -108,9 +108,13 @@ class Web
     private static function endCharge($client_id, $message)
     {
         if (Gateway::isUidOnline($message['pile'])) {
-            Gateway::joinGroup($client_id, self::getSessionByUid($message['pile'])['orderInfo'][$message['gun']]);
-            Gateway::sendToUid($message['pile'], ['cmd' => 5, 'gun' => $message['gun'], 'code' => 2, 'val' => 85]);
-            return;
+            $session = self::getSessionByUid($message['pile']);
+            $orderNo = isset($session['orderInfo'][$message['gun']]) ? $session['orderInfo'][$message['gun']] : '';
+            if ($orderNo) {
+                Gateway::joinGroup($client_id, $orderNo);
+                Gateway::sendToUid($message['pile'], ['cmd' => 5, 'gun' => $message['gun'], 'code' => 2, 'val' => 85]);
+                return;
+            }
         }
         Gateway::sendToClient($client_id, json_encode(['code' => 301]));
         return;
