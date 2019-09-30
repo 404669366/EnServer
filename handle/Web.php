@@ -136,8 +136,6 @@ class Web
      */
     private static function pileInfo($client_id, $message)
     {
-        var_dump($message['pile']);
-        var_dump(Gateway::isUidOnline($message['pile']));
         if (Gateway::isUidOnline($message['pile'])) {
             Gateway::sendToClient($client_id, json_encode(['code' => 600, 'data' => self::globalClient()->hGet('PileInfo', $message['pile'])]));
             return;

@@ -64,7 +64,7 @@ class Tld
     private static function cmd_2($buffer)
     {
         $data = [];
-        $data['no'] = unpack('a32v', substr($buffer, 4, 32))['v'];
+        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
         $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
         $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
         $data['num'] = unpack('Cv', substr($buffer, 41, 1))['v'];
@@ -88,7 +88,7 @@ class Tld
     private static function cmd_4($buffer)
     {
         $data = [];
-        $data['no'] = unpack('a32v', substr($buffer, 4, 32))['v'];
+        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
         $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
         $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
         $data['result'] = unpack('Cv', substr($buffer, 41, 1))['v'];
@@ -111,7 +111,7 @@ class Tld
     private static function cmd_6($buffer)
     {
         $data = [];
-        $data['no'] = unpack('a32v', substr($buffer, 4, 32))['v'];
+        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
         $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
         $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
         $data['result'] = unpack('Cv', substr($buffer, 42, 1))['v'];
@@ -145,7 +145,7 @@ class Tld
     private static function cmd_8($buffer)
     {
         $data = [];
-        $data['no'] = unpack('a32v', substr($buffer, 4, 32))['v'];
+        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
         $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
         $data['result'] = unpack('Cv', substr($buffer, 37, 1))['v'];
         $data['orderNo'] = unpack('a32v', substr($buffer, 38, 32))['v'];
@@ -164,7 +164,7 @@ class Tld
     private static function cmd_102($buffer)
     {
         $data = [];
-        $data['no'] = unpack('a32v', substr($buffer, 4, 32))['v'];
+        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
         $data['heartNo'] = unpack('vv', substr($buffer, 36, 2))['v'];
         $data['gunStatus'] = self::parseBin(substr($buffer, -16, 16));
         $data['cmd'] = 102;
@@ -182,7 +182,7 @@ class Tld
     private static function cmd_104($buffer)
     {
         $data = [];
-        $data['no'] = unpack('a32v', substr($buffer, 4, 32))['v'];
+        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
         $data['gunCount'] = unpack('Cv', substr($buffer, 36, 1))['v'];
         $data['gun'] = unpack('Cv', substr($buffer, 37, 1))['v'];
         $data['gunType'] = unpack('Cv', substr($buffer, 38, 1))['v'];
@@ -216,7 +216,7 @@ class Tld
     private static function cmd_106($buffer)
     {
         $data = [];
-        $data['no'] = unpack('a32v', substr($buffer, 4, 32))['v'];
+        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
         $data['sign'] = str_pad(base_convert(substr($buffer, 36, 1), 16, 2), 8, 0, STR_PAD_LEFT);
         $data['softwareEdition'] = unpack('Vv', substr($buffer, 37, 4))['v'];
         $data['project'] = unpack('vv', substr($buffer, 41, 2))['v'];
@@ -239,7 +239,7 @@ class Tld
     private static function cmd_108($buffer)
     {
         $data = [];
-        $data['no'] = unpack('a32v', substr($buffer, 4, 32))['v'];
+        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
         $data['alarmInfo'] = self::parseBin(substr($buffer, -32, 32));
         $data['cmd'] = 108;
         return $data;
@@ -255,7 +255,7 @@ class Tld
     private static function cmd_110($buffer)
     {
         $data = [];
-        $data['no'] = unpack('a32v', substr($buffer, 4, 32))['v'];
+        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
         $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
         $data['failType'] = unpack('Vv', substr($buffer, 37, 4))['v'];
         $data['sendType'] = unpack('vv', substr($buffer, 41, 2))['v'];
@@ -284,7 +284,7 @@ class Tld
     private static function cmd_202($buffer)
     {
         $data = [];
-        $data['no'] = unpack('a32v', substr($buffer, 4, 32))['v'];
+        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
         $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
         $data['gun'] = unpack('Cv', substr($buffer, 37, 1))['v'];
         $data['cardNo'] = unpack('a32v', substr($buffer, 38, 32))['v'];

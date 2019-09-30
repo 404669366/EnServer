@@ -141,7 +141,6 @@ class TldPile
         $_SESSION['gunCount'] = $data['gunCount'];
         self::globalClient()->hSetField('PileInfo', $data['no'], 'client_id', $client_id);
         self::globalClient()->hSetField('PileInfo', $data['no'], 'gunCount', $data['gunCount']);
-        var_dump($data['no']);
         Gateway::bindUid($client_id, $data['no']);
         Gateway::sendToClient($client_id, ['cmd' => 105, 'params' => [$data['random']]]);
         Gateway::sendToClient($client_id, ['cmd' => 3, 'params' => [1, 2, self::getTime()]]);
