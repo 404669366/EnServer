@@ -72,6 +72,7 @@ class TldPile
 
     private static function cmd_104($client_id, $data)
     {
+        var_dump($data);
         $gun = self::globalClient()->hGet('GunInfo', $data['no'] . '-' . $data['gun']) ?: ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus'], 'orderNo' => '', 'user_id' => 0];
         if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [0, 3, 4, 6])) {
             Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
