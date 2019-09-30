@@ -56,8 +56,8 @@ class Web
         if (Gateway::isUidOnline($message['pile'])) {
             $session = self::getSessionByUid($message['pile']);
             var_dump($session);
-            if (!$session['gunInfo'][$message['pile']]['workStatus']) {
-                if ($session['gunInfo'][$message['pile']]['linkStatus']) {
+            if (!$session['gunInfo'][$message['gun']]['workStatus']) {
+                if ($session['gunInfo'][$message['gun']]['linkStatus']) {
                     $money = self::globalClient()->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
                     if ($money > 5) {
                         Gateway::joinGroup($client_id, $message['orderNo']);
