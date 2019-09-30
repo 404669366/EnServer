@@ -24,11 +24,11 @@ class Tld
         $checkPlus1 = self::checkPlus(substr($buffer, 6, $length - 7));
         $checkPlus2 = unpack('Cv', substr($buffer, -1))['v'];
         if ($checkPlus1 == $checkPlus2) {
-            $buffer = substr($buffer, 8, $length - 9);
             $data = [
                 'cmd' => unpack('vv', substr($buffer, 6, 2))['v'],
                 'no' => trim(unpack('a32v', substr($buffer, 4, 32))['v']),
             ];
+            $buffer = substr($buffer, 8, $length - 9);
             switch ($data['cmd']) {
                 case 2;
                     $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
