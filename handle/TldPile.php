@@ -39,44 +39,27 @@ class TldPile
      */
     public static function onClose($client_id)
     {
-        Gateway::sendToGroup('pileList', json_encode(['code' => 500, 'data' => Gateway::getAllUidList()]));
-        if (array_key_exists('orderNo', $_SESSION ?: [])) {
-            foreach ($_SESSION['orderNo'] as $v) {
-                self::globalClient()->hSetField('ChargeOrder', $v, 'status', 3);
-                Gateway::sendToGroup($v, json_encode(['code' => 101]));
-            }
-        }
-    }
-
-    private static function cmd_41($client_id, $data)
-    {
-        if ($data['result'] == 0) {
-            $data['no'] = $data['info'];
-            Gateway::bindUid($client_id, $data['info']);
-            Gateway::sendToGroup($data['no'] . '_setNo', json_encode(['code' => 400]));
-        } else {
-            Gateway::sendToGroup($data['no'] . '_setNo', json_encode(['code' => 401]));
+        for ($i = 1; $i <= $_SESSION['gunCount']; $i++) {
+            $orderNo = self::globalClient()->hGetField('GunInfo', $_SESSION['no'] . '-' . $i, 'orderNo');
+            self::globalClient()->hSetField('ChargeOrder', $orderNo, 'status', 3);
+            Gateway::sendToGroup($orderNo, json_encode(['code' => 101]));
         }
     }
 
     private static function cmd_62($client_id, $data)
     {
+        $gun = self::globalClient()->hGet('GunInfo', $data['no'] . '-' . $data['gun']);
         if ($data['result'] == 0) {
-            Gateway::sendToGroup($data['no'] . $data['gun'] . '_endCharge', json_encode(['code' => 300]));
+            Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 300]));
         } else {
-            Gateway::sendToGroup($data['no'] . $data['gun'] . '_endCharge', json_encode(['code' => 301]));
+            Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 301]));
         }
-
     }
 
     private static function cmd_8($client_id, $data)
     {
         if ($data['result'] != 0) {
             Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 200]));
-            unset($_SESSION['orderNo'][$data['gun']]);
-            unset($_SESSION['uid'][$data['gun']]);
-            Gateway::sendToGroup($data['no'] . '_pileInfo', json_encode(['code' => 600, 'data' => $_SESSION]));
-            self::updateGuns();
         }
     }
 
@@ -88,23 +71,20 @@ class TldPile
 
     private static function cmd_104($client_id, $data)
     {
-        $orderNo = $_SESSION['orderNo'][$data['gun']];
-        $uid = $_SESSION['uid'][$data['gun']];
-
-        if ($_SESSION['workStatus'] == 1 && $data['workStatus'] != 2) {
-            Gateway::sendToGroup($orderNo, json_encode(['code' => 200]));
-            unset($_SESSION['orderNo'][$data['gun']]);
-            unset($_SESSION['uid'][$data['gun']]);
+        $gun = self::globalClient()->hGet('GunInfo', $data['no'] . '-' . $data['gun']) ?: ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus'], 'orderNo' => '', 'user_id' => 0];
+        if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [0, 3, 4, 6])) {
+            Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
+            $gun['orderNo'] = '';
+            $gun['user_id'] = 0;
         }
-
-        if (in_array($_SESSION['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
-            $userMoney = self::globalClient()->hGetField('UserInfo', $uid, 'money') ?: 0;
+        if (in_array($gun['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
+            $userMoney = self::globalClient()->hGetField('UserInfo', $gun['uid'], 'money') ?: 0;
             $rule = self::getRule($data['no']);
             $order = [
-                'no' => $orderNo,
+                'no' => $gun['orderNo'],
+                'uid' => $gun['user_id'],
                 'pile' => $data['no'],
                 'gun' => $data['gun'],
-                'uid' => $uid,
                 'status' => 1,
                 'created_at' => time(),
                 'soc' => 0,
@@ -115,7 +95,7 @@ class TldPile
                 'basisMoney' => 0,
                 'serviceMoney' => 0,
             ];
-            $order = self::globalClient()->hGet('ChargeOrder', $orderNo) ?: $order;
+            $order = self::globalClient()->hGet('ChargeOrder', $order['no']) ?: $order;
             $order['soc'] = $data['soc'];
             $order['power'] = $data['power'] / 10;
             $order['duration'] = $data['duration'];
@@ -123,18 +103,18 @@ class TldPile
             $order['electricQuantity'] += $data['electricQuantity'];
             $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
             $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
-            self::globalClient()->hSet('ChargeOrder', $orderNo, $order);
+            self::globalClient()->hSet('ChargeOrder', $order['no'], $order);
             $code = 205;
-            if (($order['basisMoney'] + $order['serviceMoney'] + 1) >= $userMoney) {
+            if (($order['basisMoney'] + $order['serviceMoney'] + 5) >= $userMoney) {
                 Gateway::sendToClient($client_id, ['cmd' => 5, 'params' => [$data['gun'], 2, 85]]);
                 $code = 207;
             }
-            Gateway::sendToGroup($orderNo, json_encode(['code' => $code, 'data' => $order]));
+            Gateway::sendToGroup($order['no'], json_encode(['code' => $code, 'data' => $order]));
         }
 
-        if ($_SESSION['workStatus'] == 2 && in_array($data['workStatus'], [3, 6])) {
+        if ($gun['workStatus'] == 2 && in_array($data['workStatus'], [3, 6])) {
             $rule = self::getRule($data['no']);
-            $order = self::globalClient()->hGet('ChargeOrder', $orderNo);
+            $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']);
             $order['status'] = 2;
             $order['soc'] = $data['soc'];
             $order['power'] = $data['power'] / 10;
@@ -144,52 +124,35 @@ class TldPile
             $order['electricQuantity'] += $data['electricQuantity'];
             $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
             $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
-            self::globalClient()->hSet('ChargeOrder', $orderNo, $order);
-            Gateway::sendToGroup($orderNo, json_encode(['code' => 206, 'data' => $order]));
+            self::globalClient()->hSet('ChargeOrder', $order['no'], $order);
+            Gateway::sendToGroup($order['no'], json_encode(['code' => 206, 'data' => $order]));
         }
 
-        $_SESSION['carStatus'] = $data['carStatus'];
-        $_SESSION['workStatus'] = $data['workStatus'];
+        $gun['workStatus'] = $data['workStatus'];
+        $gun['linkStatus'] = $data['linkStatus'];
+        self::globalClient()->hSet('GunInfo', $data['no'] . '-' . $data['gun'], $gun);
         Gateway::sendToClient($client_id, ['cmd' => 103, 'params' => [$data['gun']]]);
-        Gateway::sendToGroup($data['no'] . '_pileInfo', json_encode(['code' => 600, 'data' => $_SESSION]));
-        self::updateGuns();
     }
 
     private static function cmd_106($client_id, $data)
     {
-        if (!isset($_SESSION['no'])) {
-            $_SESSION['uid'] = [];
-            $_SESSION['orderNo'] = [];
-            $_SESSION['carStatus'] = 0;
-            $_SESSION['workStatus'] = 6;
-            $_SESSION['alarmInfo'] = '';
-        }
         $_SESSION['no'] = $data['no'];
         $_SESSION['gunCount'] = $data['gunCount'];
+        self::globalClient()->hSetField('PileInfo', $data['no'], 'client_id', $client_id);
+        self::globalClient()->hSetField('PileInfo', $data['no'], 'gunCount', $data['gunCount']);
         Gateway::bindUid($client_id, $data['no']);
         Gateway::sendToClient($client_id, ['cmd' => 105, 'params' => [$data['random']]]);
         Gateway::sendToClient($client_id, ['cmd' => 3, 'params' => [1, 2, self::getTime()]]);
-        Gateway::sendToGroup('pileList', json_encode(['code' => 500, 'data' => Gateway::getAllUidList()]));
-        Gateway::sendToGroup($data['no'] . '_pileInfo', json_encode(['code' => 600, 'data' => $_SESSION]));
-        self::updateGuns();
     }
 
     private static function cmd_108($client_id, $data)
     {
-        $_SESSION['alarmInfo'] = $data['alarmInfo'];
-        Gateway::sendToGroup($data['no'] . '_pileInfo', json_encode(['code' => 600, 'data' => $_SESSION]));
+        self::globalClient()->hSetField('PileInfo', $data['no'], 'alarmInfo', $data['alarmInfo']);
     }
 
     private static function cmd_110($client_id, $data)
     {
         Gateway::sendToClient($client_id, ['cmd' => 109, 'params' => []]);
-        if ($data['failType'] != 0) {
-            Gateway::sendToGroup($_SESSION['orderNo'][$data['gun']], json_encode(['code' => 200]));
-            unset($_SESSION['orderNo'][$data['gun']]);
-            unset($_SESSION['uid'][$data['gun']]);
-            Gateway::sendToGroup($data['no'] . '_pileInfo', json_encode(['code' => 600, 'data' => $_SESSION]));
-            self::updateGuns();
-        }
     }
 
     private static function cmd_202($client_id, $data)
@@ -208,11 +171,8 @@ class TldPile
         $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
         $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
         self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
+        self::globalClient()->hSet('GunInfo', $data['no'] . '-' . $data['gun'], ['workStatus' => 0, 'linkStatus' => 0, 'orderNo' => '', 'user_id' => 0]);
         Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 208, 'data' => $order]));
-        unset($_SESSION['orderNo'][$data['gun']]);
-        unset($_SESSION['uid'][$data['gun']]);
-        Gateway::sendToGroup($data['no'] . '_pileInfo', json_encode(['code' => 600, 'data' => $_SESSION]));
-        self::updateGuns();
     }
 
     /**
@@ -248,14 +208,5 @@ class TldPile
             $timeStr .= pack('C', (int)$v);
         }
         return $timeStr;
-    }
-
-    /**
-     * 更新电桩枪口信息
-     */
-    public static function updateGuns()
-    {
-        $field = self::globalClient()->hGetField('PileInfo', $_SESSION['no'], 'field');
-        self::globalClient()->hSetField('FieldInfo', $field, $_SESSION['no'], json_encode(['count' => $_SESSION['gunCount'], 'used' => count($_SESSION['uid'])]));
     }
 }

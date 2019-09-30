@@ -92,10 +92,6 @@ class Tld
         $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
         $data['result'] = unpack('Cv', substr($buffer, 41, 1))['v'];
         $data['cmd'] = 4;
-        if ($data['code'] == 1) {
-            $data['info'] = unpack('a32v', substr($buffer, 42, 32))['v'];
-            $data['cmd'] = 41;
-        }
         return $data;
     }
 
@@ -192,7 +188,7 @@ class Tld
         $data['workStatus'] = unpack('Cv', substr($buffer, 39, 1))['v'];
         $data['soc'] = unpack('Cv', substr($buffer, 40, 1))['v'];
         $data['alarm'] = unpack('Vv', substr($buffer, 41, 4))['v'];
-        $data['carStatus'] = unpack('Cv', substr($buffer, 45, 1))['v'];
+        $data['linkStatus'] = unpack('Cv', substr($buffer, 45, 1))['v'];
         $data['remainingTime'] = unpack('vv', substr($buffer, 79, 2))['v'];
         $data['duration'] = unpack('Vv', substr($buffer, 81, 4))['v'];
         $data['electricQuantity'] = unpack('Vv', substr($buffer, 85, 4))['v'];
