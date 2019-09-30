@@ -53,6 +53,8 @@ class Web
      */
     private static function beginCharge($client_id, $message)
     {
+        Gateway::sendToUid($message['pile'], ['cmd' => 7, 'params' => [$message['gun'], $message['orderNo']]]);
+        return Gateway::sendToClient($client_id, json_encode(['code' => 204]));
         if (Gateway::isUidOnline($message['pile'])) {
             $money = self::globalClient()->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
             if ($money > 5) {

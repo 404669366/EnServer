@@ -76,11 +76,13 @@ class TldPile
     {
         var_dump([$data['gun'], $data['workStatus']]);
         $gun = self::globalClient()->hGet('GunInfo', $data['no'] . '-' . $data['gun']) ?: ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus'], 'orderNo' => '', 'user_id' => 0];
+
         if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [0, 3, 4, 6])) {
             Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
             $gun['orderNo'] = '';
             $gun['user_id'] = 0;
         }
+
         if (in_array($gun['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
             $userMoney = self::globalClient()->hGetField('UserInfo', $gun['uid'], 'money') ?: 0;
             $rule = self::getRule($data['no']);
