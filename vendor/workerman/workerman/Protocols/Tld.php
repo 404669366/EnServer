@@ -117,65 +117,65 @@ class Tld
         return [];
     }
 
-    public static function encode($data)
+    public static function encode($params)
     {
-        $data = pack('v', 0);
-        $data .= pack('v', 0);
-        switch ($data['cmd']) {
+        $buffer = pack('v', 0);
+        $buffer .= pack('v', 0);
+        switch ($params['cmd']) {
             case 3;
-                $data .= pack('C', $data['type']);
-                $data .= pack('V', $data['code']);
-                $data .= pack('v', strlen($data['val']));
-                $data .= $data['val'];
+                $buffer .= pack('C', $params['type']);
+                $buffer .= pack('V', $params['code']);
+                $buffer .= pack('v', strlen($params['val']));
+                $buffer .= $params['val'];
                 break;
             case 5;
-                $data .= pack('C', $data['gun']);
-                $data .= pack('V', $data['code']);
-                $data .= pack('C', 1);
-                $data .= pack('v', 4);
-                $data .= pack('V', $data['val']);
+                $buffer .= pack('C', $params['gun']);
+                $buffer .= pack('V', $params['code']);
+                $buffer .= pack('C', 1);
+                $buffer .= pack('v', 4);
+                $buffer .= pack('V', $params['val']);
                 break;
             case 7;
-                $data .= pack('C', $data['gun']);
-                $data .= pack('V', 0);
-                $data .= pack('V', 0);
-                $data .= pack('V', 0);
-                $data .= pack('V', 0);
-                $data .= self::getTime();
-                $data .= pack('C', 0);
-                $data .= pack('a32', $data['orderNo']);
-                $data .= pack('C', 0);
-                $data .= pack('V', 0);
-                $data .= pack('a32', $data['orderNo']);
+                $buffer .= pack('C', $params['gun']);
+                $buffer .= pack('V', 0);
+                $buffer .= pack('V', 0);
+                $buffer .= pack('V', 0);
+                $buffer .= pack('V', 0);
+                $buffer .= self::getTime();
+                $buffer .= pack('C', 0);
+                $buffer .= pack('a32', $params['orderNo']);
+                $buffer .= pack('C', 0);
+                $buffer .= pack('V', 0);
+                $buffer .= pack('a32', $params['orderNo']);
                 break;
             case 101;
-                $data .= pack('v', $data['times']);
+                $buffer .= pack('v', $params['times']);
                 break;
             case 103;
-                $data .= pack('C', $data['gun']);
+                $buffer .= pack('C', $params['gun']);
                 break;
             case 105;
-                $data .= pack('V', $data['random']);
-                $data .= pack('C', 0);
-                $data .= pack('C', 0);
-                $data .= pack('a', 128);
-                $data .= pack('V', 0);
-                $data .= pack('C', 0);
+                $buffer .= pack('V', $params['random']);
+                $buffer .= pack('C', 0);
+                $buffer .= pack('C', 0);
+                $buffer .= pack('a', 128);
+                $buffer .= pack('V', 0);
+                $buffer .= pack('C', 0);
                 break;
             case 201;
-                $data .= pack('C', $data['gun']);
-                $data .= pack('a32', $data['cardNo']);
-                $data .= pack('V', $data['index']);
-                $data .= pack('C', 0);
-                $data .= pack('V', 0);
-                $data .= pack('V', 0);
-                $data .= pack('V', 0);
-                $data .= pack('V', 0);
-                $data .= pack('V', 0);
-                $data .= pack('V', 0);
+                $buffer .= pack('C', $params['gun']);
+                $buffer .= pack('a32', $params['cardNo']);
+                $buffer .= pack('V', $params['index']);
+                $buffer .= pack('C', 0);
+                $buffer .= pack('V', 0);
+                $buffer .= pack('V', 0);
+                $buffer .= pack('V', 0);
+                $buffer .= pack('V', 0);
+                $buffer .= pack('V', 0);
+                $buffer .= pack('V', 0);
                 break;
         }
-        return self::composeMsg($data['cmd'], $data);
+        return self::composeMsg($params['cmd'], $buffer);
     }
 
     /**
