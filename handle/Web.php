@@ -108,12 +108,9 @@ class Web
     private static function endCharge($client_id, $message)
     {
         if (Gateway::isUidOnline($message['pile'])) {
-            $gun = self::globalClient()->hGet('GunInfo', $message['pile'] . '-' . $message['gun']) ?: ['workStatus' => 0, 'linkStatus' => 0, 'orderNo' => '', 'user_id' => 0];
-            if ($gun['orderNo']) {
-                Gateway::joinGroup($client_id, $gun['orderNo']);
-                Gateway::sendToUid($message['pile'], ['cmd' => 5, 'params' => [$message['gun'], 2, 85]]);
-                return;
-            }
+            Gateway::joinGroup($client_id, self::getSessionByUid($message['pile'])['orderInfo'][$message['gun']]);
+            Gateway::sendToUid($message['pile'], ['cmd' => 5, 'params' => [$message['gun'], 2, 85]]);
+            return;
         }
         Gateway::sendToClient($client_id, json_encode(['code' => 301]));
         return;
@@ -137,7 +134,7 @@ class Web
     private static function pileInfo($client_id, $message)
     {
         if (Gateway::isUidOnline($message['pile'])) {
-            Gateway::sendToClient($client_id, json_encode(['code' => 600, 'data' => self::globalClient()->hGet('PileInfo', $message['pile'])]));
+            Gateway::sendToClient($client_id, json_encode(['code' => 600, 'data' => self::getSessionByUid($message['pile'])]));
             return;
         }
         Gateway::sendToClient($client_id, json_encode(['code' => 601]));

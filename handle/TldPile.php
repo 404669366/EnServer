@@ -39,21 +39,18 @@ class TldPile
      */
     public static function onClose($client_id)
     {
-        for ($i = 1; $i <= $_SESSION['gunCount']; $i++) {
-            if ($orderNo = self::globalClient()->hGetField('GunInfo', $_SESSION['no'] . '-' . $i, 'orderNo')) {
-                self::globalClient()->hSetField('ChargeOrder', $orderNo, 'status', 3);
-                Gateway::sendToGroup($orderNo, json_encode(['code' => 101]));
-            }
+        foreach ($_SESSION['orderInfo'] as $v) {
+            self::globalClient()->hSetField('ChargeOrder', $v, 'status', 3);
+            Gateway::sendToGroup($v, json_encode(['code' => 200]));
         }
     }
 
     private static function cmd_62($client_id, $data)
     {
-        $gun = self::globalClient()->hGet('GunInfo', $data['no'] . '-' . $data['gun']);
         if ($data['result'] == 0) {
-            Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 300]));
+            Gateway::sendToGroup($_SESSION['orderInfo'][$data['gun']], json_encode(['code' => 300]));
         } else {
-            Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 301]));
+            Gateway::sendToGroup($_SESSION['orderInfo'][$data['gun']], json_encode(['code' => 301]));
         }
     }
 
@@ -139,7 +136,7 @@ class TldPile
 
     private static function cmd_108($client_id, $data)
     {
-        self::globalClient()->hSetField('PileInfo', $data['no'], 'alarmInfo', $data['alarmInfo']);
+        $_SESSION['alarmInfo'] = $data['alarmInfo'];
     }
 
     private static function cmd_110($client_id, $data)
