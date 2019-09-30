@@ -107,7 +107,6 @@ class Tld
                     $data['money'] = unpack('Vv', substr($buffer, 108, 4))['v'];
                     $data['index'] = unpack('Vv', substr($buffer, 112, 4))['v'];
                     $data['vin'] = unpack('a17v', substr($buffer, 131, 17))['v'];
-                    //$data['electricInfo'] = self::parseElectricInfo(substr($buffer, 156, 96));
                     $data['startType'] = unpack('Cv', substr($buffer, 252, 1))['v'];
                     $data['orderNo'] = unpack('a32v', substr($buffer, 253, 32))['v'];
                     break;
