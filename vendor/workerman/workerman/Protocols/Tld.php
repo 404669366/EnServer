@@ -139,7 +139,8 @@ class Tld
         $data = [];
         $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
         $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
-        $data['result'] = unpack('Nv', substr($buffer, 37, 4))['v'];
+        $data['result'] = unpack('Vv', substr($buffer, 37, 4))['v'];
+        var_dump(substr($buffer, 41, 32));
         $data['orderNo'] = trim(unpack('a32v', substr($buffer, 41, 32))['v']);
         $data['cmd'] = 8;
         return $data;

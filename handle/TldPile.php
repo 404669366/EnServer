@@ -57,11 +57,6 @@ class TldPile
         }
     }
 
-    private static function cmd_8($client_id, $data)
-    {
-        var_dump($data);
-    }
-
     private static function cmd_102($client_id, $data)
     {
         $times = $data['heartNo'] + 1;
@@ -70,6 +65,9 @@ class TldPile
 
     private static function cmd_104($client_id, $data)
     {
+        if( $data['gun']==8){
+            var_dump($data);
+        }
         $gun = self::globalClient()->hGet('GunInfo', $data['no'] . '-' . $data['gun']) ?: ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus'], 'orderNo' => '', 'user_id' => 0];
 
         if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [0, 3, 4, 6])) {
