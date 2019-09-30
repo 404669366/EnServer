@@ -41,8 +41,10 @@ class TldPile
     {
         foreach ($_SESSION['orderInfo'] as $v) {
             self::globalClient()->hSetField('ChargeOrder', $v, 'status', 3);
-            Gateway::sendToGroup($v, json_encode(['code' => 200]));
+            Gateway::sendToGroup($v, json_encode(['code' => 208]));
         }
+        self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'orderInfo', '{}');
+        self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'userInfo', '{}');
     }
 
     private static function cmd_62($client_id, $data)
@@ -69,8 +71,10 @@ class TldPile
             $user_id = $_SESSION['userInfo'][$data['gun']];
             if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [0, 3, 4, 6])) {
                 Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
-                $_SESSION['orderInfo'][$data['gun']] = '';
-                $_SESSION['userInfo'][$data['gun']] = 0;
+                unset($_SESSION['orderInfo'][$data['gun']]);
+                unset($_SESSION['userInfo'][$data['gun']]);
+                self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'orderInfo', json_encode($_SESSION['orderInfo']));
+                self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'userInfo', json_encode($_SESSION['userInfo']));
             }
             if (in_array($gun['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
                 $rule = self::getRule($data['no']);
@@ -130,6 +134,14 @@ class TldPile
     {
         $_SESSION['no'] = $data['no'];
         $_SESSION['gunCount'] = $data['gunCount'];
+        $pileInfo = self::globalClient()->hGet('PileInfo', $data['no']);
+        if (isset($pileInfo['orderInfo']) && $pileInfo['orderInfo']) {
+            $_SESSION['orderInfo'] = json_decode($pileInfo['orderInfo'], true);
+        }
+        if (isset($pileInfo['userInfo']) && $pileInfo['userInfo']) {
+            $_SESSION['userInfo'] = json_decode($pileInfo['userInfo'], true);
+        }
+        self::globalClient()->hSetField('PileInfo', $data['no'], 'count', $data['gunCount']);
         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
     }
@@ -161,8 +173,10 @@ class TldPile
         self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
         Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 208, 'data' => $order]));
         Gateway::sendToClient($client_id, ['cmd' => 201, 'gun' => $data['gun'], 'cardNo' => $data['cardNo'], 'index' => $data['index']]);
-        $_SESSION['orderInfo'][$data['gun']] = '';
-        $_SESSION['userInfo'][$data['gun']] = 0;
+        unset($_SESSION['orderInfo'][$data['gun']]);
+        unset($_SESSION['userInfo'][$data['gun']]);
+        self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'orderInfo', json_encode($_SESSION['orderInfo']));
+        self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'userInfo', json_encode($_SESSION['userInfo']));
     }
 
     /**
