@@ -59,6 +59,7 @@ class TldPile
 
     private static function cmd_8($client_id, $data)
     {
+        var_dump($data);
         if ($data['result']) {
             self::globalClient()->hSetField('GunInfo', $data['no'] . '-' . $data['gun'], 'orderNo', $data['orderNo']);
         } else {
@@ -74,7 +75,6 @@ class TldPile
 
     private static function cmd_104($client_id, $data)
     {
-        var_dump([$data['gun'], $data['workStatus']]);
         $gun = self::globalClient()->hGet('GunInfo', $data['no'] . '-' . $data['gun']) ?: ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus'], 'orderNo' => '', 'user_id' => 0];
 
         if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [0, 3, 4, 6])) {
