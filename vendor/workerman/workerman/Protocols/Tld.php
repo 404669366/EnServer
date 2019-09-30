@@ -15,24 +15,20 @@ class Tld
         if (strlen($buffer) < 4) {
             return 0;
         }
-        $length = unpack('vv', substr($buffer, 2, 2))['v'];
-        if (strlen($buffer) < $length) {
-            return 0;
-        }
-        $checkPlus1 = self::checkPlus(substr($buffer, 6, $length - 7));
-        $checkPlus2 = unpack('Cv', substr($buffer, -1))['v'];
-        if ($checkPlus1 == $checkPlus2) {
-            return $length;
-        }
-        return false;
+        return unpack('vv', substr($buffer, 2, 2))['v'];
     }
 
     public static function decode($buffer)
     {
-        $cmd = unpack('vv', substr($buffer, 6, 2))['v'];
         $length = unpack('vv', substr($buffer, 2, 2))['v'];
-        if (method_exists(self::class, 'cmd_' . $cmd)) {
-            return call_user_func_array('self::cmd_' . $cmd, [substr($buffer, 8, $length - 9)]);
+        $checkPlus1 = self::checkPlus(substr($buffer, 6, $length - 7));
+        $checkPlus2 = unpack('Cv', substr($buffer, -1))['v'];
+        if ($checkPlus1 == $checkPlus2) {
+            $cmd = unpack('vv', substr($buffer, 6, 2))['v'];
+            $length = unpack('vv', substr($buffer, 2, 2))['v'];
+            if (method_exists(self::class, 'cmd_' . $cmd)) {
+                return call_user_func_array('self::cmd_' . $cmd, [substr($buffer, 8, $length - 9)]);
+            }
         }
         return [];
     }
