@@ -31,7 +31,7 @@ class Web
     public static function onMessage($client_id = 0, $message = '')
     {
         $message = json_decode($message, true);
-        if (isset($message['do']) && $message['do'] && method_exists(self::class, $message['do'])) {
+        if (method_exists(self::class, $message['do'])) {
             return call_user_func_array('self::' . $message['do'], [$client_id, $message]);
         }
         return Gateway::sendToClient($client_id, json_encode(['code' => 100]));
@@ -53,25 +53,23 @@ class Web
      */
     private static function beginCharge($client_id, $message)
     {
-        Gateway::sendToUid($message['pile'], ['cmd' => 7, 'params' => [$message['gun'], $message['orderNo']]]);
-        return Gateway::sendToClient($client_id, json_encode(['code' => 204]));
         if (Gateway::isUidOnline($message['pile'])) {
-            $money = self::globalClient()->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
-            if ($money > 5) {
-                $gun = self::globalClient()->hGet('GunInfo', $message['pile'] . '-' . $message['gun']) ?: ['workStatus' => 0, 'linkStatus' => 0, 'orderNo' => '', 'user_id' => 0];
-                if ($gun['linkStatus']) {
-                    if ($gun['orderNo']) {
+            $session = self::getSessionByUid($message['pile']);
+            if ($session['gunInfo'][$message['pile']]['linkStatus']) {
+                if (!$session['gunInfo'][$message['pile']]['workStatus']) {
+                    $money = self::globalClient()->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
+                    if ($money > 5) {
                         Gateway::joinGroup($client_id, $message['orderNo']);
-                        Gateway::sendToUid($message['pile'], ['cmd' => 7, 'params' => [$message['gun'], $message['orderNo']]]);
+                        Gateway::sendToUid($message['pile'], ['cmd' => 7, 'gun' => $message['gun'], 'orderNo' => $message['orderNo'], 'uid' => $message['uid']]);
                         return Gateway::sendToClient($client_id, json_encode(['code' => 204]));
                     }
-                    return Gateway::sendToClient($client_id, json_encode(['code' => 203]));
+                    return Gateway::sendToClient($client_id, json_encode(['code' => 201]));
                 }
-                return Gateway::sendToClient($client_id, json_encode(['code' => 202]));
+                return Gateway::sendToClient($client_id, json_encode(['code' => 203]));
             }
-            return Gateway::sendToClient($client_id, json_encode(['code' => 201]));
+            return Gateway::sendToClient($client_id, json_encode(['code' => 202]));
         }
-        return Gateway::sendToClient($client_id, json_encode(['code' => 200]));
+        return Gateway::sendToClient($client_id, json_encode(['code' => 101]));
     }
 
     /**
@@ -144,5 +142,16 @@ class Web
         }
         Gateway::sendToClient($client_id, json_encode(['code' => 601]));
         return;
+    }
+
+    /**
+     * 根据uid获取session
+     * @param string $uid
+     * @return mixed
+     */
+    private static function getSessionByUid($uid = '')
+    {
+        $client_ids = Gateway::getClientIdByUid($uid);
+        return Gateway::getSession($client_ids[0]);
     }
 }

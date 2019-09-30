@@ -66,68 +66,66 @@ class TldPile
 
     private static function cmd_104($client_id, $data)
     {
-        $gun = self::globalClient()->hGet('GunInfo', $data['no'] . '-' . $data['gun']) ?: ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus'], 'orderNo' => '', 'user_id' => 0];
-
-        if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [0, 3, 4, 6])) {
-            Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
-            $gun['orderNo'] = '';
-            $gun['user_id'] = 0;
-        }
-
-        if (in_array($gun['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
-            $userMoney = self::globalClient()->hGetField('UserInfo', $gun['uid'], 'money') ?: 0;
-            $rule = self::getRule($data['no']);
-            $order = [
-                'no' => $gun['orderNo'],
-                'uid' => $gun['user_id'],
-                'pile' => $data['no'],
-                'gun' => $data['gun'],
-                'status' => 1,
-                'created_at' => time(),
-                'soc' => 0,
-                'power' => 0,
-                'duration' => 0,
-                'rule' => $rule,
-                'electricQuantity' => 0,
-                'basisMoney' => 0,
-                'serviceMoney' => 0,
-            ];
-            $order = self::globalClient()->hGet('ChargeOrder', $order['no']) ?: $order;
-            $order['soc'] = $data['soc'];
-            $order['power'] = $data['power'] / 10;
-            $order['duration'] = $data['duration'];
-            $data['electricQuantity'] = $data['electricQuantity'] / 100;
-            $order['electricQuantity'] += $data['electricQuantity'];
-            $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
-            $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
-            self::globalClient()->hSet('ChargeOrder', $order['no'], $order);
-            $code = 205;
-            if (($order['basisMoney'] + $order['serviceMoney'] + 5) >= $userMoney) {
-                Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
-                $code = 207;
+        Gateway::bindUid($client_id, $data['no']);
+        $gun = $_SESSION['gunInfo'][$data['gun']];
+        if ($orderNo = $_SESSION['orderInfo'][$data['gun']]) {
+            $user_id = $_SESSION['userInfo'][$data['gun']];
+            if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [0, 3, 4, 6])) {
+                Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
+                $_SESSION['orderInfo'][$data['gun']] = '';
+                $_SESSION['userInfo'][$data['gun']] = 0;
             }
-            Gateway::sendToGroup($order['no'], json_encode(['code' => $code, 'data' => $order]));
+            if (in_array($gun['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
+                $rule = self::getRule($data['no']);
+                $order = [
+                    'no' => $orderNo,
+                    'uid' => $user_id,
+                    'pile' => $data['no'],
+                    'gun' => $data['gun'],
+                    'status' => 1,
+                    'created_at' => time(),
+                    'soc' => 0,
+                    'power' => 0,
+                    'duration' => 0,
+                    'rule' => $rule,
+                    'electricQuantity' => 0,
+                    'basisMoney' => 0,
+                    'serviceMoney' => 0,
+                ];
+                $order = self::globalClient()->hGet('ChargeOrder', $orderNo) ?: $order;
+                $order['soc'] = $data['soc'];
+                $order['power'] = $data['power'] / 10;
+                $order['duration'] = $data['duration'];
+                $data['electricQuantity'] = $data['electricQuantity'] / 100;
+                $order['electricQuantity'] += $data['electricQuantity'];
+                $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
+                $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
+                self::globalClient()->hSet('ChargeOrder', $orderNo, $order);
+                $code = 205;
+                $userMoney = self::globalClient()->hGetField('UserInfo', $user_id, 'money') ?: 0;
+                if (($order['basisMoney'] + $order['serviceMoney'] + 5) >= $userMoney) {
+                    $code = 207;
+                    Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
+                }
+                Gateway::sendToGroup($order['no'], json_encode(['code' => $code, 'data' => $order]));
+            }
+            if ($gun['workStatus'] == 2 && in_array($data['workStatus'], [3, 6])) {
+                $rule = self::getRule($data['no']);
+                $order = self::globalClient()->hGet('ChargeOrder', $orderNo);
+                $order['status'] = 2;
+                $order['soc'] = $data['soc'];
+                $order['power'] = $data['power'] / 10;
+                $order['duration'] = $data['duration'];
+                $order['rule'] = $rule;
+                $data['electricQuantity'] = $data['electricQuantity'] / 100;
+                $order['electricQuantity'] += $data['electricQuantity'];
+                $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
+                $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
+                self::globalClient()->hSet('ChargeOrder', $orderNo, $order);
+                Gateway::sendToGroup($order['no'], json_encode(['code' => 206, 'data' => $order]));
+            }
         }
-
-        if ($gun['workStatus'] == 2 && in_array($data['workStatus'], [3, 6])) {
-            $rule = self::getRule($data['no']);
-            $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']);
-            $order['status'] = 2;
-            $order['soc'] = $data['soc'];
-            $order['power'] = $data['power'] / 10;
-            $order['duration'] = $data['duration'];
-            $order['rule'] = $rule;
-            $data['electricQuantity'] = $data['electricQuantity'] / 100;
-            $order['electricQuantity'] += $data['electricQuantity'];
-            $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
-            $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
-            self::globalClient()->hSet('ChargeOrder', $order['no'], $order);
-            Gateway::sendToGroup($order['no'], json_encode(['code' => 206, 'data' => $order]));
-        }
-
-        $gun['workStatus'] = $data['workStatus'];
-        $gun['linkStatus'] = $data['linkStatus'];
-        self::globalClient()->hSet('GunInfo', $data['no'] . '-' . $data['gun'], $gun);
+        $_SESSION['gunInfo'][$data['gun']] = ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus']];
         Gateway::sendToClient($client_id, ['cmd' => 103, 'gun' => $data['gun']]);
     }
 
@@ -135,7 +133,6 @@ class TldPile
     {
         $_SESSION['no'] = $data['no'];
         $_SESSION['gunCount'] = $data['gunCount'];
-        Gateway::bindUid($client_id, $data['no']);
         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
     }
@@ -152,7 +149,6 @@ class TldPile
 
     private static function cmd_202($client_id, $data)
     {
-        Gateway::sendToClient($client_id, ['cmd' => 201, 'gun' => $data['gun'], 'cardNo' => $data['cardNo'], 'index' => $data['index']]);
         $rule = self::getRule($data['no']);
         $order = self::globalClient()->hGet('ChargeOrder', $data['orderNo']);
         $order['status'] = 3;
@@ -166,8 +162,10 @@ class TldPile
         $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
         $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
         self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
-        self::globalClient()->hSet('GunInfo', $data['no'] . '-' . $data['gun'], ['workStatus' => 0, 'linkStatus' => 0, 'orderNo' => '', 'user_id' => 0]);
         Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 208, 'data' => $order]));
+        Gateway::sendToClient($client_id, ['cmd' => 201, 'gun' => $data['gun'], 'cardNo' => $data['cardNo'], 'index' => $data['index']]);
+        $_SESSION['orderInfo'][$data['gun']] = '';
+        $_SESSION['userInfo'][$data['gun']] = 0;
     }
 
     /**
