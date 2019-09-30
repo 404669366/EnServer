@@ -25,6 +25,7 @@ class Tld
         if ($checkPlus1 == $checkPlus2) {
             return $length;
         }
+        var_dump(111);
         return false;
     }
 
