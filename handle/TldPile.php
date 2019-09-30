@@ -59,7 +59,7 @@ class TldPile
 
     private static function cmd_8($client_id, $data)
     {
-        var_dump(8);
+        var_dump($data);
         if ($data['result']) {
             self::globalClient()->hSetField('GunInfo', $data['no'] . '-' . $data['gun'], 'orderNo', $data['orderNo']);
         } else {
