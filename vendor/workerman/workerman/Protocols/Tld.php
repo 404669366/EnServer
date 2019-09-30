@@ -370,13 +370,12 @@ class Tld
     private static function getTime($timeStamp = 0)
     {
         $timeStamp = $timeStamp ?: time();
-        $timeArr = str_split(date('YmdHis', $timeStamp + 8 * 3600) . '00', 2);
+        $timeArr = str_split(date('YmdHis', $timeStamp + 8 * 3600), 2);
         $timeStr = '';
-        var_dump($timeArr);
         foreach ($timeArr as $v) {
             $timeStr .= pack('C', (int)$v);
         }
-        return $timeStr;
+        return $timeStr . pack('C', 255);
     }
 
     /**
