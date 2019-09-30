@@ -59,7 +59,6 @@ class TldPile
 
     private static function cmd_8($client_id, $data)
     {
-        var_dump($data);
         if ($data['result']) {
             self::globalClient()->hSetField('GunInfo', $data['no'] . '-' . $data['gun'], 'orderNo', $data['orderNo']);
         } else {
@@ -140,6 +139,7 @@ class TldPile
 
     private static function cmd_106($client_id, $data)
     {
+        var_dump($data);
         $_SESSION['no'] = $data['no'];
         $_SESSION['gunCount'] = $data['gunCount'];
         self::globalClient()->hSetField('PileInfo', $data['no'], 'client_id', $client_id);
@@ -156,7 +156,6 @@ class TldPile
 
     private static function cmd_110($client_id, $data)
     {
-        var_dump(110);
         Gateway::sendToClient($client_id, ['cmd' => 109, 'params' => []]);
     }
 

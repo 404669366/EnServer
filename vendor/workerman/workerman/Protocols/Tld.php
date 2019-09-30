@@ -10,7 +10,6 @@ namespace Workerman\Protocols;
 
 class Tld
 {
-
     public static function input($buffer)
     {
         if (strlen($buffer) < 4) {
@@ -20,13 +19,13 @@ class Tld
         if (strlen($buffer) < $length) {
             return 0;
         }
-        /*$checkPlus1 = self::checkPlus(substr($buffer, 6, $length - 7));
+        $checkPlus1 = self::checkPlus(substr($buffer, 6, $length - 7));
         $checkPlus2 = unpack('Cv', substr($buffer, -1))['v'];
         var_dump([$checkPlus1, $checkPlus2]);
         if ($checkPlus1 == $checkPlus2) {
             return $length;
-        }*/
-        return $length;
+        }
+        return false;
     }
 
     public static function decode($buffer)
