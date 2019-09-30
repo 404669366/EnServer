@@ -55,8 +55,8 @@ class Web
     {
         if (Gateway::isUidOnline($message['pile'])) {
             $session = self::getSessionByUid($message['pile']);
-            if ($session['gunInfo'][$message['pile']]['linkStatus']) {
-                if (!$session['gunInfo'][$message['pile']]['workStatus']) {
+            if (!$session['gunInfo'][$message['pile']]['workStatus']) {
+                if ($session['gunInfo'][$message['pile']]['linkStatus']) {
                     $money = self::globalClient()->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
                     if ($money > 5) {
                         Gateway::joinGroup($client_id, $message['orderNo']);
@@ -65,11 +65,11 @@ class Web
                     }
                     return Gateway::sendToClient($client_id, json_encode(['code' => 201]));
                 }
-                return Gateway::sendToClient($client_id, json_encode(['code' => 203]));
+                return Gateway::sendToClient($client_id, json_encode(['code' => 202]));
             }
-            return Gateway::sendToClient($client_id, json_encode(['code' => 202]));
+            return Gateway::sendToClient($client_id, json_encode(['code' => 203]));
         }
-        return Gateway::sendToClient($client_id, json_encode(['code' => 101]));
+        return Gateway::sendToClient($client_id, json_encode(['code' => 200]));
     }
 
     /**
