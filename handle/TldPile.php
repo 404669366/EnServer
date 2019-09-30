@@ -29,6 +29,7 @@ class TldPile
      */
     public static function onMessage($client_id = 0, $data = [])
     {
+        var_dump($data['cmd']);
         if ($data && method_exists(self::class, 'cmd_' . $data['cmd'])) {
             call_user_func_array('self::cmd_' . $data['cmd'], [$client_id, $data]);
         }
@@ -139,7 +140,6 @@ class TldPile
 
     private static function cmd_106($client_id, $data)
     {
-        var_dump($data);
         $_SESSION['no'] = $data['no'];
         $_SESSION['gunCount'] = $data['gunCount'];
         self::globalClient()->hSetField('PileInfo', $data['no'], 'client_id', $client_id);
