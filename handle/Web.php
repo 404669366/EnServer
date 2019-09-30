@@ -55,6 +55,7 @@ class Web
     {
         if (Gateway::isUidOnline($message['pile'])) {
             $session = self::getSessionByUid($message['pile']);
+            var_dump($session);
             if (!$session['gunInfo'][$message['pile']]['workStatus']) {
                 if ($session['gunInfo'][$message['pile']]['linkStatus']) {
                     $money = self::globalClient()->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
