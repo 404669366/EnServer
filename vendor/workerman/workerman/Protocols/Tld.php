@@ -24,11 +24,102 @@ class Tld
         $checkPlus1 = self::checkPlus(substr($buffer, 6, $length - 7));
         $checkPlus2 = unpack('Cv', substr($buffer, -1))['v'];
         if ($checkPlus1 == $checkPlus2) {
-            $cmd = unpack('vv', substr($buffer, 6, 2))['v'];
-            $length = unpack('vv', substr($buffer, 2, 2))['v'];
-            if (method_exists(self::class, 'cmd_' . $cmd)) {
-                return call_user_func_array('self::cmd_' . $cmd, [substr($buffer, 8, $length - 9)]);
+            $buffer = substr($buffer, 8, $length - 9);
+            $data = [
+                'cmd' => unpack('vv', substr($buffer, 6, 2))['v'],
+                'no' => trim(unpack('a32v', substr($buffer, 4, 32))['v']),
+            ];
+            switch ($data['cmd']) {
+                case 2;
+                    $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
+                    $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
+                    $data['num'] = unpack('Cv', substr($buffer, 41, 1))['v'];
+                    $data['result'] = unpack('Cv', substr($buffer, 42, 1))['v'];
+                    $data['info'] = unpack('Vv', substr($buffer, 43, 4))['v'];
+                    break;
+                case 4;
+                    $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
+                    $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
+                    $data['result'] = unpack('Cv', substr($buffer, 41, 1))['v'];
+                    break;
+                case 6;
+                    $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
+                    $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
+                    $data['result'] = unpack('Cv', substr($buffer, 42, 1))['v'];
+                    if ($data['code'] == 2) {
+                        $data['cmd'] = 62;
+                    }
+                    break;
+                case 8;
+                    $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
+                    $data['result'] = unpack('Vv', substr($buffer, 37, 4))['v'];
+                    $data['orderNo'] = trim(unpack('a32v', substr($buffer, 41, 32))['v']);
+                    break;
+                case 102;
+                    $data['heartNo'] = unpack('vv', substr($buffer, 36, 2))['v'];
+                    $data['gunStatus'] = self::parseBin(substr($buffer, -16, 16));
+                    break;
+                case 104;
+                    $data['gunCount'] = unpack('Cv', substr($buffer, 36, 1))['v'];
+                    $data['gun'] = unpack('Cv', substr($buffer, 37, 1))['v'];
+                    $data['gunType'] = unpack('Cv', substr($buffer, 38, 1))['v'];
+                    $data['workStatus'] = unpack('Cv', substr($buffer, 39, 1))['v'];
+                    $data['soc'] = unpack('Cv', substr($buffer, 40, 1))['v'];
+                    $data['alarm'] = unpack('Vv', substr($buffer, 41, 4))['v'];
+                    $data['linkStatus'] = unpack('Cv', substr($buffer, 45, 1))['v'];
+                    $data['remainingTime'] = unpack('vv', substr($buffer, 79, 2))['v'];
+                    $data['duration'] = unpack('Vv', substr($buffer, 81, 4))['v'];
+                    $data['electricQuantity'] = unpack('Vv', substr($buffer, 85, 4))['v'];
+                    $data['cardNo'] = unpack('a32v', substr($buffer, 104, 32))['v'];
+                    $data['power'] = unpack('Vv', substr($buffer, 153, 4))['v'];
+                    $data['vin'] = unpack('a18v', substr($buffer, 172, 18))['v'];
+                    break;
+                case 106;
+                    $data['sign'] = str_pad(base_convert(substr($buffer, 36, 1), 16, 2), 8, 0, STR_PAD_LEFT);
+                    $data['softwareEdition'] = unpack('Vv', substr($buffer, 37, 4))['v'];
+                    $data['project'] = unpack('vv', substr($buffer, 41, 2))['v'];
+                    $data['startTimes'] = unpack('Vv', substr($buffer, 43, 4))['v'];
+                    $data['uploadMode'] = unpack('Cv', substr($buffer, 47, 1))['v'];
+                    $data['checkInInterval'] = unpack('vv', substr($buffer, 48, 2))['v'];
+                    $data['internalVar'] = unpack('Cv', substr($buffer, 50, 1))['v'];
+                    $data['gunCount'] = unpack('Cv', substr($buffer, 51, 1))['v'];
+                    $data['reportingCycle'] = unpack('Cv', substr($buffer, 52, 1))['v'];
+                    $data['timeoutTimes'] = unpack('Cv', substr($buffer, 53, 1))['v'];
+                    $data['noteCount'] = unpack('Vv', substr($buffer, 54, 4))['v'];
+                    $data['time'] = self::parseTime(substr($buffer, 58, 8));
+                    $data['random'] = unpack('Vv', substr($buffer, 90, 4))['v'];
+                    $data['communicationEdition'] = unpack('vv', substr($buffer, 94, 2))['v'];
+                    $data['whiteListEdition'] = unpack('vv', substr($buffer, 96, 4))['v'];
+                    break;
+                case 108;
+                    $data['alarmInfo'] = self::parseBin(substr($buffer, -32, 32));
+                    break;
+                case 110;
+                    $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
+                    $data['failType'] = unpack('Vv', substr($buffer, 37, 4))['v'];
+                    $data['sendType'] = unpack('vv', substr($buffer, 41, 2))['v'];
+                    $data['vin'] = unpack('a17v', substr($buffer, 79, 17))['v'];
+                    break;
+                case 202;
+                    $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
+                    $data['gun'] = unpack('Cv', substr($buffer, 37, 1))['v'];
+                    $data['cardNo'] = unpack('a32v', substr($buffer, 38, 32))['v'];
+                    $data['beginTime'] = self::parseTime(substr($buffer, 70, 8));
+                    $data['endTime'] = self::parseTime(substr($buffer, 78, 8));
+                    $data['duration'] = unpack('Vv', substr($buffer, 86, 4))['v'];
+                    $data['beginSoc'] = unpack('Cv', substr($buffer, 90, 1))['v'];
+                    $data['endSoc'] = unpack('Cv', substr($buffer, 91, 1))['v'];
+                    $data['endType'] = unpack('Vv', substr($buffer, 92, 4))['v'];
+                    $data['electricQuantity'] = unpack('Vv', substr($buffer, 96, 4))['v'];
+                    $data['money'] = unpack('Vv', substr($buffer, 108, 4))['v'];
+                    $data['index'] = unpack('Vv', substr($buffer, 112, 4))['v'];
+                    $data['vin'] = unpack('a17v', substr($buffer, 131, 17))['v'];
+                    //$data['electricInfo'] = self::parseElectricInfo(substr($buffer, 156, 96));
+                    $data['startType'] = unpack('Cv', substr($buffer, 252, 1))['v'];
+                    $data['orderNo'] = unpack('a32v', substr($buffer, 253, 32))['v'];
+                    break;
             }
+            return $data;
         }
         return [];
     }
@@ -55,19 +146,6 @@ class Tld
         return self::composeMsg(1, $data);
     }
 
-    private static function cmd_2($buffer)
-    {
-        $data = [];
-        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
-        $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
-        $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
-        $data['num'] = unpack('Cv', substr($buffer, 41, 1))['v'];
-        $data['result'] = unpack('Cv', substr($buffer, 42, 1))['v'];
-        $data['info'] = unpack('Vv', substr($buffer, 43, 4))['v'];
-        $data['cmd'] = 2;
-        return $data;
-    }
-
     private static function cmd_3($type, $code, $val = '')
     {
         $data = pack('v', 0);
@@ -77,17 +155,6 @@ class Tld
         $data .= pack('v', strlen($val));
         $data .= $val;
         return self::composeMsg(3, $data);
-    }
-
-    private static function cmd_4($buffer)
-    {
-        $data = [];
-        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
-        $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
-        $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
-        $data['result'] = unpack('Cv', substr($buffer, 41, 1))['v'];
-        $data['cmd'] = 4;
-        return $data;
     }
 
     private static function cmd_5($gun, $code, $val)
@@ -100,20 +167,6 @@ class Tld
         $data .= pack('v', 4);
         $data .= pack('V', $val);
         return self::composeMsg(5, $data);
-    }
-
-    private static function cmd_6($buffer)
-    {
-        $data = [];
-        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
-        $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
-        $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
-        $data['result'] = unpack('Cv', substr($buffer, 42, 1))['v'];
-        $data['cmd'] = 6;
-        if ($data['code'] == 2) {
-            $data['cmd'] = 62;
-        }
-        return $data;
     }
 
     private static function cmd_7($gun, $orderNo)
@@ -134,17 +187,6 @@ class Tld
         return self::composeMsg(7, $data);
     }
 
-    private static function cmd_8($buffer)
-    {
-        $data = [];
-        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
-        $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
-        $data['result'] = unpack('Vv', substr($buffer, 37, 4))['v'];
-        $data['orderNo'] = trim(unpack('a32v', substr($buffer, 41, 32))['v']);
-        $data['cmd'] = 8;
-        return $data;
-    }
-
     private static function cmd_101($times)
     {
         $data = pack('v', 0);
@@ -153,43 +195,12 @@ class Tld
         return self::composeMsg(101, $data);
     }
 
-    private static function cmd_102($buffer)
-    {
-        $data = [];
-        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
-        $data['heartNo'] = unpack('vv', substr($buffer, 36, 2))['v'];
-        $data['gunStatus'] = self::parseBin(substr($buffer, -16, 16));
-        $data['cmd'] = 102;
-        return $data;
-    }
-
     private static function cmd_103($gun)
     {
         $data = pack('v', 0);
         $data .= pack('v', 0);
         $data .= pack('C', $gun);
         return self::composeMsg(103, $data);
-    }
-
-    private static function cmd_104($buffer)
-    {
-        $data = [];
-        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
-        $data['gunCount'] = unpack('Cv', substr($buffer, 36, 1))['v'];
-        $data['gun'] = unpack('Cv', substr($buffer, 37, 1))['v'];
-        $data['gunType'] = unpack('Cv', substr($buffer, 38, 1))['v'];
-        $data['workStatus'] = unpack('Cv', substr($buffer, 39, 1))['v'];
-        $data['soc'] = unpack('Cv', substr($buffer, 40, 1))['v'];
-        $data['alarm'] = unpack('Vv', substr($buffer, 41, 4))['v'];
-        $data['linkStatus'] = unpack('Cv', substr($buffer, 45, 1))['v'];
-        $data['remainingTime'] = unpack('vv', substr($buffer, 79, 2))['v'];
-        $data['duration'] = unpack('Vv', substr($buffer, 81, 4))['v'];
-        $data['electricQuantity'] = unpack('Vv', substr($buffer, 85, 4))['v'];
-        $data['cardNo'] = unpack('a32v', substr($buffer, 104, 32))['v'];
-        $data['power'] = unpack('Vv', substr($buffer, 153, 4))['v'];
-        $data['vin'] = unpack('a18v', substr($buffer, 172, 18))['v'];
-        $data['cmd'] = 104;
-        return $data;
     }
 
     private static function cmd_105($random)
@@ -205,55 +216,11 @@ class Tld
         return self::composeMsg(105, $data);
     }
 
-    private static function cmd_106($buffer)
-    {
-        $data = [];
-        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
-        $data['sign'] = str_pad(base_convert(substr($buffer, 36, 1), 16, 2), 8, 0, STR_PAD_LEFT);
-        $data['softwareEdition'] = unpack('Vv', substr($buffer, 37, 4))['v'];
-        $data['project'] = unpack('vv', substr($buffer, 41, 2))['v'];
-        $data['startTimes'] = unpack('Vv', substr($buffer, 43, 4))['v'];
-        $data['uploadMode'] = unpack('Cv', substr($buffer, 47, 1))['v'];
-        $data['checkInInterval'] = unpack('vv', substr($buffer, 48, 2))['v'];
-        $data['internalVar'] = unpack('Cv', substr($buffer, 50, 1))['v'];
-        $data['gunCount'] = unpack('Cv', substr($buffer, 51, 1))['v'];
-        $data['reportingCycle'] = unpack('Cv', substr($buffer, 52, 1))['v'];
-        $data['timeoutTimes'] = unpack('Cv', substr($buffer, 53, 1))['v'];
-        $data['noteCount'] = unpack('Vv', substr($buffer, 54, 4))['v'];
-        $data['time'] = self::parseTime(substr($buffer, 58, 8));
-        $data['random'] = unpack('Vv', substr($buffer, 90, 4))['v'];
-        $data['communicationEdition'] = unpack('vv', substr($buffer, 94, 2))['v'];
-        $data['whiteListEdition'] = unpack('vv', substr($buffer, 96, 4))['v'];
-        $data['cmd'] = 106;
-        return $data;
-    }
-
-    private static function cmd_108($buffer)
-    {
-        $data = [];
-        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
-        $data['alarmInfo'] = self::parseBin(substr($buffer, -32, 32));
-        $data['cmd'] = 108;
-        return $data;
-    }
-
     private static function cmd_109()
     {
         $data = pack('v', 0);
         $data .= pack('v', 0);
         return self::composeMsg(109, $data);
-    }
-
-    private static function cmd_110($buffer)
-    {
-        $data = [];
-        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
-        $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
-        $data['failType'] = unpack('Vv', substr($buffer, 37, 4))['v'];
-        $data['sendType'] = unpack('vv', substr($buffer, 41, 2))['v'];
-        $data['vin'] = unpack('a17v', substr($buffer, 79, 17))['v'];
-        $data['cmd'] = 110;
-        return $data;
     }
 
     private static function cmd_201($gun, $cardNo, $index)
@@ -271,30 +238,6 @@ class Tld
         $data .= pack('V', 0);
         $data .= pack('V', 0);
         return self::composeMsg(201, $data);
-    }
-
-    private static function cmd_202($buffer)
-    {
-        $data = [];
-        $data['no'] = trim(unpack('a32v', substr($buffer, 4, 32))['v']);
-        $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
-        $data['gun'] = unpack('Cv', substr($buffer, 37, 1))['v'];
-        $data['cardNo'] = unpack('a32v', substr($buffer, 38, 32))['v'];
-        $data['beginTime'] = self::parseTime(substr($buffer, 70, 8));
-        $data['endTime'] = self::parseTime(substr($buffer, 78, 8));
-        $data['duration'] = unpack('Vv', substr($buffer, 86, 4))['v'];
-        $data['beginSoc'] = unpack('Cv', substr($buffer, 90, 1))['v'];
-        $data['endSoc'] = unpack('Cv', substr($buffer, 91, 1))['v'];
-        $data['endType'] = unpack('Vv', substr($buffer, 92, 4))['v'];
-        $data['electricQuantity'] = unpack('Vv', substr($buffer, 96, 4))['v'];
-        $data['money'] = unpack('Vv', substr($buffer, 108, 4))['v'];
-        $data['index'] = unpack('Vv', substr($buffer, 112, 4))['v'];
-        $data['vin'] = unpack('a17v', substr($buffer, 131, 17))['v'];
-        //$data['electricInfo'] = self::parseElectricInfo(substr($buffer, 156, 96));
-        $data['startType'] = unpack('Cv', substr($buffer, 252, 1))['v'];
-        $data['orderNo'] = unpack('a32v', substr($buffer, 253, 32))['v'];
-        $data['cmd'] = 202;
-        return $data;
     }
 
     /**
