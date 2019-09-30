@@ -124,13 +124,11 @@ class Tld
 
     private static function cmd_7($gun, $uid, $orderNo)
     {
-        $_SESSION['uid'][$gun] = $uid;
-        $_SESSION['orderNo'][$gun] = $orderNo;
         $data = pack('v', 0);
         $data .= pack('v', 0);
         $data .= pack('C', $gun);
         $data .= pack('V', 0);
-        $data .= pack('V', substr($orderNo, -4, 4));
+        $data .= pack('V', 0);
         $data .= pack('V', 0);
         $data .= pack('V', 0);
         $data .= self::getTime();
