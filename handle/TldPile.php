@@ -67,8 +67,9 @@ class TldPile
     private static function cmd_104($client_id, $data)
     {
         Gateway::bindUid($client_id, $data['no']);
-        $gun = $_SESSION['gunInfo'][$data['gun']];
-        if ($orderNo = $_SESSION['orderInfo'][$data['gun']]) {
+        $orderNo = isset($_SESSION['orderInfo'][$data['gun']]) ? $_SESSION['orderInfo'][$data['gun']] : '';
+        if ($orderNo) {
+            $gun = $_SESSION['gunInfo'][$data['gun']];
             $user_id = $_SESSION['userInfo'][$data['gun']];
             if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [0, 3, 4, 6])) {
                 Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
@@ -132,6 +133,7 @@ class TldPile
     private static function cmd_106($client_id, $data)
     {
         $_SESSION['no'] = $data['no'];
+        $_SESSION['gunCount'] = $data['gunCount'];
         $_SESSION['gunCount'] = $data['gunCount'];
         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
