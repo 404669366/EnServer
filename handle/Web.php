@@ -31,7 +31,6 @@ class Web
     public static function onMessage($client_id = 0, $message = '')
     {
         $message = json_decode($message, true);
-        var_dump($message);
         if (isset($message['do']) && $message['do'] && method_exists(self::class, $message['do'])) {
             return call_user_func_array('self::' . $message['do'], [$client_id, $message]);
         }
@@ -139,6 +138,7 @@ class Web
     {
         if (Gateway::isUidOnline($message['pile'])) {
             Gateway::sendToClient($client_id, json_encode(['code' => 600, 'data' => self::globalClient()->hGet('PileInfo', $message['pile'])]));
+            return;
         }
         Gateway::sendToClient($client_id, json_encode(['code' => 601]));
         return;
