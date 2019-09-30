@@ -344,7 +344,7 @@ class Tld
      */
     public static function composeStr32By0($str = '')
     {
-        return pack('a32', str_pad($str, 32, 0, STR_PAD_RIGHT));
+        return pack('a32', str_pad($str, 31, 0, STR_PAD_RIGHT));
     }
 
     /**
