@@ -53,7 +53,6 @@ class Web
      */
     private static function beginCharge($client_id, $message)
     {
-        var_dump($message);
         if (Gateway::isUidOnline($message['pile'])) {
             $money = self::globalClient()->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
             if ($money > 5) {
