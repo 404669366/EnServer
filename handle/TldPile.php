@@ -61,7 +61,7 @@ class TldPile
     private static function cmd_102($client_id, $data)
     {
         $times = $data['heartNo'] + 1;
-        Gateway::sendToClient($client_id, ['cmd' => 101, 'params' => [$times]]);
+        Gateway::sendToClient($client_id, ['cmd' => 101, 'times' => $times]);
     }
 
     private static function cmd_104($client_id, $data)
@@ -103,7 +103,7 @@ class TldPile
             self::globalClient()->hSet('ChargeOrder', $order['no'], $order);
             $code = 205;
             if (($order['basisMoney'] + $order['serviceMoney'] + 5) >= $userMoney) {
-                Gateway::sendToClient($client_id, ['cmd' => 5, 'params' => [$data['gun'], 2, 85]]);
+                Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
                 $code = 207;
             }
             Gateway::sendToGroup($order['no'], json_encode(['code' => $code, 'data' => $order]));
@@ -128,7 +128,7 @@ class TldPile
         $gun['workStatus'] = $data['workStatus'];
         $gun['linkStatus'] = $data['linkStatus'];
         self::globalClient()->hSet('GunInfo', $data['no'] . '-' . $data['gun'], $gun);
-        Gateway::sendToClient($client_id, ['cmd' => 103, 'params' => [$data['gun']]]);
+        Gateway::sendToClient($client_id, ['cmd' => 103, 'gun' => $data['gun']]);
     }
 
     private static function cmd_106($client_id, $data)
@@ -136,8 +136,8 @@ class TldPile
         $_SESSION['no'] = $data['no'];
         $_SESSION['gunCount'] = $data['gunCount'];
         Gateway::bindUid($client_id, $data['no']);
-        Gateway::sendToClient($client_id, ['cmd' => 105, 'params' => [$data['random']]]);
-        Gateway::sendToClient($client_id, ['cmd' => 3, 'params' => [1, 2, self::getTime()]]);
+        Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
+        Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
     }
 
     private static function cmd_108($client_id, $data)
@@ -147,12 +147,12 @@ class TldPile
 
     private static function cmd_110($client_id, $data)
     {
-        Gateway::sendToClient($client_id, ['cmd' => 109, 'params' => []]);
+        Gateway::sendToClient($client_id, ['cmd' => 109]);
     }
 
     private static function cmd_202($client_id, $data)
     {
-        Gateway::sendToClient($client_id, ['cmd' => 201, 'params' => [$data['gun'], $data['cardNo'], $data['index']]]);
+        Gateway::sendToClient($client_id, ['cmd' => 201, 'gun' => $data['gun'], 'cardNo' => $data['cardNo'], 'index' => $data['index']]);
         $rule = self::getRule($data['no']);
         $order = self::globalClient()->hGet('ChargeOrder', $data['orderNo']);
         $order['status'] = 3;

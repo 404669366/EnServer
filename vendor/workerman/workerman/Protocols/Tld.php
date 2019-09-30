@@ -30,13 +30,6 @@ class Tld
             ];
             $buffer = substr($buffer, 8, $length - 9);
             switch ($data['cmd']) {
-                case 2;
-                    $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
-                    $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
-                    $data['num'] = unpack('Cv', substr($buffer, 41, 1))['v'];
-                    $data['result'] = unpack('Cv', substr($buffer, 42, 1))['v'];
-                    $data['info'] = unpack('Vv', substr($buffer, 43, 4))['v'];
-                    break;
                 case 4;
                     $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
                     $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
@@ -126,118 +119,63 @@ class Tld
 
     public static function encode($data)
     {
-        if (method_exists(self::class, 'cmd_' . $data['cmd'])) {
-            return call_user_func_array('self::cmd_' . $data['cmd'], $data['params']);
+        $data = pack('v', 0);
+        $data .= pack('v', 0);
+        switch ($data['cmd']) {
+            case 3;
+                $data .= pack('C', $data['type']);
+                $data .= pack('V', $data['code']);
+                $data .= pack('v', strlen($data['val']));
+                $data .= $data['val'];
+                break;
+            case 5;
+                $data .= pack('C', $data['gun']);
+                $data .= pack('V', $data['code']);
+                $data .= pack('C', 1);
+                $data .= pack('v', 4);
+                $data .= pack('V', $data['val']);
+                break;
+            case 7;
+                $data .= pack('C', $data['gun']);
+                $data .= pack('V', 0);
+                $data .= pack('V', 0);
+                $data .= pack('V', 0);
+                $data .= pack('V', 0);
+                $data .= self::getTime();
+                $data .= pack('C', 0);
+                $data .= pack('a32', $data['orderNo']);
+                $data .= pack('C', 0);
+                $data .= pack('V', 0);
+                $data .= pack('a32', $data['orderNo']);
+                break;
+            case 101;
+                $data .= pack('v', $data['times']);
+                break;
+            case 103;
+                $data .= pack('C', $data['gun']);
+                break;
+            case 105;
+                $data .= pack('V', $data['random']);
+                $data .= pack('C', 0);
+                $data .= pack('C', 0);
+                $data .= pack('a', 128);
+                $data .= pack('V', 0);
+                $data .= pack('C', 0);
+                break;
+            case 201;
+                $data .= pack('C', $data['gun']);
+                $data .= pack('a32', $data['cardNo']);
+                $data .= pack('V', $data['index']);
+                $data .= pack('C', 0);
+                $data .= pack('V', 0);
+                $data .= pack('V', 0);
+                $data .= pack('V', 0);
+                $data .= pack('V', 0);
+                $data .= pack('V', 0);
+                $data .= pack('V', 0);
+                break;
         }
-        return '';
-    }
-
-    private static function cmd_1($type, $code, $val = 0)
-    {
-        $data = pack('v', 0);
-        $data .= pack('v', 0);
-        $data .= pack('C', $type);
-        $data .= pack('V', $code);
-        $data .= pack('C', 1);
-        $data .= pack('v', 4);
-        if ($type == 1) {
-            $data .= pack('V', $val);
-        }
-        return self::composeMsg(1, $data);
-    }
-
-    private static function cmd_3($type, $code, $val = '')
-    {
-        $data = pack('v', 0);
-        $data .= pack('v', 0);
-        $data .= pack('C', $type);
-        $data .= pack('V', $code);
-        $data .= pack('v', strlen($val));
-        $data .= $val;
-        return self::composeMsg(3, $data);
-    }
-
-    private static function cmd_5($gun, $code, $val)
-    {
-        $data = pack('v', 0);
-        $data .= pack('v', 0);
-        $data .= pack('C', $gun);
-        $data .= pack('V', $code);
-        $data .= pack('C', 1);
-        $data .= pack('v', 4);
-        $data .= pack('V', $val);
-        return self::composeMsg(5, $data);
-    }
-
-    private static function cmd_7($gun, $orderNo)
-    {
-        $data = pack('v', 0);
-        $data .= pack('v', 0);
-        $data .= pack('C', $gun);
-        $data .= pack('V', 0);
-        $data .= pack('V', 0);
-        $data .= pack('V', 0);
-        $data .= pack('V', 0);
-        $data .= self::getTime();
-        $data .= pack('C', 0);
-        $data .= pack('a32', $orderNo);
-        $data .= pack('C', 0);
-        $data .= pack('V', 0);
-        $data .= pack('a32', $orderNo);
-        return self::composeMsg(7, $data);
-    }
-
-    private static function cmd_101($times)
-    {
-        $data = pack('v', 0);
-        $data .= pack('v', 0);
-        $data .= pack('v', $times);
-        return self::composeMsg(101, $data);
-    }
-
-    private static function cmd_103($gun)
-    {
-        $data = pack('v', 0);
-        $data .= pack('v', 0);
-        $data .= pack('C', $gun);
-        return self::composeMsg(103, $data);
-    }
-
-    private static function cmd_105($random)
-    {
-        $data = pack('v', 0);
-        $data .= pack('v', 0);
-        $data .= pack('V', $random);
-        $data .= pack('C', 0);
-        $data .= pack('C', 0);
-        $data .= pack('a', 128);
-        $data .= pack('V', 0);
-        $data .= pack('C', 0);
-        return self::composeMsg(105, $data);
-    }
-
-    private static function cmd_109()
-    {
-        $data = pack('v', 0);
-        $data .= pack('v', 0);
-        return self::composeMsg(109, $data);
-    }
-
-    private static function cmd_201($gun, $cardNo, $index)
-    {
-        $data = pack('v', 0);
-        $data .= pack('v', 0);
-        $data .= pack('C', $gun);
-        $data .= pack('a32', $cardNo);
-        $data .= pack('V', $index);
-        $data .= pack('C', 0);
-        $data .= pack('V', 0);
-        $data .= pack('V', 0);
-        $data .= pack('V', 0);
-        $data .= pack('V', 0);
-        $data .= pack('V', 0);
-        $data .= pack('V', 0);
-        return self::composeMsg(201, $data);
+        return self::composeMsg($data['cmd'], $data);
     }
 
     /**
