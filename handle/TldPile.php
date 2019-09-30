@@ -60,11 +60,6 @@ class TldPile
     private static function cmd_8($client_id, $data)
     {
         var_dump($data);
-        if ($data['result']) {
-            self::globalClient()->hSetField('GunInfo', $data['no'] . '-' . $data['gun'], 'orderNo', $data['orderNo']);
-        } else {
-            Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 200]));
-        }
     }
 
     private static function cmd_102($client_id, $data)
