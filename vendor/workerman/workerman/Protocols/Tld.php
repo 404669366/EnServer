@@ -372,6 +372,7 @@ class Tld
         $timeStamp = $timeStamp ?: time();
         $timeArr = str_split(date('YmdHis', $timeStamp + 8 * 3600) . '00', 2);
         $timeStr = '';
+        var_dump($timeArr);
         foreach ($timeArr as $v) {
             $timeStr .= pack('C', (int)$v);
         }
