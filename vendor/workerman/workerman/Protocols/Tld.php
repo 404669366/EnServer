@@ -122,7 +122,7 @@ class Tld
         return $data;
     }
 
-    private static function cmd_7($gun, $uid, $orderNo)
+    private static function cmd_7($gun, $orderNo)
     {
         $data = pack('v', 0);
         $data .= pack('v', 0);
@@ -133,10 +133,11 @@ class Tld
         $data .= pack('V', 0);
         $data .= self::getTime();
         $data .= pack('C', 0);
-        $data .= pack('a32', $uid);
+        $no = self::composeStr32By0($orderNo);
+        $data .= $no;
         $data .= pack('C', 0);
         $data .= pack('V', 0);
-        $data .= pack('a32', $orderNo);
+        $data .= $no;
         return self::composeMsg(7, $data);
     }
 
@@ -334,6 +335,16 @@ class Tld
             $plus += (int)base_convert(bin2hex($v), 16, 10);
         }
         return $plus & 0xFF;
+    }
+
+    /**
+     * 组装32位字符串(补0)
+     * @param string $str
+     * @return string
+     */
+    public static function composeStr32By0($str = '')
+    {
+        return pack('a32', str_pad($str, 32, 0, STR_PAD_RIGHT));
     }
 
     /**
