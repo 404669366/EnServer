@@ -26,7 +26,7 @@ class Tld
         if ($checkPlus1 == $checkPlus2) {
             $data = [
                 'cmd' => unpack('vv', substr($buffer, 6, 2))['v'],
-                'no' => trim(unpack('a32v', substr($buffer, 4, 32))['v']),
+                'no' => trim(unpack('a32v', substr($buffer, 13, 32))['v']),
             ];
             $buffer = substr($buffer, 8, $length - 9);
             switch ($data['cmd']) {

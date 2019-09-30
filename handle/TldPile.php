@@ -29,6 +29,7 @@ class TldPile
      */
     public static function onMessage($client_id = 0, $data = [])
     {
+        var_dump($data);
         if ($data && method_exists(self::class, 'cmd_' . $data['cmd'])) {
             call_user_func_array('self::cmd_' . $data['cmd'], [$client_id, $data]);
         }
