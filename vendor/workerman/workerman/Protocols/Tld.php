@@ -25,8 +25,7 @@ class Tld
         if ($checkPlus1 == $checkPlus2) {
             return $length;
         }
-        var_dump(111);
-        return false;
+        return 0;
     }
 
     public static function decode($buffer)
