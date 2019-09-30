@@ -40,9 +40,10 @@ class TldPile
     public static function onClose($client_id)
     {
         for ($i = 1; $i <= $_SESSION['gunCount']; $i++) {
-            $orderNo = self::globalClient()->hGetField('GunInfo', $_SESSION['no'] . '-' . $i, 'orderNo');
-            self::globalClient()->hSetField('ChargeOrder', $orderNo, 'status', 3);
-            Gateway::sendToGroup($orderNo, json_encode(['code' => 101]));
+            if ($orderNo = self::globalClient()->hGetField('GunInfo', $_SESSION['no'] . '-' . $i, 'orderNo')) {
+                self::globalClient()->hSetField('ChargeOrder', $orderNo, 'status', 3);
+                Gateway::sendToGroup($orderNo, json_encode(['code' => 101]));
+            }
         }
     }
 
