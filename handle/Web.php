@@ -109,7 +109,7 @@ class Web
     {
         if (Gateway::isUidOnline($message['pile'])) {
             Gateway::joinGroup($client_id, self::getSessionByUid($message['pile'])['orderInfo'][$message['gun']]);
-            Gateway::sendToUid($message['pile'], ['cmd' => 5, 'params' => [$message['gun'], 2, 85]]);
+            Gateway::sendToUid($message['pile'], ['cmd' => 5, 'gun' => $message['gun'], 'code' => 2, 'val' => 85]);
             return;
         }
         Gateway::sendToClient($client_id, json_encode(['code' => 301]));
