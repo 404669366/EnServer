@@ -127,11 +127,10 @@ class Tld
         $data .= pack('V', 0);
         $data .= self::getTime();
         $data .= pack('C', 0);
-        $no = self::composeStr32By0($orderNo);
-        $data .= $no;
+        $data .= pack('a32', $orderNo);
         $data .= pack('C', 0);
         $data .= pack('V', 0);
-        $data .= $no;
+        $data .= pack('a32', $orderNo);
         return self::composeMsg(7, $data);
     }
 
@@ -329,16 +328,6 @@ class Tld
             $plus += (int)base_convert(bin2hex($v), 16, 10);
         }
         return $plus & 0xFF;
-    }
-
-    /**
-     * 组装32位字符串(补0)
-     * @param string $str
-     * @return string
-     */
-    public static function composeStr32By0($str = '')
-    {
-        return pack('a32', str_pad($str, 31, 0, STR_PAD_RIGHT));
     }
 
     /**
