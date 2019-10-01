@@ -264,20 +264,13 @@ class Tld
      */
     private static function parseTime($buffer = '')
     {
-        var_dump(bin2hex(substr($buffer, 0, 1)));
-        var_dump(bin2hex(substr($buffer, 1, 1)));
-        var_dump(bin2hex(substr($buffer, 2, 1)));
-        var_dump(bin2hex(substr($buffer, 3, 1)));
-        var_dump(bin2hex(substr($buffer, 4, 1)));
-        var_dump(bin2hex(substr($buffer, 5, 1)));
-        var_dump(bin2hex(substr($buffer, 6, 1)));
-        $time = str_pad(unpack('Cv', substr($buffer, 0, 1))['v'], 2, 0, STR_PAD_LEFT);
-        $time .= str_pad(unpack('Cv', substr($buffer, 1, 1))['v'], 2, 0, STR_PAD_LEFT) . '-';
-        $time .= str_pad(unpack('Cv', substr($buffer, 2, 1))['v'], 2, 0, STR_PAD_LEFT) . '-';
-        $time .= str_pad(unpack('Cv', substr($buffer, 3, 1))['v'], 2, 0, STR_PAD_LEFT) . ' ';
-        $time .= str_pad(unpack('Cv', substr($buffer, 4, 1))['v'], 2, 0, STR_PAD_LEFT) . ':';
-        $time .= str_pad(unpack('Cv', substr($buffer, 5, 1))['v'], 2, 0, STR_PAD_LEFT) . ':';
-        $time .= str_pad(unpack('Cv', substr($buffer, 6, 1))['v'], 2, 0, STR_PAD_LEFT);
+        $time = bin2hex(substr($buffer, 0, 1));
+        $time .= bin2hex(substr($buffer, 1, 1)) . '-';
+        $time .= bin2hex(substr($buffer, 2, 1)) . '-';
+        $time .= bin2hex(substr($buffer, 3, 1)) . ' ';
+        $time .= bin2hex(substr($buffer, 4, 1)) . ':';
+        $time .= bin2hex(substr($buffer, 5, 1)) . ':';
+        $time .= bin2hex(substr($buffer, 6, 1));
         return $time;
     }
 
