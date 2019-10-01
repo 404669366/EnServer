@@ -64,7 +64,7 @@ class TldPile
 
     private static function cmd_104($client_id, $data)
     {
-        if (in_array($data['gun'], [7])) {
+        if (in_array($data['gun'], [6, 7, 8])) {
             echo '-----------------------------------------------------------';
             var_dump([
                 'cmd' => 104,
