@@ -67,10 +67,10 @@ class TldPile
         if (in_array($data['gun'], [7])) {
             echo '-----------------------------------------------------------';
             var_dump([
+                'cmd' => 104,
                 'gun' => $data['gun'],
                 'workStatus' => $data['workStatus'],
                 'linkStatus' => $data['linkStatus'],
-                'duration' => $data['duration'],
             ]);
         }
         Gateway::bindUid($client_id, $data['no']);
@@ -167,6 +167,14 @@ class TldPile
 
     private static function cmd_202($client_id, $data)
     {
+        if (in_array($data['gun'], [7])) {
+            echo '-----------------------------------------------------------';
+            var_dump([
+                'cmd' => 202,
+                'gun' => $data['gun'],
+                'duration' => $data['duration'],
+            ]);
+        }
         $rule = self::getRule($data['no']);
         $order = self::globalClient()->hGet('ChargeOrder', $data['orderNo']);
         $order['status'] = 3;

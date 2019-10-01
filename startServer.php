@@ -1,5 +1,5 @@
 <?php
-
+ini_set('date.timezone', 'Asia/Shanghai');
 if (strpos(strtolower(PHP_OS), 'win') === 0) {
     exit("start.php not support windows, please use windowsStart.bat\n");
 }
