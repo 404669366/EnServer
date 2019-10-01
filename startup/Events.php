@@ -6,17 +6,6 @@ use GatewayWorker\Lib\Gateway;
 
 class Events
 {
-    public static function onWorkerStart($businessWorker)
-    {
-
-    }
-
-    public static function onConnect($client_id)
-    {
-
-    }
-
-
     public static function onMessage($client_id, $data)
     {
         switch ($_SERVER['GATEWAY_PORT']) {
@@ -224,8 +213,7 @@ class Events
                 break;
         }
     }
-
-
+    
     public static function onClose($client_id)
     {
         switch ($_SERVER['GATEWAY_PORT']) {
