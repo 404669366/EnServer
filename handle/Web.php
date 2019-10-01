@@ -59,8 +59,13 @@ class Web
                 if ($session['gunInfo'][$message['gun']]['linkStatus']) {
                     $money = self::globalClient()->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
                     if ($money > 5) {
+                        $session['orderInfo'][$message['gun']] = $message['orderNo'];
+                        $session['userInfo'][$message['gun']] = $message['uid'];
+                        self::setSessionByUid($message['pile'], $session);
+                        self::globalClient()->hSetField('PileInfo', $message['pile'], 'orderInfo', json_encode($_SESSION['orderInfo']));
+                        self::globalClient()->hSetField('PileInfo', $message['pile'], 'userInfo', json_encode($_SESSION['userInfo']));
                         Gateway::joinGroup($client_id, $message['orderNo']);
-                        Gateway::sendToUid($message['pile'], ['cmd' => 7, 'gun' => $message['gun'], 'orderNo' => $message['orderNo'], 'uid' => $message['uid']]);
+                        Gateway::sendToUid($message['pile'], ['cmd' => 7, 'gun' => $message['gun'], 'orderNo' => $message['orderNo']]);
                         return Gateway::sendToClient($client_id, json_encode(['code' => 204]));
                     }
                     return Gateway::sendToClient($client_id, json_encode(['code' => 201]));
@@ -154,5 +159,15 @@ class Web
     {
         $client_ids = Gateway::getClientIdByUid($uid);
         return Gateway::getSession($client_ids[0]);
+    }
+
+    /**
+     * @param string $uid
+     * @param array $session
+     */
+    private static function setSessionByUid($uid = '', $session = [])
+    {
+        $client_ids = Gateway::getClientIdByUid($uid);
+        Gateway::setSession($client_ids[0], $session);
     }
 }

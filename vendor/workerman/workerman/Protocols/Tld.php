@@ -8,20 +8,8 @@
 
 namespace Workerman\Protocols;
 
-use GlobalData\Client;
-
 class Tld
 {
-    private static $global;
-
-    private static function globalClient()
-    {
-        if (!self::$global) {
-            self::$global = new Client();
-        }
-        return self::$global;
-    }
-
     public static function input($buffer)
     {
         if (strlen($buffer) < 4) {
@@ -147,10 +135,6 @@ class Tld
                 $buffer .= pack('V', $params['val']);
                 break;
             case 7;
-                $_SESSION['orderInfo'][$params['gun']] = $params['orderNo'];
-                $_SESSION['userInfo'][$params['gun']] = $params['uid'];
-                self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'orderInfo', json_encode($_SESSION['orderInfo']));
-                self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'userInfo', json_encode($_SESSION['userInfo']));
                 $buffer .= pack('C', $params['gun']);
                 $buffer .= pack('V', 0);
                 $buffer .= pack('V', 0);
@@ -158,7 +142,7 @@ class Tld
                 $buffer .= pack('V', 0);
                 $buffer .= self::getTime();
                 $buffer .= pack('C', 0);
-                $buffer .= pack('a32', $params['uid']);
+                $buffer .= pack('a32', $params['orderNo']);
                 $buffer .= pack('C', 0);
                 $buffer .= pack('V', 0);
                 $buffer .= pack('a32', $params['orderNo']);
