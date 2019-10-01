@@ -88,6 +88,7 @@ class Events
                 break;
             //todo 特来电电桩
             case 20002:
+                var_dump($data['cmd']);
                 switch ($data['cmd']) {
                     case 62:
                         if ($data['result'] == 0) {
@@ -213,7 +214,7 @@ class Events
                 break;
         }
     }
-    
+
     public static function onClose($client_id)
     {
         switch ($_SERVER['GATEWAY_PORT']) {
