@@ -30,12 +30,12 @@ class Tld
             ];
             $buffer = substr($buffer, 8, $length - 9);
             switch ($data['cmd']) {
-                case 4;
+                case 4:
                     $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
                     $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
                     $data['result'] = unpack('Cv', substr($buffer, 41, 1))['v'];
                     break;
-                case 6;
+                case 6:
                     $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
                     $data['code'] = unpack('Vv', substr($buffer, 37, 4))['v'];
                     $data['result'] = unpack('Cv', substr($buffer, 42, 1))['v'];
@@ -43,16 +43,16 @@ class Tld
                         $data['cmd'] = 62;
                     }
                     break;
-                case 8;
+                case 8:
                     $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
                     $data['result'] = unpack('Vv', substr($buffer, 37, 4))['v'];
                     $data['orderNo'] = trim(unpack('a32v', substr($buffer, 41, 32))['v']);
                     break;
-                case 102;
+                case 102:
                     $data['heartNo'] = unpack('vv', substr($buffer, 36, 2))['v'];
                     $data['gunStatus'] = self::parseBin(substr($buffer, -16, 16));
                     break;
-                case 104;
+                case 104:
                     $data['gunCount'] = unpack('Cv', substr($buffer, 36, 1))['v'];
                     $data['gun'] = unpack('Cv', substr($buffer, 37, 1))['v'];
                     $data['gunType'] = unpack('Cv', substr($buffer, 38, 1))['v'];
@@ -67,7 +67,7 @@ class Tld
                     $data['power'] = unpack('Vv', substr($buffer, 153, 4))['v'];
                     $data['vin'] = unpack('a18v', substr($buffer, 172, 18))['v'];
                     break;
-                case 106;
+                case 106:
                     $data['sign'] = str_pad(base_convert(substr($buffer, 36, 1), 16, 2), 8, 0, STR_PAD_LEFT);
                     $data['softwareEdition'] = unpack('Vv', substr($buffer, 37, 4))['v'];
                     $data['project'] = unpack('vv', substr($buffer, 41, 2))['v'];
@@ -84,16 +84,16 @@ class Tld
                     $data['communicationEdition'] = unpack('vv', substr($buffer, 94, 2))['v'];
                     $data['whiteListEdition'] = unpack('vv', substr($buffer, 96, 4))['v'];
                     break;
-                case 108;
+                case 108:
                     $data['alarmInfo'] = self::parseBin(substr($buffer, -32, 32));
                     break;
-                case 110;
+                case 110:
                     $data['gun'] = unpack('Cv', substr($buffer, 36, 1))['v'];
                     $data['failType'] = unpack('Vv', substr($buffer, 37, 4))['v'];
                     $data['sendType'] = unpack('vv', substr($buffer, 41, 2))['v'];
                     $data['vin'] = unpack('a17v', substr($buffer, 79, 17))['v'];
                     break;
-                case 202;
+                case 202:
                     $data['type'] = unpack('Cv', substr($buffer, 36, 1))['v'];
                     $data['gun'] = unpack('Cv', substr($buffer, 37, 1))['v'];
                     $data['cardNo'] = unpack('a32v', substr($buffer, 38, 32))['v'];
@@ -121,20 +121,20 @@ class Tld
         $buffer = pack('v', 0);
         $buffer .= pack('v', 0);
         switch ($params['cmd']) {
-            case 3;
+            case 3:
                 $buffer .= pack('C', $params['type']);
                 $buffer .= pack('V', $params['code']);
                 $buffer .= pack('v', strlen($params['val']));
                 $buffer .= $params['val'];
                 break;
-            case 5;
+            case 5:
                 $buffer .= pack('C', $params['gun']);
                 $buffer .= pack('V', $params['code']);
                 $buffer .= pack('C', 1);
                 $buffer .= pack('v', 4);
                 $buffer .= pack('V', $params['val']);
                 break;
-            case 7;
+            case 7:
                 $buffer .= pack('C', $params['gun']);
                 $buffer .= pack('V', 0);
                 $buffer .= pack('V', 0);
@@ -147,13 +147,13 @@ class Tld
                 $buffer .= pack('V', 0);
                 $buffer .= pack('a32', $params['orderNo']);
                 break;
-            case 101;
+            case 101:
                 $buffer .= pack('v', $params['times']);
                 break;
-            case 103;
+            case 103:
                 $buffer .= pack('C', $params['gun']);
                 break;
-            case 105;
+            case 105:
                 $buffer .= pack('V', $params['random']);
                 $buffer .= pack('C', 0);
                 $buffer .= pack('C', 0);
@@ -161,7 +161,7 @@ class Tld
                 $buffer .= pack('V', 0);
                 $buffer .= pack('C', 0);
                 break;
-            case 201;
+            case 201:
                 $buffer .= pack('C', $params['gun']);
                 $buffer .= pack('a32', $params['cardNo']);
                 $buffer .= pack('V', $params['index']);

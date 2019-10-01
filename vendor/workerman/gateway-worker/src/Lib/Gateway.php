@@ -942,6 +942,7 @@ class Gateway
      * 向所有 uid 发送
      * @param $uid
      * @param $message
+     * @return bool
      */
     public static function sendToUid($uid, $message)
     {
@@ -966,7 +967,7 @@ class Gateway
      * @param array            $exclude_client_id 不给这些client_id发
      * @param bool             $raw               发送原始数据（即不调用gateway的协议的encode方法）
      *
-     * @return void
+     * @return bool
      */
     public static function sendToGroup($group, $message, $exclude_client_id = null, $raw = false)
     {
