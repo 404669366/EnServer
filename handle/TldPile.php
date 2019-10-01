@@ -64,14 +64,14 @@ class TldPile
 
     private static function cmd_104($client_id, $data)
     {
-        if (in_array($data['gun'], [6, 7, 8])) {
+        /*if (in_array($data['gun'], [6, 7, 8])) {
             echo "---------------------------104--------------------------------\r\n";
             var_dump([
                 'gun' => $data['gun'],
                 'workStatus' => $data['workStatus'],
                 'linkStatus' => $data['linkStatus'],
             ]);
-        }
+        }*/
         Gateway::bindUid($client_id, $data['no']);
         $orderNo = isset($_SESSION['orderInfo'][$data['gun']]) ? $_SESSION['orderInfo'][$data['gun']] : '';
         if ($orderNo) {
@@ -170,28 +170,30 @@ class TldPile
             echo "---------------------------202--------------------------------\r\n";
             var_dump([
                 'gun' => $data['gun'],
-                'duration' => $data['duration'],
+                'orderNo' => $data['orderNo'],
             ]);
         }
-        $rule = self::getRule($data['no']);
-        $order = self::globalClient()->hGet('ChargeOrder', $data['orderNo']);
-        $order['status'] = 3;
-        $order['created_at'] = $data['beginTime'];
-        $order['soc'] = $data['endSoc'];
-        $order['power'] = 0;
-        $order['duration'] = $data['duration'];
-        $order['rule'] = $rule;
-        $data['electricQuantity'] = $data['electricQuantity'] / 100;
-        $order['electricQuantity'] += $data['electricQuantity'];
-        $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
-        $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
-        self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
-        Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 208, 'data' => $order]));
+        if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
+            var_dump($order);
+            $rule = self::getRule($data['no']);
+            $order['status'] = 3;
+            $order['created_at'] = $data['beginTime'];
+            $order['soc'] = $data['endSoc'];
+            $order['power'] = 0;
+            $order['duration'] = $data['duration'];
+            $order['rule'] = $rule;
+            $data['electricQuantity'] = $data['electricQuantity'] / 100;
+            $order['electricQuantity'] += $data['electricQuantity'];
+            $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
+            $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
+            self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
+            Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 208, 'data' => $order]));
+            unset($_SESSION['orderInfo'][$data['gun']]);
+            unset($_SESSION['userInfo'][$data['gun']]);
+            self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'orderInfo', json_encode($_SESSION['orderInfo']));
+            self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'userInfo', json_encode($_SESSION['userInfo']));
+        }
         Gateway::sendToClient($client_id, ['cmd' => 201, 'gun' => $data['gun'], 'cardNo' => $data['cardNo'], 'index' => $data['index']]);
-        unset($_SESSION['orderInfo'][$data['gun']]);
-        unset($_SESSION['userInfo'][$data['gun']]);
-        self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'orderInfo', json_encode($_SESSION['orderInfo']));
-        self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'userInfo', json_encode($_SESSION['userInfo']));
     }
 
     /**
