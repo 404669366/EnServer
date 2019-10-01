@@ -132,7 +132,6 @@ class TldPile
 
     private static function cmd_106($client_id, $data)
     {
-        var_dump($data);
         $_SESSION['no'] = $data['no'];
         $_SESSION['gunCount'] = $data['gunCount'];
         $pileInfo = self::globalClient()->hGet('PileInfo', $data['no']);
