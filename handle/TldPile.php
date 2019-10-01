@@ -166,13 +166,6 @@ class TldPile
 
     private static function cmd_202($client_id, $data)
     {
-        if (in_array($data['gun'], [6, 7, 8])) {
-            echo "---------------------------202--------------------------------\r\n";
-            var_dump([
-                'gun' => $data['gun'],
-                'orderNo' => $data['orderNo'],
-            ]);
-        }
         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
             var_dump($order);
             if ($order['status'] != 3) {
