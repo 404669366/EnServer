@@ -55,13 +55,12 @@ class Web
     {
         if (Gateway::isUidOnline($message['pile'])) {
             $session = self::getSessionByUid($message['pile']);
-            if (!$session['gunInfo'][$message['gun']]['workStatus']) {
+            if ($session['gunInfo'][$message['gun']]['workStatus'] != 6) {
                 if ($session['gunInfo'][$message['gun']]['linkStatus']) {
                     $money = self::globalClient()->hGetField('UserInfo', $message['uid'], 'money') ?: 0;
                     if ($money > 5) {
                         $session['orderInfo'][$message['gun']] = $message['orderNo'];
                         $session['userInfo'][$message['gun']] = $message['uid'];
-                        var_dump($message, $session);
                         self::setSessionByUid($message['pile'], $session);
                         self::globalClient()->hSetField('PileInfo', $message['pile'], 'orderInfo', json_encode($_SESSION['orderInfo']));
                         self::globalClient()->hSetField('PileInfo', $message['pile'], 'userInfo', json_encode($_SESSION['userInfo']));
