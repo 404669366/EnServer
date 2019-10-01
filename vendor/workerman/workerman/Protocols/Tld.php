@@ -108,7 +108,7 @@ class Tld
                     $data['index'] = unpack('Vv', substr($buffer, 112, 4))['v'];
                     $data['vin'] = unpack('a17v', substr($buffer, 131, 17))['v'];
                     $data['startType'] = unpack('Cv', substr($buffer, 252, 1))['v'];
-                    $data['orderNo'] = unpack('a32v', substr($buffer, 253, 32))['v'];
+                    $data['orderNo'] = trim(unpack('a32v', substr($buffer, 253, 32))['v']);
                     break;
             }
             return $data;
