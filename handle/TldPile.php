@@ -64,6 +64,7 @@ class TldPile
 
     private static function cmd_104($client_id, $data)
     {
+        var_dump($data);
         Gateway::bindUid($client_id, $data['no']);
         $orderNo = isset($_SESSION['orderInfo'][$data['gun']]) ? $_SESSION['orderInfo'][$data['gun']] : '';
         if ($orderNo) {
