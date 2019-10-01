@@ -65,9 +65,8 @@ class TldPile
     private static function cmd_104($client_id, $data)
     {
         if (in_array($data['gun'], [6, 7, 8])) {
-            echo '-----------------------------------------------------------';
+            echo '---------------------------104--------------------------------';
             var_dump([
-                'cmd' => 104,
                 'gun' => $data['gun'],
                 'workStatus' => $data['workStatus'],
                 'linkStatus' => $data['linkStatus'],
@@ -168,9 +167,8 @@ class TldPile
     private static function cmd_202($client_id, $data)
     {
         if (in_array($data['gun'], [6, 7, 8])) {
-            echo '-----------------------------------------------------------';
+            echo '----------------------------202-------------------------------';
             var_dump([
-                'cmd' => 202,
                 'gun' => $data['gun'],
                 'duration' => $data['duration'],
             ]);
