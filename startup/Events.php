@@ -169,7 +169,7 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
                         break;
                     case 202:
-                        var_dump($data['orderNo']);
+                        var_dump(base64_encode($data['orderNo']));
                         //echo PHP_EOL . $data['orderNo'] . PHP_EOL;
                         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
                             echo PHP_EOL . $data['orderNo'] . PHP_EOL;
