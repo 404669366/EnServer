@@ -93,7 +93,7 @@ class Events
                         break;
                     case 104:
                         if ($data['linkStatus'] == 2) {
-                            echo $data['gun'] . '-' . $data['workStatus'] . PHP_EOL;
+                            echo $data['gun'] . '-' . $data['workStatus'] . ' / ';
                         }
                         Gateway::bindUid($client_id, $data['no']);
                         $gun = self::globalClient()->hGet('GunInfo', $data['no'] . $data['gun']) ?: [];
@@ -135,7 +135,7 @@ class Events
                                 }
                                 Gateway::sendToGroup($order['no'], json_encode(['code' => $code, 'data' => $order]));
                             }
-                            if ($gun['workStatus'] == 2 && in_array($data['workStatus'], [0, 3, 6])) {
+                            if ($gun['workStatus'] == 2 && in_array($data['workStatus'], [3, 6])) {
                                 $rule = self::getRule($data['no']);
                                 $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']);
                                 $order['status'] = 2;
