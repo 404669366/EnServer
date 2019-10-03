@@ -6,6 +6,13 @@ use GatewayWorker\Lib\Gateway;
 
 class Events
 {
+    public static $worker_id;
+
+    public static function onWorkerStart($worker)
+    {
+        self::$worker_id = $worker->id;
+    }
+
     public static function onMessage($client_id, $data)
     {
         switch ($_SERVER['GATEWAY_PORT']) {
@@ -99,7 +106,7 @@ class Events
                 break;
             //todo 特来电电桩
             case 20002:
-                var_dump($_SERVER);
+                var_dump(self::$worker_id);
                 switch ($data['cmd']) {
                     case 62:
                         $orderNo = self::globalClient()->hGetField('GunInfo', $data['no'] . $data['gun'], 'orderNo');
