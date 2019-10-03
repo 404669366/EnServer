@@ -160,10 +160,13 @@ class Events
                         $gun['linkStatus'] = $data['linkStatus'];
                         self::globalClient()->hSet('GunInfo', $data['no'] . $data['gun'], $gun);
                         Gateway::sendToClient($client_id, ['cmd' => 103, 'gun' => $data['gun']]);
+                        self::updateGunInfo();
                         break;
                     case 106:
                         $_SESSION['no'] = $data['no'];
                         $_SESSION['gunCount'] = $data['gunCount'];
+                        self::globalClient()->hSetField('PileInfo', $data['no'], 'used', 0);
+                        self::globalClient()->hSetField('PileInfo', $data['no'], 'gunCount', $data['gunCount']);
                         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
                         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
                         break;
@@ -211,6 +214,20 @@ class Events
     }
 
     /**
+     * 更新枪口信息
+     */
+    public static function updateGunInfo()
+    {
+        $used = 0;
+        for ($i = 1; $i <= $_SESSION['gunCount']; $i++) {
+            if ($workStatus = self::globalClient()->hGetField('GunInfo', $_SESSION['no'] . $i, 'workStatus')) {
+                $used += 1;
+            }
+        }
+        self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'used', $used);
+    }
+
+    /**
      * 根据uid获取session
      * @param string $uid
      * @return mixed
@@ -219,16 +236,6 @@ class Events
     {
         $client_ids = Gateway::getClientIdByUid($uid);
         return Gateway::getSession($client_ids[0]);
-    }
-
-    /**
-     * @param string $uid
-     * @param mixed $session
-     */
-    private static function setSessionByUid($uid = '', $session = [])
-    {
-        $client_ids = Gateway::getClientIdByUid($uid);
-        Gateway::setSession($client_ids[0], $session);
     }
 
     /**
