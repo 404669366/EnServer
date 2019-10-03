@@ -169,11 +169,6 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
                         break;
                     case 202:
-                        $arr = str_split($data['orderNo'], 1);
-                        unset($arr[0]);
-                        $data['orderNo'] = implode('', $arr);
-                        var_dump($data['orderNo']);
-                        //echo PHP_EOL . $data['orderNo'] . PHP_EOL;
                         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
                             echo PHP_EOL . $data['orderNo'] . PHP_EOL;
                             $rule = self::getRule($data['no']);
