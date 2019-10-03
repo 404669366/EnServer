@@ -184,7 +184,7 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
                         break;
                     case 108:
-                        $_SESSION['alarmInfo'] = $data['alarmInfo'];
+                        self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'alarmInfo', $data['alarmInfo']);
                         break;
                     case 110:
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
