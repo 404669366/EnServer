@@ -126,6 +126,7 @@ class Events
                                 $rule = self::getRule($data['no']);
                                 $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']);
                                 $order['rule'] = $rule;
+                                $order['status'] = 1;
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
                                 $order['duration'] = $data['duration'];
