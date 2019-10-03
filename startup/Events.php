@@ -120,7 +120,7 @@ class Events
                                 ];
                                 $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']) ?: $order;
                                 $order['soc'] = $data['soc'];
-                                $order['power'] = $data['power'] / 10;
+                                $order['power'] = round($data['power'] / 10, 2);
                                 $order['duration'] = $data['duration'];
                                 $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
                                 $order['electricQuantity'] += $data['electricQuantity'];
@@ -140,7 +140,7 @@ class Events
                                 $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']);
                                 $order['status'] = 2;
                                 $order['soc'] = $data['soc'];
-                                $order['power'] = $data['power'] / 10;
+                                $order['power'] = round($data['power'] / 10, 2);
                                 $order['duration'] = $data['duration'];
                                 $order['rule'] = $rule;
                                 $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
