@@ -171,7 +171,8 @@ class Events
                     case 202:
                         var_dump($data['orderNo']);
                         //echo PHP_EOL . $data['orderNo'] . PHP_EOL;
-                        var_dump(self::globalClient()->hGet('ChargeOrder', $data['orderNo']));
+                        var_dump(self::globalClient()->hGetAll('ChargeOrder'));
+                        var_dump(self::globalClient()->hGet('ChargeOrder','O20191003173730'));
                         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
                             echo PHP_EOL . $data['orderNo'] . PHP_EOL;
                             $rule = self::getRule($data['no']);
