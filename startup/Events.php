@@ -241,7 +241,7 @@ class Events
     {
         $time = $time ?: time();
         $now = $time - strtotime(date('Y-m-d'));
-        $rules = json_decode(self::globalClient()->hGetField('PileInfo', $no, 'rules'), true);
+        $rules = json_decode(self::globalClient()->hGetField('PileInfo', $no, 'rules') ?: '{}', true);
         foreach ($rules as $v) {
             if ($now >= $v[0] && $now < $v[1]) {
                 return $v;
