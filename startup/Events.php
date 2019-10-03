@@ -92,8 +92,8 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 101, 'times' => $data['heartNo'] + 1]);
                         break;
                     case 104:
-                        if ($data['gun'] == 8) {
-                            var_dump(['gun' => $data['gun'], 'work' => $data['workStatus'], 'link' => $data['linkStatus']]);
+                        if ($data['linkStatus'] == 2) {
+                            echo $data['gun'] . '-' . $data['workStatus'] . PHP_EOL;
                         }
                         Gateway::bindUid($client_id, $data['no']);
                         $gun = self::globalClient()->hGet('GunInfo', $data['no'] . $data['gun']) ?: [];
