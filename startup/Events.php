@@ -160,6 +160,8 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 103, 'gun' => $data['gun']]);
                         break;
                     case 106:
+                        $_SESSION['no'] = $data['no'];
+                        $_SESSION['gunCount'] = $data['gunCount'];
                         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
                         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
                         break;
@@ -199,13 +201,11 @@ class Events
         switch ($_SERVER['GATEWAY_PORT']) {
             //todo 特来电电桩
             case 20002:
-                foreach ($_SESSION['orderInfo'] as $v) {
-                    self::globalClient()->hSetField('ChargeOrder', $v, 'status', 3);
-                    Gateway::sendToGroup($v, json_encode(['code' => 208]));
+                for ($i = 1; $i <= $_SESSION['gunCount']; $i++) {
+                    $orderNo = self::globalClient()->hGetField('GunInfo', $_SESSION['no'] . $i, 'orderNo');
+                    self::globalClient()->hSetField('ChargeOrder', $orderNo, 'status', 3);
+                    Gateway::sendToGroup($orderNo, json_encode(['code' => 208]));
                 }
-                self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'orderInfo', '{}');
-                self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'userInfo', '{}');
-                break;
         }
     }
 
