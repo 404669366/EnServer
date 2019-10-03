@@ -169,8 +169,8 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
                         break;
                     case 202:
-                        echo PHP_EOL . $data['orderNo'] . PHP_EOL;
                         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
+                            echo PHP_EOL . $data['orderNo'] . PHP_EOL;
                             $rule = self::getRule($data['no']);
                             $order['status'] = 3;
                             $order['created_at'] = $data['beginTime'];
@@ -183,7 +183,7 @@ class Events
                             $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
                             $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
                             self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
-                            Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 208, 'data' => $order]));
+                            Gateway::sendToGroup($order['no'], json_encode(['code' => 208, 'data' => $order]));
                         }
                         Gateway::sendToClient($client_id, ['cmd' => 201, 'gun' => $data['gun'], 'cardNo' => $data['cardNo'], 'index' => $data['index']]);
                         break;
