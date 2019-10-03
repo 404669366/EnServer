@@ -11,6 +11,7 @@ class Events
         switch ($_SERVER['GATEWAY_PORT']) {
             //todo 客户端
             case 20001:
+                $data = json_encode($data, true);
                 switch ($data['do']) {
                     case 'beginCharge':
                         if (!Gateway::isUidOnline($data['pile'])) {
