@@ -202,9 +202,10 @@ class Events
             //todo 特来电电桩
             case 20002:
                 for ($i = 1; $i <= $_SESSION['gunCount']; $i++) {
-                    $orderNo = self::globalClient()->hGetField('GunInfo', $_SESSION['no'] . $i, 'orderNo');
-                    self::globalClient()->hSetField('ChargeOrder', $orderNo, 'status', 3);
-                    Gateway::sendToGroup($orderNo, json_encode(['code' => 208]));
+                    if ($orderNo = self::globalClient()->hGetField('GunInfo', $_SESSION['no'] . $i, 'orderNo')) {
+                        self::globalClient()->hSetField('ChargeOrder', $orderNo, 'status', 3);
+                        Gateway::sendToGroup($orderNo, json_encode(['code' => 208]));
+                    }
                 }
         }
     }
