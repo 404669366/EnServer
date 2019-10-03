@@ -23,7 +23,7 @@ class Events
                             Gateway::sendToClient($client_id, json_encode(['code' => 203]));
                             break;
                         }
-                        if ($gun['linkStatus']) {
+                        if (!$gun['linkStatus']) {
                             Gateway::sendToClient($client_id, json_encode(['code' => 202]));
                             break;
                         }
