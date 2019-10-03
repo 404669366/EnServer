@@ -29,6 +29,22 @@ class Events
                         }
                         $gun['orderNo'] = $data['orderNo'];
                         $gun['user_id'] = $data['user_id'];
+                        $order = [
+                            'no' => $data['orderNo'],
+                            'uid' => $data['user_id'],
+                            'pile' => $data['pile'],
+                            'gun' => $data['gun'],
+                            'status' => 0,
+                            'created_at' => time(),
+                            'soc' => 0,
+                            'power' => 0,
+                            'duration' => 0,
+                            'rule' => '',
+                            'electricQuantity' => 0,
+                            'basisMoney' => 0,
+                            'serviceMoney' => 0,
+                        ];
+                        self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
                         self::globalClient()->hSet('GunInfo', $data['pile'] . $data['gun'], $gun);
                         Gateway::sendToUid($data['pile'], ['cmd' => 7, 'gun' => $data['gun'], 'orderNo' => $data['orderNo']]);
                         Gateway::joinGroup($client_id, $data['orderNo']);
@@ -38,6 +54,10 @@ class Events
                         Gateway::joinGroup($client_id, $data['orderNo']);
                         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
                             $order['rule'] = self::getRule($order['pile']);
+                            if ($order['status'] == 0) {
+                                Gateway::sendToClient($client_id, json_encode(['code' => 204, 'data' => $order]));
+                                break;
+                            }
                             if ($order['status'] == 1) {
                                 Gateway::sendToClient($client_id, json_encode(['code' => 205, 'data' => $order]));
                                 break;
@@ -99,26 +119,12 @@ class Events
                         $gun = self::globalClient()->hGet('GunInfo', $data['no'] . $data['gun']) ?: [];
                         if (isset($gun['orderNo'])) {
                             if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [3, 4, 6])) {
+                                self::globalClient()->hDel('ChargeOrder', $gun['orderNo']);
                                 Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
                             }
                             if (in_array($gun['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
                                 $rule = self::getRule($data['no']);
-                                $order = [
-                                    'no' => $gun['orderNo'],
-                                    'uid' => $gun['user_id'],
-                                    'pile' => $data['no'],
-                                    'gun' => $data['gun'],
-                                    'status' => 1,
-                                    'created_at' => time(),
-                                    'soc' => 0,
-                                    'power' => 0,
-                                    'duration' => 0,
-                                    'rule' => $rule,
-                                    'electricQuantity' => 0,
-                                    'basisMoney' => 0,
-                                    'serviceMoney' => 0,
-                                ];
-                                $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']) ?: $order;
+                                $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']);
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
                                 $order['duration'] = $data['duration'];
