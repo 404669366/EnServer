@@ -125,6 +125,7 @@ class Events
                             if (in_array($gun['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
                                 $rule = self::getRule($data['no']);
                                 $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']);
+                                $order['rule'] = $rule;
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
                                 $order['duration'] = $data['duration'];
@@ -144,11 +145,11 @@ class Events
                             if ($gun['workStatus'] == 2 && in_array($data['workStatus'], [3, 6])) {
                                 $rule = self::getRule($data['no']);
                                 $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']);
+                                $order['rule'] = $rule;
                                 $order['status'] = 2;
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
                                 $order['duration'] = $data['duration'];
-                                $order['rule'] = $rule;
                                 $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
                                 $order['electricQuantity'] += $data['electricQuantity'];
                                 $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
