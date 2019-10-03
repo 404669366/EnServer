@@ -122,10 +122,10 @@ class Events
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = $data['power'] / 10;
                                 $order['duration'] = $data['duration'];
-                                $data['electricQuantity'] = $data['electricQuantity'] / 100;
+                                $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
                                 $order['electricQuantity'] += $data['electricQuantity'];
-                                $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
-                                $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
+                                $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
+                                $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
                                 self::globalClient()->hSet('ChargeOrder', $gun['orderNo'], $order);
                                 $code = 205;
                                 $userMoney = self::globalClient()->hGetField('UserInfo', $gun['user_id'], 'money') ?: 0;
@@ -143,10 +143,10 @@ class Events
                                 $order['power'] = $data['power'] / 10;
                                 $order['duration'] = $data['duration'];
                                 $order['rule'] = $rule;
-                                $data['electricQuantity'] = $data['electricQuantity'] / 100;
+                                $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
                                 $order['electricQuantity'] += $data['electricQuantity'];
-                                $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
-                                $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
+                                $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
+                                $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
                                 self::globalClient()->hSet('ChargeOrder', $gun['orderNo'], $order);
                                 Gateway::sendToGroup($order['no'], json_encode(['code' => 206, 'data' => $order]));
                             }
@@ -169,6 +169,7 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
                         break;
                     case 202:
+                        var_dump($data);
                         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
                             var_dump($order);
                             if ($order['status'] != 3) {
@@ -179,10 +180,10 @@ class Events
                                 $order['power'] = 0;
                                 $order['duration'] = $data['duration'];
                                 $order['rule'] = $rule;
-                                $data['electricQuantity'] = $data['electricQuantity'] / 100;
+                                $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
                                 $order['electricQuantity'] += $data['electricQuantity'];
-                                $order['basisMoney'] += $rule[2] * $data['electricQuantity'];
-                                $order['serviceMoney'] += $rule[3] * $data['electricQuantity'];
+                                $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
+                                $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
                                 self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
                                 Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 208, 'data' => $order]));
                             }
