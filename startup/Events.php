@@ -113,8 +113,8 @@ class Events
                         break;
                     case 104:
                         Gateway::bindUid($client_id, $data['no']);
-                        $gun = self::globalClient()->hGet('GunInfo', $data['no'] . $data['gun']) ?: ['orderNo' => ''];
-                        if ($gun['orderNo']) {
+                        $gun = self::globalClient()->hGet('GunInfo', $data['no'] . $data['gun']) ?: [];
+                        if (isset($gun['orderNo'])) {
                             if ($order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo'])) {
                                 if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [3, 4, 6])) {
                                     self::globalClient()->hDel('ChargeOrder', $gun['orderNo']);
