@@ -99,6 +99,7 @@ class Events
                 break;
             //todo 特来电电桩
             case 20002:
+                var_dump($_SERVER);
                 switch ($data['cmd']) {
                     case 62:
                         $orderNo = self::globalClient()->hGetField('GunInfo', $data['no'] . $data['gun'], 'orderNo');
