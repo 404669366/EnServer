@@ -92,9 +92,9 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 101, 'times' => $data['heartNo'] + 1]);
                         break;
                     case 104:
-                        if ($data['linkStatus'] == 2) {
+                        /*if ($data['linkStatus'] == 2) {
                             echo $data['gun'] . '-' . $data['workStatus'] . ' / ';
-                        }
+                        }*/
                         Gateway::bindUid($client_id, $data['no']);
                         $gun = self::globalClient()->hGet('GunInfo', $data['no'] . $data['gun']) ?: [];
                         if (isset($gun['orderNo'])) {
@@ -169,7 +169,8 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
                         break;
                     case 202:
-                        echo PHP_EOL . $data['orderNo'] . PHP_EOL;
+                        var_dump($data['orderNo']);
+                        //echo PHP_EOL . $data['orderNo'] . PHP_EOL;
                         var_dump(self::globalClient()->hGet('ChargeOrder', $data['orderNo']));
                         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
                             echo PHP_EOL . $data['orderNo'] . PHP_EOL;
@@ -185,7 +186,7 @@ class Events
                             $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
                             $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
                             self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
-                            Gateway::sendToGroup($order['no'], json_encode(['code' => 208, 'data' => $order]));
+                            Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 208, 'data' => $order]));
                         }
                         Gateway::sendToClient($client_id, ['cmd' => 201, 'gun' => $data['gun'], 'cardNo' => $data['cardNo'], 'index' => $data['index']]);
                         break;
