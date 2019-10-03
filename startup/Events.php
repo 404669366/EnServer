@@ -178,6 +178,7 @@ class Events
                         break;
                     case 202:
                         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
+                            var_dump($order);
                             $rule = self::getRule($data['no']);
                             $order['status'] = 3;
                             $order['created_at'] = $data['beginTime'];
