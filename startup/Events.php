@@ -88,7 +88,6 @@ class Events
                 break;
             //todo 特来电电桩
             case 20002:
-                var_dump($data['cmd']);
                 switch ($data['cmd']) {
                     case 62:
                         if ($data['result'] == 0) {
@@ -101,6 +100,7 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 101, 'times' => $data['heartNo'] + 1]);
                         break;
                     case 104:
+                        var_dump(['gun' => $data['gun'], 'work' => $data['workStatus'], 'link' => $data['linkStatus']]);
                         Gateway::bindUid($client_id, $data['no']);
                         $orderNo = isset($_SESSION['orderInfo'][$data['gun']]) ? $_SESSION['orderInfo'][$data['gun']] : '';
                         if ($orderNo) {
