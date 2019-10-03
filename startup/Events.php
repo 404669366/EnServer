@@ -169,8 +169,9 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
                         break;
                     case 202:
-                        for($i=0;$i<strlen($data['orderNo']);$i++){
-                            ord ($data['orderNo'][$i]);
+                        $arr = str_split($data['orderNo'],1);
+                        foreach ($arr as $v){
+                            var_dump(bin2hex($v));
                         }
                         var_dump($data['orderNo']);
                         //echo PHP_EOL . $data['orderNo'] . PHP_EOL;
