@@ -112,51 +112,48 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 101, 'times' => $data['heartNo'] + 1]);
                         break;
                     case 104:
-                        if ($data['linkStatus'] == 2) {
-                            echo $data['gun'] . '-' . $data['workStatus'] . ' / ';
-                        }
                         Gateway::bindUid($client_id, $data['no']);
-                        $gun = self::globalClient()->hGet('GunInfo', $data['no'] . $data['gun']) ?: [];
-                        if (isset($gun['orderNo'])) {
-                            if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [3, 4, 6])) {
-                                self::globalClient()->hDel('ChargeOrder', $gun['orderNo']);
-                                Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
-                            }
-                            if (in_array($gun['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
-                                $rule = self::getRule($data['no']);
-                                $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']);
-                                $order['rule'] = $rule;
-                                $order['status'] = 1;
-                                $order['soc'] = $data['soc'];
-                                $order['power'] = round($data['power'] / 10, 2);
-                                $order['duration'] = $data['duration'];
-                                $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
-                                $order['electricQuantity'] += $data['electricQuantity'];
-                                $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
-                                $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
-                                self::globalClient()->hSet('ChargeOrder', $gun['orderNo'], $order);
-                                $code = 205;
-                                $userMoney = self::globalClient()->hGetField('UserInfo', $gun['user_id'], 'money') ?: 0;
-                                if (($order['basisMoney'] + $order['serviceMoney'] + 5) >= $userMoney) {
-                                    $code = 207;
-                                    Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
+                        $gun = self::globalClient()->hGet('GunInfo', $data['no'] . $data['gun']) ?: ['orderNo' => ''];
+                        if ($gun['orderNo']) {
+                            if ($order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo'])) {
+                                if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [3, 4, 6])) {
+                                    self::globalClient()->hDel('ChargeOrder', $gun['orderNo']);
+                                    Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
                                 }
-                                Gateway::sendToGroup($order['no'], json_encode(['code' => $code, 'data' => $order]));
-                            }
-                            if ($gun['workStatus'] == 2 && in_array($data['workStatus'], [3, 6])) {
-                                $rule = self::getRule($data['no']);
-                                $order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo']);
-                                $order['rule'] = $rule;
-                                $order['status'] = 2;
-                                $order['soc'] = $data['soc'];
-                                $order['power'] = round($data['power'] / 10, 2);
-                                $order['duration'] = $data['duration'];
-                                $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
-                                $order['electricQuantity'] += $data['electricQuantity'];
-                                $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
-                                $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
-                                self::globalClient()->hSet('ChargeOrder', $gun['orderNo'], $order);
-                                Gateway::sendToGroup($order['no'], json_encode(['code' => 206, 'data' => $order]));
+                                if (in_array($gun['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
+                                    $rule = self::getRule($data['no']);
+                                    $order['rule'] = $rule;
+                                    $order['status'] = 1;
+                                    $order['soc'] = $data['soc'];
+                                    $order['power'] = round($data['power'] / 10, 2);
+                                    $order['duration'] = $data['duration'];
+                                    $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
+                                    $order['electricQuantity'] += $data['electricQuantity'];
+                                    $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
+                                    $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
+                                    self::globalClient()->hSet('ChargeOrder', $gun['orderNo'], $order);
+                                    $code = 205;
+                                    $userMoney = self::globalClient()->hGetField('UserInfo', $gun['user_id'], 'money') ?: 0;
+                                    if (($order['basisMoney'] + $order['serviceMoney'] + 5) >= $userMoney) {
+                                        $code = 207;
+                                        Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
+                                    }
+                                    Gateway::sendToGroup($order['no'], json_encode(['code' => $code, 'data' => $order]));
+                                }
+                                if ($gun['workStatus'] == 2 && in_array($data['workStatus'], [3, 6])) {
+                                    $rule = self::getRule($data['no']);
+                                    $order['rule'] = $rule;
+                                    $order['status'] = 2;
+                                    $order['soc'] = $data['soc'];
+                                    $order['power'] = round($data['power'] / 10, 2);
+                                    $order['duration'] = $data['duration'];
+                                    $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
+                                    $order['electricQuantity'] += $data['electricQuantity'];
+                                    $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
+                                    $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
+                                    self::globalClient()->hSet('ChargeOrder', $gun['orderNo'], $order);
+                                    Gateway::sendToGroup($order['no'], json_encode(['code' => 206, 'data' => $order]));
+                                }
                             }
                         }
                         $gun['workStatus'] = $data['workStatus'];
@@ -178,7 +175,6 @@ class Events
                         break;
                     case 202:
                         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
-                            echo PHP_EOL . $data['orderNo'] . PHP_EOL;
                             $rule = self::getRule($data['no']);
                             $order['status'] = 3;
                             $order['created_at'] = $data['beginTime'];
