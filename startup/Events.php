@@ -170,6 +170,7 @@ class Events
                         break;
                     case 202:
                         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
+                            var_dump($order);
                             if ($order['status'] != 3) {
                                 $rule = self::getRule($data['no']);
                                 $order['status'] = 3;
