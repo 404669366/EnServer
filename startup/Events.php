@@ -169,6 +169,7 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
                         break;
                     case 202:
+                        var_dump($data['orderNo']);
                         if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
                             $rule = self::getRule($data['no']);
                             $order['status'] = 3;
