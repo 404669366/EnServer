@@ -62,6 +62,8 @@ class Events
                         break;
                     case 'endCharge':
                         if (Gateway::isUidOnline($data['pile'])) {
+                            Gateway::sendToUid($data['pile'], ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
+                            break;
                             $session = self::getSessionByUid($data['pile']);
                             $orderNo = isset($session['orderInfo'][$data['gun']]) ? $session['orderInfo'][$data['gun']] : '';
                             if ($orderNo) {
