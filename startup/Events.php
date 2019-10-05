@@ -128,9 +128,10 @@ class Events
                                     $order['power'] = round($data['power'] / 10, 2);
                                     $order['duration'] = $data['duration'];
                                     $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
-                                    $order['electricQuantity'] += $data['electricQuantity'];
-                                    $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
-                                    $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
+                                    $electricQuantity = $data['electricQuantity'] - $order['electricQuantity'];
+                                    $order['electricQuantity'] = $data['electricQuantity'];
+                                    $order['basisMoney'] += round($rule[2] * $electricQuantity, 2);
+                                    $order['serviceMoney'] += round($rule[3] * $electricQuantity, 2);
                                     self::globalClient()->hSet('ChargeOrder', $gun['orderNo'], $order);
                                     $code = 205;
                                     $userMoney = self::globalClient()->hGetField('UserInfo', $gun['user_id'], 'money') ?: 0;
@@ -148,9 +149,10 @@ class Events
                                     $order['power'] = round($data['power'] / 10, 2);
                                     $order['duration'] = $data['duration'];
                                     $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
-                                    $order['electricQuantity'] += $data['electricQuantity'];
-                                    $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
-                                    $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
+                                    $electricQuantity = $data['electricQuantity'] - $order['electricQuantity'];
+                                    $order['electricQuantity'] = $data['electricQuantity'];
+                                    $order['basisMoney'] += round($rule[2] * $electricQuantity, 2);
+                                    $order['serviceMoney'] += round($rule[3] * $electricQuantity, 2);
                                     self::globalClient()->hSet('ChargeOrder', $gun['orderNo'], $order);
                                     Gateway::sendToGroup($order['no'], json_encode(['code' => 206, 'data' => $order]));
                                 }
@@ -186,9 +188,10 @@ class Events
                             $order['duration'] = $data['duration'];
                             $order['rule'] = $rule;
                             $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
-                            $order['electricQuantity'] += $data['electricQuantity'];
-                            $order['basisMoney'] += round($rule[2] * $data['electricQuantity'], 2);
-                            $order['serviceMoney'] += round($rule[3] * $data['electricQuantity'], 2);
+                            $electricQuantity = $data['electricQuantity'] - $order['electricQuantity'];
+                            $order['electricQuantity'] = $data['electricQuantity'];
+                            $order['basisMoney'] += round($rule[2] * $electricQuantity, 2);
+                            $order['serviceMoney'] += round($rule[3] * $electricQuantity, 2);
                             self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
                             Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 208, 'data' => $order]));
                         }
@@ -248,7 +251,11 @@ class Events
     {
         $time = $time ?: time();
         $now = $time - strtotime(date('Y-m-d'));
-        $rules = json_decode(self::globalClient()->hGetField('PileInfo', $no, 'rules') ?: '{}', true);
+        $rules = isset($_SESSION['rules']) ? $_SESSION['rules'] : [];
+        if (!$rules) {
+            $rules = json_decode(self::globalClient()->hGetField('PileInfo', $no, 'rules') ?: '{}', true);
+            $_SESSION['rules'] = $rules;
+        }
         foreach ($rules as $v) {
             if ($now >= $v[0] && $now < $v[1]) {
                 return $v;
