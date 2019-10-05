@@ -3,9 +3,26 @@
 namespace startup;
 
 use GatewayWorker\Lib\Gateway;
+use GlobalData\Client;
+use Workerman\MySQL\Connection;
 
 class Events
 {
+    /**
+     * @var Client
+     */
+    private static $global;
+    /**
+     * @var Connection
+     */
+    private static $db;
+
+    public static function onWorkerStart()
+    {
+        self::$global = new \GlobalData\Client();
+        self::$db = new Connection('127.0.0.1', '3306', 'root', 'fi9^BRLHschX%V96', 'en');
+    }
+
     public static function onMessage($client_id, $data)
     {
         switch ($_SERVER['GATEWAY_PORT']) {
@@ -18,7 +35,7 @@ class Events
                             Gateway::sendToClient($client_id, json_encode(['code' => 200]));
                             break;
                         }
-                        $gun = self::globalClient()->hGet('GunInfo', $data['pile'] . $data['gun']);
+                        $gun = self::$global->hGet('GunInfo', $data['pile'] . $data['gun']);
                         if ($gun['workStatus']) {
                             Gateway::sendToClient($client_id, json_encode(['code' => 203]));
                             break;
@@ -44,15 +61,15 @@ class Events
                             'basisMoney' => 0,
                             'serviceMoney' => 0,
                         ];
-                        self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
-                        self::globalClient()->hSet('GunInfo', $data['pile'] . $data['gun'], $gun);
+                        self::$global->hSet('ChargeOrder', $data['orderNo'], $order);
+                        self::$global->hSet('GunInfo', $data['pile'] . $data['gun'], $gun);
                         Gateway::sendToUid($data['pile'], ['cmd' => 7, 'gun' => $data['gun'], 'orderNo' => $data['orderNo']]);
                         Gateway::joinGroup($client_id, $data['orderNo']);
                         Gateway::sendToClient($client_id, json_encode(['code' => 204]));
                         break;
                     case 'seeCharge':
                         Gateway::joinGroup($client_id, $data['orderNo']);
-                        if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
+                        if ($order = self::$global->hGet('ChargeOrder', $data['orderNo'])) {
                             $order['rule'] = self::getRule($order['pile']);
                             if ($order['status'] == 0) {
                                 Gateway::sendToClient($client_id, json_encode(['code' => 204, 'data' => $order]));
@@ -75,7 +92,7 @@ class Events
                         break;
                     case 'endCharge':
                         if (Gateway::isUidOnline($data['pile'])) {
-                            $orderNo = self::globalClient()->hGetField('GunInfo', $data['pile'] . $data['gun'], 'orderNo');
+                            $orderNo = self::$global->hGetField('GunInfo', $data['pile'] . $data['gun'], 'orderNo');
                             Gateway::joinGroup($client_id, $orderNo);
                             Gateway::sendToUid($data['pile'], ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
                             break;
@@ -101,7 +118,7 @@ class Events
             case 20002:
                 switch ($data['cmd']) {
                     case 62:
-                        $orderNo = self::globalClient()->hGetField('GunInfo', $data['no'] . $data['gun'], 'orderNo');
+                        $orderNo = self::$global->hGetField('GunInfo', $data['no'] . $data['gun'], 'orderNo');
                         if ($data['result'] == 0) {
                             Gateway::sendToGroup($orderNo, json_encode(['code' => 300]));
                             break;
@@ -113,11 +130,11 @@ class Events
                         break;
                     case 104:
                         Gateway::bindUid($client_id, $data['no']);
-                        $gun = self::globalClient()->hGet('GunInfo', $data['no'] . $data['gun']) ?: [];
+                        $gun = self::$global->hGet('GunInfo', $data['no'] . $data['gun']) ?: [];
                         if (isset($gun['orderNo'])) {
-                            if ($order = self::globalClient()->hGet('ChargeOrder', $gun['orderNo'])) {
+                            if ($order = self::$global->hGet('ChargeOrder', $gun['orderNo'])) {
                                 if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [3, 4, 6])) {
-                                    self::globalClient()->hDel('ChargeOrder', $gun['orderNo']);
+                                    self::$global->hDel('ChargeOrder', $gun['orderNo']);
                                     Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
                                 }
                                 if (in_array($gun['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
@@ -132,9 +149,9 @@ class Events
                                     $order['electricQuantity'] = $data['electricQuantity'];
                                     $order['basisMoney'] += round($rule[2] * $electricQuantity, 2);
                                     $order['serviceMoney'] += round($rule[3] * $electricQuantity, 2);
-                                    self::globalClient()->hSet('ChargeOrder', $gun['orderNo'], $order);
+                                    self::$global->hSet('ChargeOrder', $gun['orderNo'], $order);
                                     $code = 205;
-                                    $userMoney = self::globalClient()->hGetField('UserInfo', $gun['user_id'], 'money') ?: 0;
+                                    $userMoney = self::$global->hGetField('UserInfo', $gun['user_id'], 'money') ?: 0;
                                     if (($order['basisMoney'] + $order['serviceMoney'] + 5) >= $userMoney) {
                                         $code = 207;
                                         Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
@@ -153,22 +170,22 @@ class Events
                                     $order['electricQuantity'] = $data['electricQuantity'];
                                     $order['basisMoney'] += round($rule[2] * $electricQuantity, 2);
                                     $order['serviceMoney'] += round($rule[3] * $electricQuantity, 2);
-                                    self::globalClient()->hSet('ChargeOrder', $gun['orderNo'], $order);
+                                    self::$global->hSet('ChargeOrder', $gun['orderNo'], $order);
                                     Gateway::sendToGroup($order['no'], json_encode(['code' => 206, 'data' => $order]));
                                 }
                             }
                         }
                         $gun['workStatus'] = $data['workStatus'];
                         $gun['linkStatus'] = $data['linkStatus'];
-                        self::globalClient()->hSet('GunInfo', $data['no'] . $data['gun'], $gun);
+                        self::$global->hSet('GunInfo', $data['no'] . $data['gun'], $gun);
                         Gateway::sendToClient($client_id, ['cmd' => 103, 'gun' => $data['gun']]);
                         self::updateGunInfo();
                         break;
                     case 106:
                         $_SESSION['no'] = $data['no'];
                         $_SESSION['gunCount'] = $data['gunCount'];
-                        self::globalClient()->hSetField('PileInfo', $data['no'], 'used', 0);
-                        self::globalClient()->hSetField('PileInfo', $data['no'], 'gunCount', $data['gunCount']);
+                        self::$global->hSetField('PileInfo', $data['no'], 'used', 0);
+                        self::$global->hSetField('PileInfo', $data['no'], 'gunCount', $data['gunCount']);
                         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
                         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
                         break;
@@ -179,7 +196,7 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
                         break;
                     case 202:
-                        if ($order = self::globalClient()->hGet('ChargeOrder', $data['orderNo'])) {
+                        if ($order = self::$global->hGet('ChargeOrder', $data['orderNo'])) {
                             $rule = self::getRule($data['no']);
                             $order['status'] = 3;
                             $order['created_at'] = $data['beginTime'];
@@ -192,7 +209,7 @@ class Events
                             $order['electricQuantity'] = $data['electricQuantity'];
                             $order['basisMoney'] += round($rule[2] * $electricQuantity, 2);
                             $order['serviceMoney'] += round($rule[3] * $electricQuantity, 2);
-                            self::globalClient()->hSet('ChargeOrder', $data['orderNo'], $order);
+                            self::$global->hSet('ChargeOrder', $data['orderNo'], $order);
                             Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 208, 'data' => $order]));
                         }
                         Gateway::sendToClient($client_id, ['cmd' => 201, 'gun' => $data['gun'], 'cardNo' => $data['cardNo'], 'index' => $data['index']]);
@@ -208,8 +225,8 @@ class Events
             //todo 特来电电桩
             case 20002:
                 for ($i = 1; $i <= $_SESSION['gunCount']; $i++) {
-                    if ($orderNo = self::globalClient()->hGetField('GunInfo', $_SESSION['no'] . $i, 'orderNo')) {
-                        self::globalClient()->hSetField('ChargeOrder', $orderNo, 'status', 3);
+                    if ($orderNo = self::$global->hGetField('GunInfo', $_SESSION['no'] . $i, 'orderNo')) {
+                        self::$global->hSetField('ChargeOrder', $orderNo, 'status', 3);
                         Gateway::sendToGroup($orderNo, json_encode(['code' => 208]));
                     }
                 }
@@ -223,11 +240,11 @@ class Events
     {
         $used = 0;
         for ($i = 1; $i <= $_SESSION['gunCount']; $i++) {
-            if ($workStatus = self::globalClient()->hGetField('GunInfo', $_SESSION['no'] . $i, 'workStatus')) {
+            if ($workStatus = self::$global->hGetField('GunInfo', $_SESSION['no'] . $i, 'workStatus')) {
                 $used += 1;
             }
         }
-        self::globalClient()->hSetField('PileInfo', $_SESSION['no'], 'used', $used);
+        self::$global->hSetField('PileInfo', $_SESSION['no'], 'used', $used);
     }
 
     /**
@@ -253,7 +270,7 @@ class Events
         $now = $time - strtotime(date('Y-m-d'));
         $rules = isset($_SESSION['rules']) ? $_SESSION['rules'] : [];
         if (!$rules) {
-            $rules = json_decode(self::globalClient()->hGetField('PileInfo', $no, 'rules') ?: '{}', true);
+            $rules = json_decode(self::$global->hGetField('PileInfo', $no, 'rules') ?: '{}', true);
             $_SESSION['rules'] = $rules;
         }
         foreach ($rules as $v) {
@@ -278,15 +295,5 @@ class Events
             $timeStr .= pack('C', (int)$v);
         }
         return $timeStr;
-    }
-
-    private static $global;
-
-    private static function globalClient()
-    {
-        if (!self::$global) {
-            self::$global = new \GlobalData\Client();
-        }
-        return self::$global;
     }
 }
