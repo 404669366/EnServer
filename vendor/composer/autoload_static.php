@@ -9,6 +9,7 @@ class ComposerStaticInit867b1d3b5b22c1eb52d09813dc397fbe
     public static $prefixLengthsPsr4 = array (
         'W' => 
         array (
+            'Workerman\\MySQL\\' => 16,
             'Workerman\\' => 10,
         ),
         'P' => 
@@ -27,6 +28,10 @@ class ComposerStaticInit867b1d3b5b22c1eb52d09813dc397fbe
     );
 
     public static $prefixDirsPsr4 = array (
+        'Workerman\\MySQL\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/workerman/mysql/src',
+        ),
         'Workerman\\' => 
         array (
             0 => __DIR__ . '/..' . '/workerman/workerman',

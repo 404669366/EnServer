@@ -6,6 +6,7 @@
     "require": {
         "workerman/gateway-worker" : ">=3.0.0",
         "workerman/globaldata" : "dev-master",
-        "workerman/phpsocket.io" : "^1.1"
+        "workerman/phpsocket.io" : "^1.1",
+        "workerman/mysql": "^1.0"
     }
 }
