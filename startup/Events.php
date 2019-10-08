@@ -142,7 +142,6 @@ class Events
                         $_SESSION['no'] = $data['no'];
                         $_SESSION['count'] = $data['count'];
                         $_SESSION['rules'] = self::$db->select('rules')->from('en_pile')->where("no='{$data['no']}'")->row();
-                        var_dump($_SESSION['rules']);
                         $_SESSION['rules'] = json_decode($_SESSION['rules']['rules'], true);
                         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
                         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
