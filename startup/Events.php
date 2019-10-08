@@ -34,14 +34,17 @@ class Events
                     case 'beginCharge':
                         if (!Gateway::isUidOnline($data['pile'])) {
                             Gateway::sendToClient($client_id, json_encode(['code' => 100]));
+                            self::$db->update('en_order')->cols(['status' => 4])->where("no='{$data['orderNo']}'")->query();
                             break;
                         }
                         $status = self::getSessionByUid($data['pile'])['status'];
                         if ($status['workStatus']) {
+                            self::$db->update('en_order')->cols(['status' => 4])->where("no='{$data['orderNo']}'")->query();
                             Gateway::sendToClient($client_id, json_encode(['code' => 203]));
                             break;
                         }
                         if (!$status['linkStatus']) {
+                            self::$db->update('en_order')->cols(['status' => 4])->where("no='{$data['orderNo']}'")->query();
                             Gateway::sendToClient($client_id, json_encode(['code' => 202]));
                             break;
                         }
