@@ -93,6 +93,7 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 101, 'times' => $data['heartNo'] + 1]);
                         break;
                     case 104:
+                        var_dump(104);
                         Gateway::bindUid($client_id, $data['no']);
                         $orderNo = isset($_SESSION['order'][$data['gun']]) ? $_SESSION['order'][$data['gun']] : '';
                         if ($orderNo) {
