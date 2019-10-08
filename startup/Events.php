@@ -37,8 +37,7 @@ class Events
                             self::$db->update('en_order')->cols(['status' => 4])->where("no='{$data['orderNo']}'")->query();
                             break;
                         }
-                        $status = self::getSessionByUid($data['pile'])['status'];
-                        var_dump($status);break;
+                        $status = self::getSessionByUid($data['pile'])['status'][$data['gun']];
                         if ($status['workStatus']) {
                             self::$db->update('en_order')->cols(['status' => 4])->where("no='{$data['orderNo']}'")->query();
                             Gateway::sendToClient($client_id, json_encode(['code' => 203]));
