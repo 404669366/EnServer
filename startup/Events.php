@@ -145,7 +145,7 @@ class Events
                         $_SESSION['count'] = $data['count'];
                         $rules = self::$db->select('rules')->from('en_pile')->where("no='{$data['no']}'")->row();
                         if ($rules) {
-                            $_SESSION['rules'] = json_decode($_SESSION['rules']['rules'], true);
+                            $_SESSION['rules'] = json_decode($rules['rules'], true);
                             self::$db->update('en_pile')->cols(['online' => 1, 'count' => $data['count']])->where("no='{$data['no']}'")->query();
                         } else {
                             $_SESSION['rules'] = [[0, 86400, 0.8, 0.6]];
