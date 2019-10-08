@@ -38,6 +38,7 @@ class Events
                             break;
                         }
                         $status = self::getSessionByUid($data['pile'])['status'];
+                        var_dump($status);break;
                         if ($status['workStatus']) {
                             self::$db->update('en_order')->cols(['status' => 4])->where("no='{$data['orderNo']}'")->query();
                             Gateway::sendToClient($client_id, json_encode(['code' => 203]));
