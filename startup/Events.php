@@ -141,7 +141,7 @@ class Events
                         self::$db->query("REPLACE INTO en_pile(no,count,online) VALUES ('{$data['no']}','{$data['count']}',1)");
                         $_SESSION['no'] = $data['no'];
                         $_SESSION['count'] = $data['count'];
-                        $_SESSION['rules'] = self::$db->select('rules')->from('en_pile')->where("no='{$data['no']}'")->column();
+                        $_SESSION['rules'] = self::$db->select('rules,no')->from('en_pile')->where("no='{$data['no']}'")->column();
                         var_dump($_SESSION['rules']);
                         $_SESSION['rules'] = json_decode($_SESSION['rules']['rules'], true);
                         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
