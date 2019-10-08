@@ -138,6 +138,7 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 103, 'gun' => $data['gun']]);
                         break;
                     case 106:
+                        var_dump($data);
                         self::$db->query("REPLACE INTO en_pile(no,count,online) VALUES ('{$data['no']}','{$data['count']}',1)");
                         $_SESSION['no'] = $data['no'];
                         $_SESSION['count'] = $data['count'];
