@@ -12,6 +12,7 @@ class Events
      * @var Client
      */
     private static $global;
+
     /**
      * @var Connection
      */
@@ -32,77 +33,35 @@ class Events
                 switch ($data['do']) {
                     case 'beginCharge':
                         if (!Gateway::isUidOnline($data['pile'])) {
-                            Gateway::sendToClient($client_id, json_encode(['code' => 200]));
+                            Gateway::sendToClient($client_id, json_encode(['code' => 100]));
                             break;
                         }
-                        $gun = self::$global->hGet('GunInfo', $data['pile'] . $data['gun']);
-                        if ($gun['workStatus']) {
+                        $status = self::getSessionByUid($data['pile'])['status'];
+                        if ($status['workStatus']) {
                             Gateway::sendToClient($client_id, json_encode(['code' => 203]));
                             break;
                         }
-                        if (!$gun['linkStatus']) {
+                        if (!$status['linkStatus']) {
                             Gateway::sendToClient($client_id, json_encode(['code' => 202]));
                             break;
                         }
-                        $gun['orderNo'] = $data['orderNo'];
-                        $gun['user_id'] = $data['user_id'];
-                        $order = [
-                            'no' => $data['orderNo'],
-                            'uid' => $data['user_id'],
-                            'pile' => $data['pile'],
-                            'gun' => $data['gun'],
-                            'status' => 0,
-                            'created_at' => time(),
-                            'soc' => 0,
-                            'power' => 0,
-                            'duration' => 0,
-                            'rule' => '',
-                            'electricQuantity' => 0,
-                            'basisMoney' => 0,
-                            'serviceMoney' => 0,
-                        ];
-                        self::$global->hSet('ChargeOrder', $data['orderNo'], $order);
-                        self::$global->hSet('GunInfo', $data['pile'] . $data['gun'], $gun);
                         Gateway::sendToUid($data['pile'], ['cmd' => 7, 'gun' => $data['gun'], 'orderNo' => $data['orderNo']]);
-                        Gateway::joinGroup($client_id, $data['orderNo']);
+                        Gateway::joinGroup($client_id, $data['pile'] . $data['gun']);
                         Gateway::sendToClient($client_id, json_encode(['code' => 204]));
                         break;
                     case 'seeCharge':
-                        Gateway::joinGroup($client_id, $data['orderNo']);
-                        if ($order = self::$global->hGet('ChargeOrder', $data['orderNo'])) {
-                            $order['rule'] = self::getRule($order['pile']);
-                            if ($order['status'] == 0) {
-                                Gateway::sendToClient($client_id, json_encode(['code' => 204, 'data' => $order]));
-                                break;
-                            }
-                            if ($order['status'] == 1) {
-                                Gateway::sendToClient($client_id, json_encode(['code' => 205, 'data' => $order]));
-                                break;
-                            }
-                            if ($order['status'] == 2) {
-                                Gateway::sendToClient($client_id, json_encode(['code' => 206, 'data' => $order]));
-                                break;
-                            }
-                            if ($order['status'] == 3) {
-                                Gateway::sendToClient($client_id, json_encode(['code' => 208, 'data' => $order]));
-                                break;
-                            }
-                        }
-                        Gateway::sendToClient($client_id, json_encode(['code' => 209, 'data' => $order]));
+                        Gateway::joinGroup($client_id, $data['pile'] . $data['gun']);
                         break;
                     case 'endCharge':
                         if (Gateway::isUidOnline($data['pile'])) {
-                            $orderNo = self::$global->hGetField('GunInfo', $data['pile'] . $data['gun'], 'orderNo');
-                            Gateway::joinGroup($client_id, $orderNo);
+                            Gateway::joinGroup($client_id, $data['pile'] . $data['gun']);
                             Gateway::sendToUid($data['pile'], ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
                             break;
                         }
                         Gateway::sendToClient($client_id, json_encode(['code' => 301]));
                         break;
-                    case 'pileList':
-                        Gateway::sendToClient($client_id, json_encode(['code' => 500, 'data' => Gateway::getAllUidList()]));
-                        break;
-                    case 'pileInfo':
+                    case 'seePile':
+                        Gateway::joinGroup($client_id, $data['pile']);
                         if (Gateway::isUidOnline($data['pile'])) {
                             Gateway::sendToClient($client_id, json_encode(['code' => 600, 'data' => self::getSessionByUid($data['pile'])]));
                             break;
@@ -118,99 +77,91 @@ class Events
             case 20002:
                 switch ($data['cmd']) {
                     case 62:
-                        $orderNo = self::$global->hGetField('GunInfo', $data['no'] . $data['gun'], 'orderNo');
                         if ($data['result'] == 0) {
-                            Gateway::sendToGroup($orderNo, json_encode(['code' => 300]));
+                            Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 300]));
                             break;
                         }
-                        Gateway::sendToGroup($orderNo, json_encode(['code' => 301]));
+                        Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 301]));
+                        break;
+                    case 8:
+                        var_dump($data);
+                        if (!$data['result']) {
+                            $_SESSION['order'][$data['gun']] = $data['orderNo'];
+                        }
                         break;
                     case 102:
                         Gateway::sendToClient($client_id, ['cmd' => 101, 'times' => $data['heartNo'] + 1]);
                         break;
                     case 104:
                         Gateway::bindUid($client_id, $data['no']);
-                        $gun = self::$global->hGet('GunInfo', $data['no'] . $data['gun']) ?: [];
-                        if (isset($gun['orderNo'])) {
-                            if ($order = self::$global->hGet('ChargeOrder', $gun['orderNo'])) {
-                                if ($gun['workStatus'] == 1 && in_array($data['workStatus'], [3, 4, 6])) {
-                                    self::$global->hDel('ChargeOrder', $gun['orderNo']);
-                                    Gateway::sendToGroup($gun['orderNo'], json_encode(['code' => 200]));
-                                }
-                                if (in_array($gun['workStatus'], [0, 1, 2]) && $data['workStatus'] == 2) {
-                                    $rule = self::getRule($data['no']);
-                                    $order['rule'] = $rule;
+                        $orderNo = isset($_SESSION['order'][$data['gun']]) ? $_SESSION['order'][$data['gun']] : '';
+                        if ($orderNo) {
+                            if ($order = self::$db->select('*')->from('en_order')->where("no='{$orderNo}' AND status in(0,1)")->column()) {
+                                if ($data['workStatus'] == 2) {
+                                    $rule = self::getRule();
+                                    $e = $data['electricQuantity'] - $order['e'];
                                     $order['status'] = 1;
+                                    $order['duration'] = $data['duration'];
+                                    $order['e'] = $data['electricQuantity'];
+                                    $order['bm'] += $rule[2] * $e;
+                                    $order['sm'] += $rule[3] * $e;
+                                    self::$db->update('en_order')->cols($order)->where("no='{$orderNo}'")->query();
                                     $order['soc'] = $data['soc'];
                                     $order['power'] = round($data['power'] / 10, 2);
-                                    $order['duration'] = $data['duration'];
-                                    $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
-                                    $electricQuantity = $data['electricQuantity'] - $order['electricQuantity'];
-                                    $order['electricQuantity'] = $data['electricQuantity'];
-                                    $order['basisMoney'] += round($rule[2] * $electricQuantity, 2);
-                                    $order['serviceMoney'] += round($rule[3] * $electricQuantity, 2);
-                                    self::$global->hSet('ChargeOrder', $gun['orderNo'], $order);
                                     $code = 205;
-                                    $userMoney = self::$global->hGetField('UserInfo', $gun['user_id'], 'money') ?: 0;
-                                    if (($order['basisMoney'] + $order['serviceMoney'] + 5) >= $userMoney) {
+                                    $userMoney = self::$db->select('money')->from('en_user')->where("id={$order['uid']}")->column()['money'];
+                                    if (($order['bm'] + $order['sm']) >= ($userMoney - 5)) {
                                         $code = 207;
                                         Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
                                     }
-                                    Gateway::sendToGroup($order['no'], json_encode(['code' => $code, 'data' => $order]));
+                                    Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => $code, 'data' => $order]));
                                 }
-                                if ($gun['workStatus'] == 2 && in_array($data['workStatus'], [3, 6])) {
-                                    $rule = self::getRule($data['no']);
-                                    $order['rule'] = $rule;
-                                    $order['status'] = 2;
+                                if ($data['workStatus'] == 4) {
+                                    self::$db->update('en_order')->cols(['status' => 4])->where("no='{$orderNo}'")->query();
+                                    Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 200, 'data' => $order]));
+                                }
+                                if (in_array($data['workStatus'], [3, 6])) {
+                                    $rule = self::getRule();
+                                    $e = $data['electricQuantity'] - $order['e'];
+                                    $order['duration'] = $data['duration'];
+                                    $order['e'] = $data['electricQuantity'];
+                                    $order['bm'] += $rule[2] * $e;
+                                    $order['sm'] += $rule[3] * $e;
+                                    self::$db->update('en_order')->cols($order)->where("no='{$orderNo}'")->query();
                                     $order['soc'] = $data['soc'];
                                     $order['power'] = round($data['power'] / 10, 2);
-                                    $order['duration'] = $data['duration'];
-                                    $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
-                                    $electricQuantity = $data['electricQuantity'] - $order['electricQuantity'];
-                                    $order['electricQuantity'] = $data['electricQuantity'];
-                                    $order['basisMoney'] += round($rule[2] * $electricQuantity, 2);
-                                    $order['serviceMoney'] += round($rule[3] * $electricQuantity, 2);
-                                    self::$global->hSet('ChargeOrder', $gun['orderNo'], $order);
-                                    Gateway::sendToGroup($order['no'], json_encode(['code' => 206, 'data' => $order]));
+                                    Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 206, 'data' => $order]));
                                 }
                             }
                         }
-                        $gun['workStatus'] = $data['workStatus'];
-                        $gun['linkStatus'] = $data['linkStatus'];
-                        self::$global->hSet('GunInfo', $data['no'] . $data['gun'], $gun);
+                        $_SESSION['status'][$data['gun']] = ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus']];
                         Gateway::sendToClient($client_id, ['cmd' => 103, 'gun' => $data['gun']]);
-                        self::updateGunInfo();
                         break;
                     case 106:
+                        self::$db->query("REPLACE INTO en_pile(no,count,online) VALUES ('{$data['no']}','{$data['count']}',1)");
                         $_SESSION['no'] = $data['no'];
-                        $_SESSION['gunCount'] = $data['gunCount'];
-                        self::$global->hSetField('PileInfo', $data['no'], 'used', 0);
-                        self::$global->hSetField('PileInfo', $data['no'], 'gunCount', $data['gunCount']);
+                        $_SESSION['count'] = $data['count'];
+                        $_SESSION['rules'] = self::$db->select('rules')->from('en_pile')->where("no='{$data['no']}'")->column();
+                        $_SESSION['rules'] = json_decode($_SESSION['rules']['rules'], true);
                         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
                         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
                         break;
                     case 108:
-                        $_SESSION['alarmInfo'] = $data['alarmInfo'];
                         break;
                     case 110:
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
                         break;
                     case 202:
-                        if ($order = self::$global->hGet('ChargeOrder', $data['orderNo'])) {
-                            $rule = self::getRule($data['no']);
-                            $order['status'] = 3;
-                            $order['created_at'] = $data['beginTime'];
-                            $order['soc'] = $data['endSoc'];
-                            $order['power'] = 0;
+                        if ($order = self::$db->select('*')->from('en_order')->where("no='{$data['orderNo']}' AND status in(0,1)")->column()) {
+                            $rule = self::getRule();
+                            $e = $data['electricQuantity'] - $order['e'];
+                            $order['status'] = 2;
                             $order['duration'] = $data['duration'];
-                            $order['rule'] = $rule;
-                            $data['electricQuantity'] = round($data['electricQuantity'] / 100, 2);
-                            $electricQuantity = $data['electricQuantity'] - $order['electricQuantity'];
-                            $order['electricQuantity'] = $data['electricQuantity'];
-                            $order['basisMoney'] += round($rule[2] * $electricQuantity, 2);
-                            $order['serviceMoney'] += round($rule[3] * $electricQuantity, 2);
-                            self::$global->hSet('ChargeOrder', $data['orderNo'], $order);
-                            Gateway::sendToGroup($data['orderNo'], json_encode(['code' => 208, 'data' => $order]));
+                            $order['e'] = $data['electricQuantity'];
+                            $order['bm'] += $rule[2] * $e;
+                            $order['sm'] += $rule[3] * $e;
+                            self::$db->update('en_order')->cols($order)->where("no='{$data['orderNo']}'")->query();
+                            Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 208]));
                         }
                         Gateway::sendToClient($client_id, ['cmd' => 201, 'gun' => $data['gun'], 'cardNo' => $data['cardNo'], 'index' => $data['index']]);
                         break;
@@ -224,27 +175,12 @@ class Events
         switch ($_SERVER['GATEWAY_PORT']) {
             //todo 特来电电桩
             case 20002:
-                for ($i = 1; $i <= $_SESSION['gunCount']; $i++) {
-                    if ($orderNo = self::$global->hGetField('GunInfo', $_SESSION['no'] . $i, 'orderNo')) {
-                        self::$global->hSetField('ChargeOrder', $orderNo, 'status', 3);
-                        Gateway::sendToGroup($orderNo, json_encode(['code' => 208]));
-                    }
+                self::$db->update('en_pile')->cols(['online' => 0])->where("no='{$_SESSION['no']}'")->query();
+                self::$db->update('en_order')->cols(['status' => 2])->where("pile='{$_SESSION['no']}' AND status in(0,1)")->query();
+                for ($i = 1; $i <= $_SESSION['count']; $i++) {
+                    Gateway::sendToGroup($_SESSION['no'] . $i, json_encode(['code' => 208]));
                 }
         }
-    }
-
-    /**
-     * 更新枪口信息
-     */
-    public static function updateGunInfo()
-    {
-        $used = 0;
-        for ($i = 1; $i <= $_SESSION['gunCount']; $i++) {
-            if ($workStatus = self::$global->hGetField('GunInfo', $_SESSION['no'] . $i, 'workStatus')) {
-                $used += 1;
-            }
-        }
-        self::$global->hSetField('PileInfo', $_SESSION['no'], 'used', $used);
     }
 
     /**
@@ -259,21 +195,13 @@ class Events
     }
 
     /**
-     * 返回当前计价规则
-     * @param string $no
-     * @param int $time
+     * 电桩获取当前计价规则
      * @return array
      */
-    public static function getRule($no = '', $time = 0)
+    public static function getRule()
     {
-        $time = $time ?: time();
-        $now = $time - strtotime(date('Y-m-d'));
-        $rules = isset($_SESSION['rules']) ? $_SESSION['rules'] : [];
-        if (!$rules) {
-            $rules = json_decode(self::$global->hGetField('PileInfo', $no, 'rules') ?: '{}', true);
-            $_SESSION['rules'] = $rules;
-        }
-        foreach ($rules as $v) {
+        $now = time() - strtotime(date('Y-m-d'));
+        foreach ($_SESSION['rules'] as $v) {
             if ($now >= $v[0] && $now < $v[1]) {
                 return $v;
             }

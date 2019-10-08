@@ -75,7 +75,7 @@ class Tld
                     $data['uploadMode'] = unpack('Cv', substr($buffer, 47, 1))['v'];
                     $data['checkInInterval'] = unpack('vv', substr($buffer, 48, 2))['v'];
                     $data['internalVar'] = unpack('Cv', substr($buffer, 50, 1))['v'];
-                    $data['gunCount'] = unpack('Cv', substr($buffer, 51, 1))['v'];
+                    $data['count'] = unpack('Cv', substr($buffer, 51, 1))['v'];
                     $data['reportingCycle'] = unpack('Cv', substr($buffer, 52, 1))['v'];
                     $data['timeoutTimes'] = unpack('Cv', substr($buffer, 53, 1))['v'];
                     $data['noteCount'] = unpack('Vv', substr($buffer, 54, 4))['v'];
