@@ -141,11 +141,16 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 103, 'gun' => $data['gun']]);
                         break;
                     case 106:
-                        self::$db->query("REPLACE INTO en_pile(no,count,online) VALUES ('{$data['no']}','{$data['count']}',1)");
                         $_SESSION['no'] = $data['no'];
                         $_SESSION['count'] = $data['count'];
-                        $_SESSION['rules'] = self::$db->select('rules')->from('en_pile')->where("no='{$data['no']}'")->row();
-                        $_SESSION['rules'] = json_decode($_SESSION['rules']['rules'], true);
+                        $rules = self::$db->select('rules')->from('en_pile')->where("no='{$data['no']}'")->row();
+                        if ($rules) {
+                            $_SESSION['rules'] = json_decode($_SESSION['rules']['rules'], true);
+                            self::$db->update('en_pile')->cols(['online' => 1, 'count' => $data['count']])->where("no='{$data['no']}'")->query();
+                        } else {
+                            $_SESSION['rules'] = [[0, 86400, 0.8, 0.6]];
+                            self::$db->insert('en_pile')->cols(['no' => $data['no'], 'online' => 1, 'count' => $data['count']])->query();
+                        }
                         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
                         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
                         break;
