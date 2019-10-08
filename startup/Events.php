@@ -96,7 +96,7 @@ class Events
                         Gateway::bindUid($client_id, $data['no']);
                         $orderNo = isset($_SESSION['order'][$data['gun']]) ? $_SESSION['order'][$data['gun']] : '';
                         if ($orderNo) {
-                            if ($order = self::$db->select('*')->from('en_order')->where("no='{$orderNo}' AND status in(0,1)")->column()) {
+                            if ($order = self::$db->select('*')->from('en_order')->where("no='{$orderNo}' AND status in(0,1)")->row()) {
                                 if ($data['workStatus'] == 2) {
                                     $rule = self::getRule();
                                     $e = $data['electricQuantity'] - $order['e'];
@@ -109,7 +109,7 @@ class Events
                                     $order['soc'] = $data['soc'];
                                     $order['power'] = round($data['power'] / 10, 2);
                                     $code = 205;
-                                    $userMoney = self::$db->select('money')->from('en_user')->where("id={$order['uid']}")->column()['money'];
+                                    $userMoney = self::$db->select('money')->from('en_user')->where("id={$order['uid']}")->row()['money'];
                                     if (($order['bm'] + $order['sm']) >= ($userMoney - 5)) {
                                         $code = 207;
                                         Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
@@ -141,7 +141,7 @@ class Events
                         self::$db->query("REPLACE INTO en_pile(no,count,online) VALUES ('{$data['no']}','{$data['count']}',1)");
                         $_SESSION['no'] = $data['no'];
                         $_SESSION['count'] = $data['count'];
-                        $_SESSION['rules'] = self::$db->select('rules,no')->from('en_pile')->where("no='{$data['no']}'")->column();
+                        $_SESSION['rules'] = self::$db->select('rules')->from('en_pile')->where("no='{$data['no']}'")->row();
                         var_dump($_SESSION['rules']);
                         $_SESSION['rules'] = json_decode($_SESSION['rules']['rules'], true);
                         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
@@ -153,7 +153,7 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
                         break;
                     case 202:
-                        if ($order = self::$db->select('*')->from('en_order')->where("no='{$data['orderNo']}' AND status in(0,1)")->column()) {
+                        if ($order = self::$db->select('*')->from('en_order')->where("no='{$data['orderNo']}' AND status in(0,1)")->row()) {
                             $rule = self::getRule();
                             $e = $data['electricQuantity'] - $order['e'];
                             $order['status'] = 2;
