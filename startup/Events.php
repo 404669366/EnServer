@@ -103,6 +103,7 @@ class Events
                                 self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
+                                $order['rule'] = $rule;
                                 $code = 205;
                                 $userMoney = self::$db->select('money')->from('en_user')->where("id={$order['uid']}")->row()['money'];
                                 if (($order['bm'] + $order['sm']) >= ($userMoney - 5)) {
@@ -125,6 +126,7 @@ class Events
                                 self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
+                                $order['rule'] = $rule;
                                 Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 206, 'data' => $order]));
                             }
                         }
