@@ -96,9 +96,10 @@ class Events
                                 $order['status'] = 1;
                                 $order['duration'] = $data['duration'];
                                 $rule = self::getRule();
+                                $data['e'] = round($data['e'], 2);
                                 $e = $data['e'] - $order['e'];
-                                $order['bm'] += $rule[2] * $e;
-                                $order['sm'] += $rule[3] * $e;
+                                $order['bm'] += round($rule[2] * $e, 2);
+                                $order['sm'] += round($rule[3] * $e, 2);
                                 $order['e'] = $data['e'];
                                 self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                 $order['soc'] = $data['soc'];
@@ -119,9 +120,10 @@ class Events
                             if (in_array($data['workStatus'], [3, 6])) {
                                 $order['duration'] = $data['duration'];
                                 $rule = self::getRule();
+                                $data['e'] = round($data['e'], 2);
                                 $e = $data['e'] - $order['e'];
-                                $order['bm'] += $rule[2] * $e;
-                                $order['sm'] += $rule[3] * $e;
+                                $order['bm'] += round($rule[2] * $e, 2);
+                                $order['sm'] += round($rule[3] * $e, 2);
                                 $order['e'] = $data['e'];
                                 self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                 $order['soc'] = $data['soc'];
@@ -157,9 +159,10 @@ class Events
                             $order['status'] = 2;
                             $order['duration'] = $data['duration'];
                             $rule = self::getRule();
+                            $data['e'] = round($data['e'], 2);
                             $e = $data['e'] - $order['e'];
-                            $order['bm'] += $rule[2] * $e;
-                            $order['sm'] += $rule[3] * $e;
+                            $order['bm'] += round($rule[2] * $e, 2);
+                            $order['sm'] += round($rule[3] * $e, 2);
                             $order['e'] = $data['e'];
                             self::$db->update('en_order')->cols($order)->where("no='{$data['orderNo']}'")->query();
                             Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 208]));
