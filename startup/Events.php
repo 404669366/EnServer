@@ -92,13 +92,11 @@ class Events
                     case 104:
                         Gateway::bindUid($client_id, $data['no']);
                         if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
-                            var_dump($order['e'], $data['e']);
                             if ($data['workStatus'] == 2) {
                                 if ($e = $data['e'] - $order['e']) {
                                     $order['status'] = 1;
                                     $order['duration'] = $data['duration'];
                                     $rule = self::getRule();
-                                    $data['e'] = round($data['e'], 2);
                                     $order['bm'] += round($rule[2] * $e, 2);
                                     $order['sm'] += round($rule[3] * $e, 2);
                                     $order['e'] = $data['e'];
@@ -123,7 +121,6 @@ class Events
                                 if ($e = $data['e'] - $order['e']) {
                                     $order['duration'] = $data['duration'];
                                     $rule = self::getRule();
-                                    $data['e'] = round($data['e'], 2);
                                     $order['bm'] += round($rule[2] * $e, 2);
                                     $order['sm'] += round($rule[3] * $e, 2);
                                     $order['e'] = $data['e'];
@@ -162,7 +159,6 @@ class Events
                             $order['status'] = 2;
                             $order['duration'] = $data['duration'];
                             $rule = self::getRule();
-                            $data['e'] = round($data['e'], 2);
                             $e = $data['e'] - $order['e'];
                             $order['bm'] += round($rule[2] * $e, 2);
                             $order['sm'] += round($rule[3] * $e, 2);

@@ -62,7 +62,7 @@ class Tld
                     $data['linkStatus'] = unpack('Cv', substr($buffer, 45, 1))['v'];
                     $data['remainingTime'] = unpack('vv', substr($buffer, 79, 2))['v'];
                     $data['duration'] = unpack('Vv', substr($buffer, 81, 4))['v'];
-                    $data['e'] = unpack('Vv', substr($buffer, 85, 4))['v'];
+                    $data['e'] = round(unpack('Vv', substr($buffer, 85, 4))['v'] / 100, 2);
                     $data['cardNo'] = unpack('a32v', substr($buffer, 104, 32))['v'];
                     $data['power'] = unpack('Vv', substr($buffer, 153, 4))['v'];
                     $data['vin'] = unpack('a18v', substr($buffer, 172, 18))['v'];
@@ -103,7 +103,7 @@ class Tld
                     $data['beginSoc'] = unpack('Cv', substr($buffer, 90, 1))['v'];
                     $data['endSoc'] = unpack('Cv', substr($buffer, 91, 1))['v'];
                     $data['endType'] = unpack('Vv', substr($buffer, 92, 4))['v'];
-                    $data['e'] = unpack('Vv', substr($buffer, 96, 4))['v'];
+                    $data['e'] = round(unpack('Vv', substr($buffer, 96, 4))['v'] / 100, 2);
                     $data['money'] = unpack('Vv', substr($buffer, 108, 4))['v'];
                     $data['index'] = unpack('Vv', substr($buffer, 112, 4))['v'];
                     $data['vin'] = unpack('a17v', substr($buffer, 131, 17))['v'];
