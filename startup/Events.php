@@ -156,16 +156,16 @@ class Events
                         break;
                     case 202:
                         if ($order = self::$db->select('*')->from('en_order')->where("no='{$data['orderNo']}' AND status in(0,1)")->row()) {
+                            $order['status'] = 2;
+                            $order['duration'] = $data['duration'];
                             if ($data['e'] > $order['e']) {
-                                $order['status'] = 2;
-                                $order['duration'] = $data['duration'];
                                 $rule = self::getRule($data['no']);
                                 $e = $data['e'] - $order['e'];
                                 $order['bm'] += $rule[2] * $e;
                                 $order['sm'] += $rule[3] * $e;
                                 $order['e'] = $data['e'];
-                                self::$db->update('en_order')->cols($order)->where("no='{$data['orderNo']}'")->query();
                             }
+                            self::$db->update('en_order')->cols($order)->where("no='{$data['orderNo']}'")->query();
                             Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 208]));
                         }
                         Gateway::sendToClient($client_id, ['cmd' => 201, 'gun' => $data['gun'], 'cardNo' => $data['cardNo'], 'index' => $data['index']]);
