@@ -96,9 +96,9 @@ class Events
                                 if ($e = $data['e'] - $order['e']) {
                                     $order['status'] = 1;
                                     $order['duration'] = $data['duration'];
-                                    $rule = self::getRule();
-                                    $order['bm'] += round($rule[2] * $e, 2);
-                                    $order['sm'] += round($rule[3] * $e, 2);
+                                    $rule = self::getRule($data['no']);
+                                    $order['bm'] += $rule[2] * $e;
+                                    $order['sm'] += $rule[3] * $e;
                                     $order['e'] = $data['e'];
                                     self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                     $order['soc'] = $data['soc'];
@@ -120,9 +120,9 @@ class Events
                             if (in_array($data['workStatus'], [3, 6])) {
                                 if ($e = $data['e'] - $order['e']) {
                                     $order['duration'] = $data['duration'];
-                                    $rule = self::getRule();
-                                    $order['bm'] += round($rule[2] * $e, 2);
-                                    $order['sm'] += round($rule[3] * $e, 2);
+                                    $rule = self::getRule($data['no']);
+                                    $order['bm'] += $rule[2] * $e;
+                                    $order['sm'] += $rule[3] * $e;
                                     $order['e'] = $data['e'];
                                     self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                     $order['soc'] = $data['soc'];
@@ -138,12 +138,10 @@ class Events
                     case 106:
                         $_SESSION['no'] = $data['no'];
                         $_SESSION['count'] = $data['count'];
-                        $rules = self::$db->select('rules')->from('en_pile')->where("no='{$data['no']}'")->row();
-                        if ($rules) {
-                            $_SESSION['rules'] = json_decode($rules['rules'], true);
+                        $order = self::$db->select('no')->from('en_pile')->where("no='{$data['no']}'")->row();
+                        if ($order) {
                             self::$db->update('en_pile')->cols(['online' => 1, 'count' => $data['count']])->where("no='{$data['no']}'")->query();
                         } else {
-                            $_SESSION['rules'] = [[0, 86400, 0.8, 0.6]];
                             self::$db->insert('en_pile')->cols(['no' => $data['no'], 'online' => 1, 'count' => $data['count']])->query();
                         }
                         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
@@ -158,10 +156,10 @@ class Events
                         if ($order = self::$db->select('*')->from('en_order')->where("no='{$data['orderNo']}' AND status in(0,1)")->row()) {
                             $order['status'] = 2;
                             $order['duration'] = $data['duration'];
-                            $rule = self::getRule();
+                            $rule = self::getRule($data['no']);
                             $e = $data['e'] - $order['e'];
-                            $order['bm'] += round($rule[2] * $e, 2);
-                            $order['sm'] += round($rule[3] * $e, 2);
+                            $order['bm'] += $rule[2] * $e;
+                            $order['sm'] += $rule[3] * $e;
                             $order['e'] = $data['e'];
                             self::$db->update('en_order')->cols($order)->where("no='{$data['orderNo']}'")->query();
                             Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 208]));
@@ -199,12 +197,15 @@ class Events
 
     /**
      * 电桩获取当前计价规则
+     * @param string $no
      * @return array
      */
-    public static function getRule()
+    public static function getRule($no = '')
     {
         $now = time() - strtotime(date('Y-m-d'));
-        foreach ($_SESSION['rules'] as $v) {
+        $rules = self::$db->select('rules')->from('en_pile')->where("no='{$no}'")->row()['rules'];
+        $rules = json_decode($rules, true);
+        foreach ($rules as $v) {
             if ($now >= $v[0] && $now < $v[1]) {
                 return $v;
             }
