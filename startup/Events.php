@@ -92,6 +92,7 @@ class Events
                     case 104:
                         Gateway::bindUid($client_id, $data['no']);
                         if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
+                            var_dump($order['e'], $data['e']);
                             if ($data['workStatus'] == 2) {
                                 $order['status'] = 1;
                                 $order['duration'] = $data['duration'];
