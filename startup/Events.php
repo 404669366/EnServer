@@ -93,13 +93,13 @@ class Events
                         Gateway::bindUid($client_id, $data['no']);
                         if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                             if ($data['workStatus'] == 2) {
-                                $rule = self::getRule();
-                                $e = $data['electricQuantity'] - $order['e'];
                                 $order['status'] = 1;
                                 $order['duration'] = $data['duration'];
-                                $order['e'] = $data['electricQuantity'];
+                                $rule = self::getRule();
+                                $e = $data['e'] - $order['e'];
                                 $order['bm'] += $rule[2] * $e;
                                 $order['sm'] += $rule[3] * $e;
+                                $order['e'] = $data['e'];
                                 self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
@@ -116,12 +116,12 @@ class Events
                                 Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 200, 'data' => $order]));
                             }
                             if (in_array($data['workStatus'], [3, 6])) {
-                                $rule = self::getRule();
-                                $e = $data['electricQuantity'] - $order['e'];
                                 $order['duration'] = $data['duration'];
-                                $order['e'] = $data['electricQuantity'];
+                                $rule = self::getRule();
+                                $e = $data['e'] - $order['e'];
                                 $order['bm'] += $rule[2] * $e;
                                 $order['sm'] += $rule[3] * $e;
+                                $order['e'] = $data['e'];
                                 self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
@@ -152,13 +152,13 @@ class Events
                         break;
                     case 202:
                         if ($order = self::$db->select('*')->from('en_order')->where("no='{$data['orderNo']}' AND status in(0,1)")->row()) {
-                            $rule = self::getRule();
-                            $e = $data['electricQuantity'] - $order['e'];
                             $order['status'] = 2;
                             $order['duration'] = $data['duration'];
-                            $order['e'] = $data['electricQuantity'];
+                            $rule = self::getRule();
+                            $e = $data['e'] - $order['e'];
                             $order['bm'] += $rule[2] * $e;
                             $order['sm'] += $rule[3] * $e;
+                            $order['e'] = $data['e'];
                             self::$db->update('en_order')->cols($order)->where("no='{$data['orderNo']}'")->query();
                             Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 208]));
                         }
