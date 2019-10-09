@@ -94,43 +94,45 @@ class Events
                         if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                             var_dump($order['e'], $data['e']);
                             if ($data['workStatus'] == 2) {
-                                $order['status'] = 1;
-                                $order['duration'] = $data['duration'];
-                                $rule = self::getRule();
-                                $data['e'] = round($data['e'], 2);
-                                $e = $data['e'] - $order['e'];
-                                $order['bm'] += round($rule[2] * $e, 2);
-                                $order['sm'] += round($rule[3] * $e, 2);
-                                $order['e'] = $data['e'];
-                                self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
-                                $order['soc'] = $data['soc'];
-                                $order['power'] = round($data['power'] / 10, 2);
-                                $order['rule'] = $rule;
-                                $code = 205;
-                                $userMoney = self::$db->select('money')->from('en_user')->where("id={$order['uid']}")->row()['money'];
-                                if (($order['bm'] + $order['sm']) >= ($userMoney - 5)) {
-                                    $code = 207;
-                                    Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
+                                if ($e = $data['e'] - $order['e']) {
+                                    $order['status'] = 1;
+                                    $order['duration'] = $data['duration'];
+                                    $rule = self::getRule();
+                                    $data['e'] = round($data['e'], 2);
+                                    $order['bm'] += round($rule[2] * $e, 2);
+                                    $order['sm'] += round($rule[3] * $e, 2);
+                                    $order['e'] = $data['e'];
+                                    self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
+                                    $order['soc'] = $data['soc'];
+                                    $order['power'] = round($data['power'] / 10, 2);
+                                    $order['rule'] = $rule;
+                                    $code = 205;
+                                    $userMoney = self::$db->select('money')->from('en_user')->where("id={$order['uid']}")->row()['money'];
+                                    if (($order['bm'] + $order['sm']) >= ($userMoney - 5)) {
+                                        $code = 207;
+                                        Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
+                                    }
+                                    Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => $code, 'data' => $order]));
                                 }
-                                Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => $code, 'data' => $order]));
                             }
                             if ($data['workStatus'] == 4) {
                                 self::$db->update('en_order')->cols(['status' => 4])->where("no='{$order['no']}'")->query();
                                 Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 200, 'data' => $order]));
                             }
                             if (in_array($data['workStatus'], [3, 6])) {
-                                $order['duration'] = $data['duration'];
-                                $rule = self::getRule();
-                                $data['e'] = round($data['e'], 2);
-                                $e = $data['e'] - $order['e'];
-                                $order['bm'] += round($rule[2] * $e, 2);
-                                $order['sm'] += round($rule[3] * $e, 2);
-                                $order['e'] = $data['e'];
-                                self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
-                                $order['soc'] = $data['soc'];
-                                $order['power'] = round($data['power'] / 10, 2);
-                                $order['rule'] = $rule;
-                                Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 206, 'data' => $order]));
+                                if ($e = $data['e'] - $order['e']) {
+                                    $order['duration'] = $data['duration'];
+                                    $rule = self::getRule();
+                                    $data['e'] = round($data['e'], 2);
+                                    $order['bm'] += round($rule[2] * $e, 2);
+                                    $order['sm'] += round($rule[3] * $e, 2);
+                                    $order['e'] = $data['e'];
+                                    self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
+                                    $order['soc'] = $data['soc'];
+                                    $order['power'] = round($data['power'] / 10, 2);
+                                    $order['rule'] = $rule;
+                                    Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 206, 'data' => $order]));
+                                }
                             }
                         }
                         $_SESSION['status'][$data['gun']] = ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus']];
