@@ -91,7 +91,7 @@ class Events
                         break;
                     case 104:
                         Gateway::bindUid($client_id, $data['no']);
-                        if ($data['workStatus'] == 2) {
+                        if ($data['workStatus'] == 2 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                                 if ($data['e'] > $order['e']) {
                                     $order['status'] = 1;
@@ -115,13 +115,13 @@ class Events
                                 }
                             }
                         }
-                        if ($data['workStatus'] == 4) {
+                        if ($data['workStatus'] == 4 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                                 self::$db->update('en_order')->cols(['status' => 4])->where("no='{$order['no']}'")->query();
                                 Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 200, 'data' => $order]));
                             }
                         }
-                        if (in_array($data['workStatus'], [3, 6])) {
+                        if (in_array($data['workStatus'], [3, 6]) && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                                 if ($data['e'] > $order['e']) {
                                     $order['duration'] = $data['duration'];
