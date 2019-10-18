@@ -9,18 +9,12 @@ use Workerman\MySQL\Connection;
 class Events
 {
     /**
-     * @var Client
-     */
-    private static $global;
-
-    /**
      * @var Connection
      */
     private static $db;
 
     public static function onWorkerStart()
     {
-        self::$global = new \GlobalData\Client();
         self::$db = new Connection('127.0.0.1', '3306', 'root', 'fi9^BRLHschX%V96', 'en');
     }
 
@@ -190,6 +184,12 @@ class Events
                     Gateway::sendToGroup($_SESSION['no'] . $i, json_encode(['code' => 208]));
                 }
         }
+    }
+
+    public static function onWorkerStop($businessWorker)
+    {
+        self::$db->update('en_order')->cols(['status' => 2])->where("status in(0,1)")->query();
+        Gateway::sendToAll(json_encode(['code' => 208]));
     }
 
     /**
