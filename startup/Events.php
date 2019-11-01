@@ -142,7 +142,7 @@ class Events
                         if ($order) {
                             self::$db->update('en_pile')->cols(['online' => 1, 'count' => $data['count']])->where("no='{$data['no']}'")->query();
                         } else {
-                            self::$db->insert('en_pile')->cols(['no' => $data['no'], 'online' => 1, 'count' => $data['count']])->query();
+                            self::$db->insert('en_pile')->cols(['no' => $data['no'], 'online' => 1, 'bind' => 0, 'count' => $data['count']])->query();
                         }
                         Gateway::sendToClient($client_id, ['cmd' => 105, 'random' => $data['random']]);
                         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
@@ -188,6 +188,7 @@ class Events
 
     public static function onWorkerStop($businessWorker)
     {
+        self::$db->update('en_pile')->cols(['online' => 0])->query();
         self::$db->update('en_order')->cols(['status' => 2])->where("status in(0,1)")->query();
         Gateway::sendToAll(json_encode(['code' => 208]));
     }
