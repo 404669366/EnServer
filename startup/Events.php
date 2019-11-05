@@ -85,9 +85,6 @@ class Events
                         break;
                     case 104:
                         Gateway::bindUid($client_id, $data['no']);
-                        if ($data['workStatus'] == 6) {
-                            echo 'gun:' . $data['gun'] . '  err:' . $data['alarm'] . "\r\n";
-                        }
                         if ($data['workStatus'] == 2 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                                 $rule = self::getRule($data['no']);
@@ -170,6 +167,7 @@ class Events
                         Gateway::sendToClient($client_id, ['cmd' => 3, 'type' => 1, 'code' => 2, 'val' => self::getTime()]);
                         break;
                     case 108:
+                        var_dump($data['alarmInfo']);
                         break;
                     case 110:
                         Gateway::sendToClient($client_id, ['cmd' => 109]);
