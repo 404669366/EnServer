@@ -133,6 +133,7 @@ class Events
                             }
                         }
                         if ($data['workStatus'] == 6 && $data['linkStatus']) {
+                            echo 'gun:' . $data['gun'] . '  err:' . $data['alarm'] . "\r\n";
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                                 Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
                                 $rule = self::getRule($data['no']);
