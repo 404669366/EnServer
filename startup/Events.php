@@ -143,7 +143,7 @@ class Events
                                     $order['sm'] += $rule[3] * $e;
                                     $order['e'] = $data['e'];
                                 }
-                                $order['status'] = 3;
+                                $order['status'] = 2;
                                 self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
