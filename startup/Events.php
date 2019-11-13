@@ -103,6 +103,7 @@ class Events
                                         Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
                                     }
                                 }
+                                $order['vin'] = $data['vin'];
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
                                 $order['rule'] = $rule;
@@ -120,6 +121,7 @@ class Events
                                     $order['e'] = $data['e'];
                                     self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                 }
+                                $order['vin'] = $data['vin'];
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
                                 $order['rule'] = $rule;
@@ -129,6 +131,9 @@ class Events
                         if ($data['workStatus'] == 4 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                                 self::$db->update('en_order')->cols(['status' => 4])->where("no='{$order['no']}'")->query();
+                                $order['vin'] = $data['vin'];
+                                $order['soc'] = $data['soc'];
+                                $order['power'] = 0;
                                 Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 200, 'data' => $order]));
                             }
                         }
@@ -144,6 +149,7 @@ class Events
                                 }
                                 $order['status'] = 2;
                                 self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
+                                $order['vin'] = $data['vin'];
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
                                 $order['rule'] = $rule;
