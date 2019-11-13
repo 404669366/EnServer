@@ -87,7 +87,7 @@ class Events
                         Gateway::bindUid($client_id, $data['no']);
                         if ($data['workStatus'] == 2 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
-                                $rule = self::getRule($data['no']);
+                                $rule = self::getRule($order['rules']);
                                 $code = 205;
                                 if ($data['e'] > $order['e']) {
                                     $order['status'] = 1;
@@ -112,7 +112,7 @@ class Events
                         }
                         if ($data['workStatus'] == 3 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
-                                $rule = self::getRule($data['no']);
+                                $rule = self::getRule($order['rules']);
                                 if ($data['e'] > $order['e']) {
                                     $order['duration'] = $data['duration'];
                                     $e = $data['e'] - $order['e'];
@@ -131,15 +131,12 @@ class Events
                         if ($data['workStatus'] == 4 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                                 self::$db->update('en_order')->cols(['status' => 4])->where("no='{$order['no']}'")->query();
-                                $order['vin'] = $data['vin'];
-                                $order['soc'] = $data['soc'];
-                                $order['power'] = 0;
-                                Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 200, 'data' => $order]));
+                                Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 200]));
                             }
                         }
                         if ($data['workStatus'] == 6 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
-                                $rule = self::getRule($data['no']);
+                                $rule = self::getRule($order['rules']);
                                 if ($data['e'] > $order['e']) {
                                     $order['duration'] = $data['duration'];
                                     $e = $data['e'] - $order['e'];
@@ -182,7 +179,7 @@ class Events
                             $order['status'] = 2;
                             $order['duration'] = $data['duration'];
                             if ($data['e'] > $order['e']) {
-                                $rule = self::getRule($data['no']);
+                                $rule = self::getRule($order['rules']);
                                 $e = $data['e'] - $order['e'];
                                 $order['bm'] += $rule[2] * $e;
                                 $order['sm'] += $rule[3] * $e;
@@ -231,13 +228,12 @@ class Events
 
     /**
      * 电桩获取当前计价规则
-     * @param string $no
+     * @param string $rules
      * @return array
      */
-    public static function getRule($no = '')
+    public static function getRule($rules = '')
     {
         $now = time() - strtotime(date('Y-m-d'));
-        $rules = self::$db->select('rules')->from('en_pile')->where("no='{$no}'")->row()['rules'];
         $rules = json_decode($rules, true);
         foreach ($rules as $v) {
             if ($now >= $v[0] && $now < $v[1]) {
