@@ -134,7 +134,6 @@ class Events
                         }
                         if ($data['workStatus'] == 6 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
-                                Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
                                 $rule = self::getRule($data['no']);
                                 if ($data['e'] > $order['e']) {
                                     $order['duration'] = $data['duration'];
@@ -148,7 +147,8 @@ class Events
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
                                 $order['rule'] = $rule;
-                                Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 206, 'data' => $order]));
+                                Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 208, 'data' => $order]));
+                                Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
                             }
                         }
                         $_SESSION['status'][$data['gun']] = ['workStatus' => $data['workStatus'], 'linkStatus' => $data['linkStatus']];
@@ -183,7 +183,7 @@ class Events
                                 $order['e'] = $data['e'];
                             }
                             self::$db->update('en_order')->cols($order)->where("no='{$data['orderNo']}'")->query();
-                            Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 208]));
+                            Gateway::sendToGroup($data['no'] . $data['gun'], json_encode(['code' => 209]));
                         }
                         Gateway::sendToClient($client_id, ['cmd' => 201, 'gun' => $data['gun'], 'cardNo' => $data['cardNo'], 'index' => $data['index']]);
                         break;
@@ -200,7 +200,7 @@ class Events
                 self::$db->update('en_pile')->cols(['online' => 0])->where("no='{$_SESSION['no']}'")->query();
                 self::$db->update('en_order')->cols(['status' => 2])->where("pile='{$_SESSION['no']}' AND status in(0,1)")->query();
                 for ($i = 1; $i <= $_SESSION['count']; $i++) {
-                    Gateway::sendToGroup($_SESSION['no'] . $i, json_encode(['code' => 208]));
+                    Gateway::sendToGroup($_SESSION['no'] . $i, json_encode(['code' => 209]));
                 }
         }
     }
@@ -209,7 +209,7 @@ class Events
     {
         self::$db->update('en_pile')->cols(['online' => 0])->query();
         self::$db->update('en_order')->cols(['status' => 2])->where("status in(0,1)")->query();
-        Gateway::sendToAll(json_encode(['code' => 208]));
+        Gateway::sendToAll(json_encode(['code' => 209]));
     }
 
     /**
