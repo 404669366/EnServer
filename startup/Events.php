@@ -66,8 +66,11 @@ class Events
                         }
                         Gateway::sendToClient($client_id, json_encode(['code' => 601]));
                         break;
-                    case 'seeServer':
+                    case 'joinServer':
                         Gateway::joinGroup($client_id, 'server');
+                        break;
+                    case 'leaveServer':
+                        Gateway::leaveGroup($client_id, 'server');
                         break;
                     default:
                         Gateway::sendToClient($client_id, json_encode(['code' => 100]));
