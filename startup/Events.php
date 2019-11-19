@@ -20,6 +20,7 @@ class Events
 
     public static function onMessage($client_id, $data)
     {
+        Gateway::sendToGroup('server', json_encode($data));
         switch ($_SERVER['GATEWAY_PORT']) {
             //todo 客户端
             case 20001:
@@ -64,6 +65,9 @@ class Events
                             break;
                         }
                         Gateway::sendToClient($client_id, json_encode(['code' => 601]));
+                        break;
+                    case 'seeServer':
+                        Gateway::joinGroup($client_id, 'server');
                         break;
                     default:
                         Gateway::sendToClient($client_id, json_encode(['code' => 100]));
