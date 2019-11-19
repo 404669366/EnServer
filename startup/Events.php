@@ -20,11 +20,11 @@ class Events
 
     public static function onMessage($client_id, $data)
     {
-        Gateway::sendToGroup('server', json_encode(['msg' => $data, 'time' => date('Y-m-d H:i:s')]));
         switch ($_SERVER['GATEWAY_PORT']) {
             //todo 客户端
             case 20001:
                 $data = json_decode($data, true);
+                Gateway::sendToGroup('server', json_encode(['msg' => $data, 'time' => date('Y-m-d H:i:s')]));
                 switch ($data['do']) {
                     case 'beginCharge':
                         if (!Gateway::isUidOnline($data['pile'])) {
@@ -79,6 +79,7 @@ class Events
                 break;
             //todo 特来电电桩
             case 20002:
+                Gateway::sendToGroup('server', json_encode(['msg' => $data, 'time' => date('Y-m-d H:i:s')]));
                 switch ($data['cmd']) {
                     case 62:
                         if ($data['result'] == 0) {
