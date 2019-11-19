@@ -20,7 +20,7 @@ class Events
 
     public static function onMessage($client_id, $data)
     {
-        Gateway::sendToGroup('server', json_encode($data));
+        Gateway::sendToGroup('server', json_encode(['msg' => $data, 'time' => date('Y-m-d H:i:s')]));
         switch ($_SERVER['GATEWAY_PORT']) {
             //todo 客户端
             case 20001:
