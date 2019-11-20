@@ -97,9 +97,10 @@ class Events
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                                 $code = 205;
                                 $rule = self::getRule($order['rules']);
-                                if ($e = $data['e'] - $order['e']) {
+                                if ($data['e'] > $order['e']) {
                                     $order['status'] = 1;
                                     $order['duration'] = $data['duration'];
+                                    $e = $data['e'] - $order['e'];
                                     $order['bm'] += $rule[2] * $e;
                                     $order['sm'] += $rule[3] * $e;
                                     $order['e'] = $data['e'];
@@ -120,8 +121,9 @@ class Events
                         if ($data['workStatus'] == 3 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                                 $rule = self::getRule($order['rules']);
-                                if ($e = $data['e'] - $order['e']) {
+                                if ($data['e'] > $order['e']) {
                                     $order['duration'] = $data['duration'];
+                                    $e = $data['e'] - $order['e'];
                                     $order['bm'] += $rule[2] * $e;
                                     $order['sm'] += $rule[3] * $e;
                                     $order['e'] = $data['e'];
@@ -143,8 +145,9 @@ class Events
                         if ($data['workStatus'] == 6 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                                 $rule = self::getRule($order['rules']);
-                                if ($e = $data['e'] - $order['e']) {
+                                if ($data['e'] > $order['e']) {
                                     $order['duration'] = $data['duration'];
+                                    $e = $data['e'] - $order['e'];
                                     $order['bm'] += $rule[2] * $e;
                                     $order['sm'] += $rule[3] * $e;
                                     $order['e'] = $data['e'];
@@ -183,8 +186,9 @@ class Events
                         if ($order = self::$db->select('*')->from('en_order')->where("no='{$data['orderNo']}' AND status in(0,1)")->row()) {
                             $order['status'] = 2;
                             $order['duration'] = $data['duration'];
-                            if ($e = $data['e'] - $order['e']) {
+                            if ($data['e'] > $order['e']) {
                                 $rule = self::getRule($order['rules']);
+                                $e = $data['e'] - $order['e'];
                                 $order['bm'] += $rule[2] * $e;
                                 $order['sm'] += $rule[3] * $e;
                                 $order['e'] = $data['e'];
