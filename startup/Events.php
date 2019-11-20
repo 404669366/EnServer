@@ -96,13 +96,13 @@ class Events
                         if ($data['workStatus'] == 2 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
                                 $code = 205;
-                                $order['rule'] = self::getRule($order['rules']);
+                                $rule = self::getRule($order['rules']);
                                 if ($data['e'] > $order['e']) {
                                     $order['status'] = 1;
                                     $order['duration'] = $data['duration'];
                                     $e = $data['e'] - $order['e'];
-                                    $order['bm'] += $order['rule'][2] * $e;
-                                    $order['sm'] += $order['rule'][3] * $e;
+                                    $order['bm'] += $rule['rule'][2] * $e;
+                                    $order['sm'] += $rule['rule'][3] * $e;
                                     $order['e'] = $data['e'];
                                     self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                     $userMoney = self::$db->select('money')->from('en_user')->where("id={$order['uid']}")->row()['money'];
@@ -111,6 +111,7 @@ class Events
                                         Gateway::sendToClient($client_id, ['cmd' => 5, 'gun' => $data['gun'], 'code' => 2, 'val' => 85]);
                                     }
                                 }
+                                $order['rule'] = $rule;
                                 $order['vin'] = $data['vin'];
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
@@ -119,15 +120,16 @@ class Events
                         }
                         if ($data['workStatus'] == 3 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
-                                $order['rule'] = self::getRule($order['rules']);
+                                $rule = self::getRule($order['rules']);
                                 if ($data['e'] > $order['e']) {
                                     $order['duration'] = $data['duration'];
                                     $e = $data['e'] - $order['e'];
-                                    $order['bm'] += $order['rule'][2] * $e;
-                                    $order['sm'] += $order['rule'][3] * $e;
+                                    $order['bm'] += $rule['rule'][2] * $e;
+                                    $order['sm'] += $rule['rule'][3] * $e;
                                     $order['e'] = $data['e'];
                                     self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                 }
+                                $order['rule'] = $rule;
                                 $order['vin'] = $data['vin'];
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
@@ -142,16 +144,17 @@ class Events
                         }
                         if ($data['workStatus'] == 6 && $data['linkStatus']) {
                             if ($order = self::$db->select('*')->from('en_order')->where("pile='{$data['no']}' AND gun='{$data['gun']}' AND status in(0,1)")->row()) {
-                                $order['rule'] = self::getRule($order['rules']);
+                                $rule = self::getRule($order['rules']);
                                 if ($data['e'] > $order['e']) {
                                     $order['duration'] = $data['duration'];
                                     $e = $data['e'] - $order['e'];
-                                    $order['bm'] += $order['rule'][2] * $e;
-                                    $order['sm'] += $order['rule'][3] * $e;
+                                    $order['bm'] += $rule['rule'][2] * $e;
+                                    $order['sm'] += $rule['rule'][3] * $e;
                                     $order['e'] = $data['e'];
                                 }
                                 $order['status'] = 2;
                                 self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
+                                $order['rule'] = $rule;
                                 $order['vin'] = $data['vin'];
                                 $order['soc'] = $data['soc'];
                                 $order['power'] = round($data['power'] / 10, 2);
