@@ -101,8 +101,8 @@ class Events
                                     $order['status'] = 1;
                                     $order['duration'] = $data['duration'];
                                     $e = $data['e'] - $order['e'];
-                                    $order['bm'] += $rule['rule'][2] * $e;
-                                    $order['sm'] += $rule['rule'][3] * $e;
+                                    $order['bm'] += $rule[2] * $e;
+                                    $order['sm'] += $rule[3] * $e;
                                     $order['e'] = $data['e'];
                                     self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                     $userMoney = self::$db->select('money')->from('en_user')->where("id={$order['uid']}")->row()['money'];
@@ -124,8 +124,8 @@ class Events
                                 if ($data['e'] > $order['e']) {
                                     $order['duration'] = $data['duration'];
                                     $e = $data['e'] - $order['e'];
-                                    $order['bm'] += $rule['rule'][2] * $e;
-                                    $order['sm'] += $rule['rule'][3] * $e;
+                                    $order['bm'] += $rule[2] * $e;
+                                    $order['sm'] += $rule[3] * $e;
                                     $order['e'] = $data['e'];
                                     self::$db->update('en_order')->cols($order)->where("no='{$order['no']}'")->query();
                                 }
@@ -148,8 +148,8 @@ class Events
                                 if ($data['e'] > $order['e']) {
                                     $order['duration'] = $data['duration'];
                                     $e = $data['e'] - $order['e'];
-                                    $order['bm'] += $rule['rule'][2] * $e;
-                                    $order['sm'] += $rule['rule'][3] * $e;
+                                    $order['bm'] += $rule[2] * $e;
+                                    $order['sm'] += $rule[3] * $e;
                                     $order['e'] = $data['e'];
                                 }
                                 $order['status'] = 2;
