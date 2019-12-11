@@ -231,7 +231,7 @@ class Events
     private static function getSessionByUid($uid = '')
     {
         $client_ids = Gateway::getClientIdByUid($uid);
-        return Gateway::getSession($client_ids[0]);
+        return Gateway::getSession(array_shift($client_ids));
     }
 
     /**
